@@ -1,0 +1,14 @@
+/node_modules
+/bot
+bundle.js
+npm-debug.log
+.DS_Store
+.vscode
+
+# IntelliJ
+*.iml
+/.idea
+public
+
+server/config/dev.js
+client/build.zip

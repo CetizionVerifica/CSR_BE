@@ -1,0 +1,29 @@
+For each question:
+
+	Step 1: Calculate the increment of every question:
+	rank_increment = 100 / number_answers_of_question
+
+	Step 2:
+	Find stakeholder credits regards to class and calculate the score of every question
+	score = ((number_answers_of_question + 1) - answer_rank) * rank_increment 
+
+	Step 3: 
+	if stakeholder === external then:
+	weight_score = skake_holder_credits / total_credits * 100
+
+For each category: (organisational, human rights etc)
+Step 4:
+if type === external:
+find the sum of weighted score os each answer of every category
+
+if type === internal:
+find the average of score os each answer of every category
+
+Step 5:
+find the average of every final score (external and internal)
+
+Step 6:
+sort all the final score descending order
+
+Stakeholder classes: A: 1 , B: 2, C: 3
+

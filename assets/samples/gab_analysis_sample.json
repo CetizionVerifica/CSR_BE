@@ -1,0 +1,3563 @@
+/* 1 */
+{
+    "project": {
+    "_id" : ObjectId("5f05b1bdb4a801228425b76d"),
+    "title" : "NikolasProject",
+    "year" : 2014,
+    "createdBy" : ObjectId("5efed7f321b16e55f0661974"),
+    "updatedBy" : ObjectId("5efed7f321b16e55f0661974"),
+    "agency" : ObjectId("5f05a926b4a801228425b74a"),
+    "company" : ObjectId("5f05a926b4a801228425b747"),
+    "updatedDate" : ISODate("2020-07-08T11:45:01.047Z"),
+    "date" : ISODate("1970-01-19T10:50:08.700Z"),
+    "secondAssessmentDate" : null,
+    "firstAssessmentDate" : null,
+    "archive" : false,
+    "active" : true,
+    "supplierProperties" : [],
+    "users" : [],
+    "status" : "New",
+    "numberOfEmployees" : 7,
+    "__v" : 0,
+    "gapAnalysis" : ObjectId("5f05b1bdb4a801228425b76e"),
+    "materiality" : ObjectId("5f05b1bdb4a801228425b76f")
+    },
+
+"gab_analysis" : {
+    "_id" : ObjectId("5f05b1bdb4a801228425b76e"),
+    "createdBy" : ObjectId("5efed7f321b16e55f0661974"),
+    "updatedBy" : ObjectId("5f05a926b4a801228425b749"),
+    "project" : ObjectId("5f05b1bdb4a801228425b76d"),
+    "updatedDate" : ISODate("2020-07-08T12:29:58.373Z"),
+    "date" : ISODate("2020-07-08T11:45:01.020Z"),
+    "coreSubjects" : [ 
+        {
+            "coreSubject" : "organizationalGovernance",
+            "_id" : ObjectId("5f05b1e819a5ec51cc84d57c"),
+            "totalKeyConsiderations" : 34,
+            "WeightValue" : 0,
+            "relevanceWeightValue" : 0,
+            "relevanceValue" : 0,
+            "performanceValue" : 0,
+            "issueOfInterests" : [ 
+                {
+                    "issueOfInterest" : "ethicalConduct",
+                    "_id" : ObjectId("5f05b1e819a5ec51cc84d57d"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "issueLevel" : 4,
+                            "relevanceValue" : 0,
+                            "actualPerformanceValue" : 0,
+                            "keyConsideration" : "communicationOfValuesInsideAndOutsideOfTheOrganization",
+                            "_id" : ObjectId("5f05b1e819a5ec51cc84d57e"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "codeOfEthicsConduct",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b1f119a5ec51cc84d581"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "internalControls",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b1f319a5ec51cc84d584"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "ethicsProgramImplementation",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b1f519a5ec51cc84d587"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "transparency",
+                    "_id" : ObjectId("5f05b1f819a5ec51cc84d58a"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "fullAccurateCompleteDisclosure",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b1f819a5ec51cc84d58b"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "fairInternalAndExternalCommunication",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b1f919a5ec51cc84d58e"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "informationSecurity",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b1fb19a5ec51cc84d591"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "channelsOfDisseminationOfInformationShouldProvid",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b1fc19a5ec51cc84d594"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "respectOfRuleOfLaw",
+                    "_id" : ObjectId("5f05b1ff19a5ec51cc84d597"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "complianceWithAllNationalAndLocalLawsAndReg",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b1ff19a5ec51cc84d598"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "complianceWithInternationalLawsAndConven",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b20119a5ec51cc84d59b"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "voluntaryComplianceWithInternalAndExter",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b20219a5ec51cc84d59e"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "respectOfBestManagementPractic",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b20619a5ec51cc84d5a1"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "impartialEnforcement",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b20819a5ec51cc84d5a4"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "establishingFairLegalFrameworks",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b20919a5ec51cc84d5a7"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "appealsProcessesWhenApplicable",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b20b19a5ec51cc84d5aa"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "accountability",
+                    "_id" : ObjectId("5f05b20d19a5ec51cc84d5ad"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "disclosureOfInterest",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b20d19a5ec51cc84d5ae"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "managementAndGovernanceFrameworks",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b20f19a5ec51cc84d5b1"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "executiveRemuneration",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b21019a5ec51cc84d5b4"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "riskManagement",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b21219a5ec51cc84d5b7"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "internalAudit",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b21319a5ec51cc84d5ba"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "corporateGovernance",
+                    "_id" : ObjectId("5f05b22b19a5ec51cc84d5bd"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "managementCommitment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b22b19a5ec51cc84d5be"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "decisionMakingProcesses",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b22c19a5ec51cc84d5c1"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "formalCommitteeOnSustainability",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b22e19a5ec51cc84d5c4"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "srReporting",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b23019a5ec51cc84d5c7"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "fairRecruitment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b23319a5ec51cc84d5ca"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "stakeholderEngagement",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b23419a5ec51cc84d5cd"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "ensureTransparencyAndUnbiasedDialogueWithStakeholder",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b23619a5ec51cc84d5d0"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "organizationalStructureRolesAndResponsibilities",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b23719a5ec51cc84d5d3"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "genderEquity1",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b23919a5ec51cc84d5d6"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "minorityRights",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b23c19a5ec51cc84d5d9"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "discriminationAndHarassmentPolicies",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b23d19a5ec51cc84d5dc"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "boardComposition",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b23e19a5ec51cc84d5df"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "managementComposition",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b24219a5ec51cc84d5e2"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "humanResourcesPractices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b24419a5ec51cc84d5e5"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "coreSubject" : "humanRights",
+            "_id" : ObjectId("5f05b24a19a5ec51cc84d5e8"),
+            "totalKeyConsiderations" : 59,
+            "WeightValue" : 0,
+            "relevanceWeightValue" : 0,
+            "relevanceValue" : 0,
+            "performanceValue" : 0,
+            "issueOfInterests" : [ 
+                {
+                    "issueOfInterest" : "dueDiligence",
+                    "_id" : ObjectId("5f05b24a19a5ec51cc84d5e9"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "issueLevel" : 4,
+                            "relevanceValue" : 0,
+                            "actualPerformanceValue" : 0,
+                            "keyConsideration" : "humanRightsPolicyInPlaceGuidingTheCompanyInternally1",
+                            "_id" : ObjectId("5f05b24a19a5ec51cc84d5ea"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "trackThePerformanceOfTheCompanyRelatedToHumanRights",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b24d19a5ec51cc84d5ed"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "internalAssessment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b25019a5ec51cc84d5f0"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "organizationalBehavior",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b25319a5ec51cc84d5f3"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "humanRightsRisksSituations",
+                    "_id" : ObjectId("5f05b25719a5ec51cc84d5f6"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "humanRightsPolicyInPlaceGuidingTheCompanyInternally",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b25719a5ec51cc84d5f7"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "operatingInAnAreaWithDifficultConditionsExtr",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b25919a5ec51cc84d5fa"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "companyActivitiesDirectlyOrIndirectlyAffectOrInv",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b25c19a5ec51cc84d5fd"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "stepsToPreventCultureOfCorruption",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b25e19a5ec51cc84d600"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "extensiveSecurityMeasures",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b26019a5ec51cc84d603"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "notEngageInOrSupportTheUseOfCorpor",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b26319a5ec51cc84d606"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "avoindanceOfComplicity",
+                    "_id" : ObjectId("5f05b26619a5ec51cc84d609"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "preventHumanRightsAbuses",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b26619a5ec51cc84d60a"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "SpecialCareExercisedByCompaniesThatMayBe",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b26919a5ec51cc84d60d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "offerHumanRightsTrainingForSecurityPersonnel",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b26b19a5ec51cc84d610"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "notComplicitInAnyHumanRightAbuses",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b26d19a5ec51cc84d613"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "respectTheProtectionOfInternati",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b27019a5ec51cc84d616"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "integrateThisProcessIntoTheDu",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b27219a5ec51cc84d619"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "resolvingGievances",
+                    "_id" : ObjectId("5f05b27919a5ec51cc84d61c"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "processOfDealingWithAndResolvi",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b27919a5ec51cc84d61d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "complianceOfAllNationalLa",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b27c19a5ec51cc84d620"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "investigateInAllComplaints",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b27e19a5ec51cc84d623"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "preventUnfairInterferenceWithReso",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b28019a5ec51cc84d626"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "clearProceduresAndTimefram",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b28219a5ec51cc84d629"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "discriminationAndVulnerableGroups",
+                    "_id" : ObjectId("5f05b2a819a5ec51cc84d62c"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "banningAllDiscrimination",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2a819a5ec51cc84d62d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "rightsOfPeopleWithDisabilities",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2aa19a5ec51cc84d630"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "rightsOfMinoritiesAndIndigenousPeople",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2ad19a5ec51cc84d633"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "womansRights",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2ba19a5ec51cc84d636"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "equalEmploymentOpportunities",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2bc19a5ec51cc84d639"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "minorityGroupsRights",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2be19a5ec51cc84d63c"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "culturalReligiousDiversity",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2dd19a5ec51cc84d63f"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "internalPoliciesAndRulesOnNo",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2e019a5ec51cc84d642"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "proceduresToProtectAgainstDiscrimination",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2e219a5ec51cc84d645"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "empowermentOfMinorityGroups",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2e419a5ec51cc84d648"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "civilAndPoliticalRights",
+                    "_id" : ObjectId("5f05b2e919a5ec51cc84d64b"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "considerationOfInternationalConventions",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2e919a5ec51cc84d64c"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "considerationOfTheLawfulUseOfForce",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2eb19a5ec51cc84d64f"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "promotingFairnessAndMutualTrustBetwe",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2ef19a5ec51cc84d652"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "avoidanceOfComplicity",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2f619a5ec51cc84d655"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "rightToLifeAndLiberty",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2f919a5ec51cc84d658"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "rightToInformation",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b2fd19a5ec51cc84d65b"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "rightToEducation",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b30019a5ec51cc84d65e"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "noTorture",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b30219a5ec51cc84d661"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "freedomOfAssembly",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b30619a5ec51cc84d664"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "rightToProperty",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b30919a5ec51cc84d667"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "freedomOfSpeechAndOtherRightsFoundInTheInternati",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b30d19a5ec51cc84d66a"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "rightToProtection",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b31019a5ec51cc84d66d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "actionForPromotingProactiveHuma",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b31419a5ec51cc84d670"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "programsToEncourageAndSupportEmploymentInCom",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b31619a5ec51cc84d673"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "economicSocialAndCulturalRights",
+                    "_id" : ObjectId("5f05b31b19a5ec51cc84d676"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "training",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b31b19a5ec51cc84d677"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "basicNeedsWage",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b31d19a5ec51cc84d67a"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "rightToAdequateHousing",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b32019a5ec51cc84d67d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "rightToTheHighestAttainableStandardOfPhy",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b32319a5ec51cc84d680"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "educationForChildren",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b32619a5ec51cc84d683"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "presenceOfChildWithFamilyRightO",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b32919a5ec51cc84d686"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "fundamentalPrinciplesAndRightsAtWork",
+                    "_id" : ObjectId("5f05b32c19a5ec51cc84d689"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "observanceOfCollectiveAgreements",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b32c19a5ec51cc84d68a"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "nonEmploymentOfChildrenUnderMinimumAge",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b32f19a5ec51cc84d68d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "nonEmploymentOfUnder18InHazardousWork",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b33119a5ec51cc84d690"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "freedomOfWorkersToComeAndGo",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b33419a5ec51cc84d693"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "notComplicitInHumanRightsAbu",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b33719a5ec51cc84d696"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "freedomOfAssociationAndRightsToFormAndToJo",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b33919a5ec51cc84d699"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "noForcedOrBondedLabor",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b33f19a5ec51cc84d69c"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "organizationalRespectAndCommi",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b34119a5ec51cc84d69f"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "coreSubject" : "laborPractices",
+            "_id" : ObjectId("5f05b34c19a5ec51cc84d6a2"),
+            "totalKeyConsiderations" : 51,
+            "WeightValue" : 0,
+            "relevanceWeightValue" : 0,
+            "relevanceValue" : 0,
+            "performanceValue" : 0,
+            "issueOfInterests" : [ 
+                {
+                    "issueOfInterest" : "employmentAndEmploymentRelationships",
+                    "_id" : ObjectId("5f05b34c19a5ec51cc84d6a3"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "issueLevel" : 4,
+                            "relevanceValue" : 0,
+                            "actualPerformanceValue" : 0,
+                            "keyConsideration" : "medicalCare",
+                            "_id" : ObjectId("5f05b34c19a5ec51cc84d6a4"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "compensationForWorkRela",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b34f19a5ec51cc84d6a7"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "genderEquity",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b35219a5ec51cc84d6aa"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "discriminationAndHarassmentPolicy",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b35519a5ec51cc84d6ad"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "hoursOfWorkWeeklyRestAnnualLeave",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b35719a5ec51cc84d6b0"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "fairTreatmentDisputeResolution",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b35b19a5ec51cc84d6b3"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "mobbingAndSexualHarassment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b35f19a5ec51cc84d6b6"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "fairAndReasonableDisciplinaryPractices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b36319a5ec51cc84d6b9"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "recruitmentConditions",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b36819a5ec51cc84d6bc"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "unfairDismissal",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b36b19a5ec51cc84d6bf"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "benefits",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b36f19a5ec51cc84d6c2"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "respectOfIndividualsWithHivAidsWorkplace",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b37219a5ec51cc84d6c5"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "conditionsOfWorkAndSocialProtection",
+                    "_id" : ObjectId("5f05b37a19a5ec51cc84d6c8"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "complianceWithNationalLaws",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b37a19a5ec51cc84d6c9"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "complianceWithIloConventionsAndInterna",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b37d19a5ec51cc84d6cc"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "promotingWorkingConditionsInTheSupplyCh",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b38019a5ec51cc84d6cf"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "notEngageInOrSupportTheUseOf",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b38519a5ec51cc84d6d2"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "minorityRights1",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b38919a5ec51cc84d6d5"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "migrantLabour",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b38e19a5ec51cc84d6d8"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "nonConventionalHomeWorking",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b39519a5ec51cc84d6db"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "vacationPlan",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b39819a5ec51cc84d6de"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "proportionateBalanceWithFamilyAndCommunityActivities",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b39c19a5ec51cc84d6e1"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "recreationRights",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3a119a5ec51cc84d6e4"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "compensation",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3a419a5ec51cc84d6e7"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "accessToInformation",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3a719a5ec51cc84d6ea"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "rehabilitationProgramsForPeopleHurtAtWork",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3aa19a5ec51cc84d6ed"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "reasonableWorkingHoursAndOvertime",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3ae19a5ec51cc84d6f0"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "maternityProtection",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3b119a5ec51cc84d6f3"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "accessToAffordableChildcare",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3b519a5ec51cc84d6f6"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "healthBenefitsPrograms",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3b819a5ec51cc84d6f9"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "socialDialogue",
+                    "_id" : ObjectId("5f05b3be19a5ec51cc84d6fc"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "facilitationOfEmployeesMeetingsInc",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3be19a5ec51cc84d6fd"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "healthAndSafetyAtWork",
+                    "_id" : ObjectId("5f05b3c219a5ec51cc84d700"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "policiesAndPracticesProvideForS",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3c219a5ec51cc84d701"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "promotionOfTheHealthAndSafet",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3c519a5ec51cc84d704"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "relationshipWithSuppliersAndGovernments",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3c919a5ec51cc84d707"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "regularTrainingAndAwarene",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3cd19a5ec51cc84d70a"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "programsToPreserveHealthAndSafety",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3d019a5ec51cc84d70d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "provisionOfProtectiveAndSafetyEquipment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3d419a5ec51cc84d710"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "fireProtection",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3d719a5ec51cc84d713"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "emergencyEvacuations",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3da19a5ec51cc84d716"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "securitySignalizationSecurityColors",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3dd19a5ec51cc84d719"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "securityLabelings",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3e119a5ec51cc84d71c"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "contingencyPlans",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3e519a5ec51cc84d71f"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "medicalAssistanceAndControl",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3f819a5ec51cc84d722"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "sanitaryNecessities",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3fb19a5ec51cc84d725"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "respectSecurityPractices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b3fe19a5ec51cc84d728"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "cooperationWithPublicInspecti",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b40719a5ec51cc84d72b"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "internalCorrectionProcedures",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b40a19a5ec51cc84d72e"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "humanDevelopmentAndTrainingInTheWorkplace",
+                    "_id" : ObjectId("5f05b41119a5ec51cc84d731"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "trainingProgramsAndPromotion",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b41119a5ec51cc84d732"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "trainingAndAwarenessProgramsForEmployees",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b41519a5ec51cc84d735"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "accessToEducationAndDevelopment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b41c19a5ec51cc84d738"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "conditionsOfApprenticeship",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b42119a5ec51cc84d73b"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "pensionsRetirementsFunds",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b42619a5ec51cc84d73e"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "coreSubject" : "theEnvironment",
+            "_id" : ObjectId("5f05b43219a5ec51cc84d741"),
+            "totalKeyConsiderations" : 48,
+            "WeightValue" : 0,
+            "relevanceWeightValue" : 0,
+            "relevanceValue" : 0,
+            "performanceValue" : 0,
+            "issueOfInterests" : [ 
+                {
+                    "issueOfInterest" : "preventionOfPollution",
+                    "_id" : ObjectId("5f05b43219a5ec51cc84d742"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "issueLevel" : 4,
+                            "relevanceValue" : 0,
+                            "actualPerformanceValue" : 0,
+                            "keyConsideration" : "emissionControlTechnologies",
+                            "_id" : ObjectId("5f05b43219a5ec51cc84d743"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "facilitatingOromotingCarPoolBicycleWorkforce",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b43819a5ec51cc84d746"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "useSustainableFleetHybridElectricVehiclesBicycles",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b43d19a5ec51cc84d749"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "useOfCleanerProductionPractices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b44119a5ec51cc84d74c"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "sewageTreatment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b44719a5ec51cc84d74f"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "controlAndResponsibleManagementOfSoli",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b44b19a5ec51cc84d752"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "accessToCleanSafeDrinkingWaterThr",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b44e19a5ec51cc84d755"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "implementProgramsToPreventUnintent",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b45319a5ec51cc84d758"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "controlAndReductionInTheImpac",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b45819a5ec51cc84d75b"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "controlAndReductionPrevention",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b45f19a5ec51cc84d75e"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "managingImpactEffluentsSolidWaste",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b46919a5ec51cc84d761"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "implementProgramsToAddressThePubl",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b46d19a5ec51cc84d764"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "implementExtendedProducerResponsi",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b47119a5ec51cc84d767"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "reduceEmissionsThroughProductStewardship",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b47619a5ec51cc84d76a"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "encouragingDevelopmentDiffusionEnvironmentally",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b47a19a5ec51cc84d76d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "usingEnvironmentallyFriendlyTechnologies",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b47e19a5ec51cc84d770"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "sustainableResourceUse",
+                    "_id" : ObjectId("5f05b48319a5ec51cc84d773"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "implementationOfEcoDesignLifeCy",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b48319a5ec51cc84d774"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "managementOfSurfaceAndGroundwaterResources",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b48719a5ec51cc84d777"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "managementOfTerrestrialResources",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b48b19a5ec51cc84d77a"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "managementOfMarineResources",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b49319a5ec51cc84d77d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "implementationOfEnvironmentalManagementSystems",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b49719a5ec51cc84d780"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "adoptionOfEnergyEfficiencyPractices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b49b19a5ec51cc84d783"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "generationOrUseOfRenewableEnergy",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4a019a5ec51cc84d786"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "sustainableUrbanDevelopment1",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4a419a5ec51cc84d789"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "reforestation",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4a919a5ec51cc84d78c"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "sustainableForestManagement",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4ad19a5ec51cc84d78f"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "soilConservation",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4b219a5ec51cc84d792"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "sustainableAgriculturalPractices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4b619a5ec51cc84d795"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "emission",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4ba19a5ec51cc84d798"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "climateChangeMitigationAndAdaptation",
+                    "_id" : ObjectId("5f05b4c019a5ec51cc84d79b"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "reductionOfTheEmissionOfCoAndOtherGreenhouseGases",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4c019a5ec51cc84d79c"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "efficientWayOfUsingEnergyResources",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4c419a5ec51cc84d79f"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "efficiencyOfEnergyConsumption",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4c719a5ec51cc84d7a2"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "energySavingProducts",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4cc19a5ec51cc84d7a5"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "awarenessRaising",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4d019a5ec51cc84d7a8"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "measuringCommunicatingEnvironmentalPerformanceAnnually",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4ed19a5ec51cc84d7ab"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "promotingEnvironmentalPerformanceAcrossSupplyChain",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4f119a5ec51cc84d7ae"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "adoptingVoluntaryChartersCodesConduct",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4f619a5ec51cc84d7b1"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "reportAgainstGlobalOperatingStandards",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4fb19a5ec51cc84d7b4"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "developCodeConductPracticeOperation",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b4ff19a5ec51cc84d7b7"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "partnershipAndCollaboration",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b50219a5ec51cc84d7ba"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "ProtectionOfTheEnvironmentBiodiversityAndRestorationOfNaturalHabitats",
+                    "_id" : ObjectId("5f05b50719a5ec51cc84d7bd"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "habitatCreationProtection",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b50719a5ec51cc84d7be"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "establishmentOfMigrationCorridors",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b50a19a5ec51cc84d7c1"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "sustainableManagementOfBiodiversity",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b50e19a5ec51cc84d7c4"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "protectionOfWetlandsCoralRee",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b51219a5ec51cc84d7c7"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "sustainableLandUse",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b51719a5ec51cc84d7ca"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "sustainableUrbanDevelopment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b51e19a5ec51cc84d7cd"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "theRightToUseNaturalResources",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b52319a5ec51cc84d7d0"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "accessToCleanWater",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b52719a5ec51cc84d7d3"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "coreSubject" : "fairOperatingPractices",
+            "_id" : ObjectId("5f05b53119a5ec51cc84d7d6"),
+            "totalKeyConsiderations" : 35,
+            "WeightValue" : 0,
+            "relevanceWeightValue" : 0,
+            "relevanceValue" : 0,
+            "performanceValue" : 0,
+            "issueOfInterests" : [ 
+                {
+                    "issueOfInterest" : "antiCorruption",
+                    "_id" : ObjectId("5f05b53119a5ec51cc84d7d7"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "issueLevel" : 4,
+                            "relevanceValue" : 0,
+                            "actualPerformanceValue" : 0,
+                            "keyConsideration" : "inclusionOfSocialAndEnvironm",
+                            "_id" : ObjectId("5f05b53119a5ec51cc84d7d8"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "supplyChainProcurementStandardsAndEthics",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b53519a5ec51cc84d7db"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "effectiveOrganizationalIntegrityAndGovernance",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b53919a5ec51cc84d7de"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "supportOfSmallOrganizationsIncludingPromptPayments",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b54219a5ec51cc84d7e1"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "activitiesToCounterBriberyAndCollusion",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b54619a5ec51cc84d7e4"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "responsibleAndTransparentLobbying",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b54a19a5ec51cc84d7e7"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "fairContractings",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b55019a5ec51cc84d7ea"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "fairAndEthicalSupplyConditionsAndWarranties",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b55719a5ec51cc84d7ed"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "fairAndTransparentComplaintsManagement",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b55b19a5ec51cc84d7f0"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "clearAndTruthfulWarningNotices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b55f19a5ec51cc84d7f3"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "disputeResolutionPractices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b78019a5ec51cc84d7f6"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "acceptanceOfLiabilityForDefect",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b78619a5ec51cc84d7f9"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "responsiblePoliticalInvolvement",
+                    "_id" : ObjectId("5f05b7c519a5ec51cc84d7fc"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "notProvideGoodsOrServicesToAnEntit",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b7c519a5ec51cc84d7fd"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "informItselfAboutTheSocialAndEnvironmentalConditionsInWh",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b7ca19a5ec51cc84d800"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "promotionOfProCompetitionPublicPolicy",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b80f19a5ec51cc84d803"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "promotionOfEmployeeAwarenessOfImportan",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b81c19a5ec51cc84d806"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "awarenessRaisingOfSustainableAndEthicalConsumption",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b83419a5ec51cc84d809"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "fairCompetition",
+                    "_id" : ObjectId("5f05b83719a5ec51cc84d80c"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "coOperationWithCompetitionAuthorities",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b83719a5ec51cc84d80d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "noAntiCompetitiveBehaviorOrAbus",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b83d19a5ec51cc84d810"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "noPriceFixingRetailPriceMaintenance",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b84119a5ec51cc84d813"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "noBidRiggingCollusiveTenderings",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b84519a5ec51cc84d816"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "noAggressivePricingSellingWithPric",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b84a19a5ec51cc84d819"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "promotingSocialResponsibilityInTheValueChain",
+                    "_id" : ObjectId("5f05b84f19a5ec51cc84d81c"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "promotionOfSustainableProductsAndServices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b84f19a5ec51cc84d81d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "exercisingSustainableProcurement",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b85319a5ec51cc84d820"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "responsibleCommunication",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b85719a5ec51cc84d823"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "respectForConsumersViewss",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b85b19a5ec51cc84d826"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "protectionOfPersonalData",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b86119a5ec51cc84d829"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "controlsOverSharingPersonalData",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b86519a5ec51cc84d82c"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "minimalistAndResponsibleDataGathering",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b86919a5ec51cc84d82f"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "respectForPropertyRights",
+                    "_id" : ObjectId("5f05b86e19a5ec51cc84d832"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "actionsToPreventPiracy",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b86e19a5ec51cc84d833"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "freedomToContracts",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b87819a5ec51cc84d836"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "actionsToProtectCopyrightsPatentsAndTrademarks",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b87c19a5ec51cc84d839"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "respectPublicPropertyRightss",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b88019a5ec51cc84d83c"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "protectTheTraditionalRightsOfScholars",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b88419a5ec51cc84d83f"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "internationalPropertyRights",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b88819a5ec51cc84d842"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "coreSubject" : "communityInvolvementAndDevelopment",
+            "_id" : ObjectId("5f05b89319a5ec51cc84d845"),
+            "totalKeyConsiderations" : 52,
+            "WeightValue" : 0,
+            "relevanceWeightValue" : 0.416666666666667,
+            "relevanceValue" : 0.00408163265306122,
+            "performanceValue" : 0,
+            "issueOfInterests" : [ 
+                {
+                    "issueOfInterest" : "communityInvolvement",
+                    "_id" : ObjectId("5f05b89319a5ec51cc84d846"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 1,
+                    "relevanceValue" : 0.0285714285714286,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "issueLevel" : 4,
+                            "relevanceValue" : 0,
+                            "actualPerformanceValue" : 0,
+                            "keyConsideration" : "investmentInBasicInfrastruct",
+                            "_id" : ObjectId("5f05b89319a5ec51cc84d847"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "socialServices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b89719a5ec51cc84d84a"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "organizationalDevelopment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b8a119a5ec51cc84d84d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "institutionalDevelopment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b8a619a5ec51cc84d850"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "minorityAndWomenOwnedDevelopment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b8ac19a5ec51cc84d853"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "multiStakeholderOrientationToPromote",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b8b119a5ec51cc84d856"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "nonDiscriminationInProvisi",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b8b719a5ec51cc84d859"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "performanceValue" : 0,
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 1,
+                            "keyConsideration" : "stakeholderEngagementProgramss",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 2,
+                            "issueLevel" : 6,
+                            "_id" : ObjectId("5f05b8bc19a5ec51cc84d85c"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "complaintsAndGrievanceMechanisms",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b8c219a5ec51cc84d85f"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "mappingTheCommunitiesNeedsDemandsAndPotentials",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b8c719a5ec51cc84d862"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "communitySelfDetermination",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b8cc19a5ec51cc84d865"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "citizenParticipationProgramsProcesses",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b8d219a5ec51cc84d868"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "publicPrivatePartnerships1",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b8d719a5ec51cc84d86b"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "partnershipsWithLocalNationalAndInternat",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b8dd19a5ec51cc84d86e"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "educationAndCulture",
+                    "_id" : ObjectId("5f05b8eb19a5ec51cc84d871"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "socialContributionActivities",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b8eb19a5ec51cc84d872"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "skillsDevelopmentTraining",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b8f019a5ec51cc84d875"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "apprenticeshipsAndOpportunit",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b91719a5ec51cc84d878"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "companyEncourageOtherOrganizatio",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b91e19a5ec51cc84d87b"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "companyActivelyParticipateInRais",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b92d19a5ec51cc84d87e"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "identifyPreserveEnhanceAn",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b93319a5ec51cc84d881"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "employmentCreationAndSkillsDevelopment",
+                    "_id" : ObjectId("5f05b93a19a5ec51cc84d884"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "traditionalKnowledge",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b93a19a5ec51cc84d885"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "jobCreationIncludingTrai",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b94019a5ec51cc84d888"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "wealthGeneration1",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b94719a5ec51cc84d88b"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "humanResourceDevelopmentEducati",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b97719a5ec51cc84d88e"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "enhanceMarketForDevelopment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b97d19a5ec51cc84d891"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "technologyDevelopmentAndAccess",
+                    "_id" : ObjectId("5f05b98419a5ec51cc84d894"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "channelsCommunicationWithCommunity",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b98419a5ec51cc84d895"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "communityDevelopmentVolunteerPrograms",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b99019a5ec51cc84d898"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "technologyShowcaseEvents",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b99619a5ec51cc84d89b"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "sponsorTechnologyWrkshopContestEvents",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b99c19a5ec51cc84d89e"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "localUniversityCollaborationsResearchPrograms",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b9a519a5ec51cc84d8a1"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "placeDiscountPoliciesTechnologicalProducts",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b9ab19a5ec51cc84d8a4"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "techEventsSponsoring",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b9b219a5ec51cc84d8a7"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "wealthAndIncomeCreation",
+                    "_id" : ObjectId("5f05b9bd19a5ec51cc84d8aa"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "localHiring",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b9bd19a5ec51cc84d8ab"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "localSourcingOfGoodsAndServ",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b9c319a5ec51cc84d8ae"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "wealthGeneration",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b9c919a5ec51cc84d8b1"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "supportSmallSocialInvestments",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b9d519a5ec51cc84d8b4"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "marketDevelopment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b9dd19a5ec51cc84d8b7"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "publicPrivatePartnerships",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b9e419a5ec51cc84d8ba"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "facilitationOfCommuni",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b9e919a5ec51cc84d8bd"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "taxContributionsDirectAndIndirect",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b9f019a5ec51cc84d8c0"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "fairTrade",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b9f619a5ec51cc84d8c3"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "researchAndDevelopment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05b9fc19a5ec51cc84d8c6"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "health",
+                    "_id" : ObjectId("5f05ba0419a5ec51cc84d8c9"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "healthImpactOfProducts",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba0419a5ec51cc84d8ca"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "promotionOfCommunityHealth",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba0a19a5ec51cc84d8cd"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "promotingAccessAdequateFoodHealthyDiets",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba1019a5ec51cc84d8d0"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "takingActionMalnuritionHungerLossFood",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba1619a5ec51cc84d8d3"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "citizenshipAwareness",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba4119a5ec51cc84d8d6"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "socialInvestment",
+                    "_id" : ObjectId("5f05ba4719a5ec51cc84d8d9"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "ethicalGiving",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba4719a5ec51cc84d8da"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "supportToLocalSocialPrograms",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba4d19a5ec51cc84d8dd"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "nonPublicSocialInvestment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba5419a5ec51cc84d8e0"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "empowerment",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba5a19a5ec51cc84d8e3"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "volunteerPrograms",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba6019a5ec51cc84d8e6"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "coreSubject" : "consumerIssues",
+            "_id" : ObjectId("5f05ba7319a5ec51cc84d8e9"),
+            "totalKeyConsiderations" : 53,
+            "WeightValue" : 0,
+            "relevanceWeightValue" : 0.583333333333333,
+            "relevanceValue" : 0.00571428571428571,
+            "performanceValue" : 0,
+            "issueOfInterests" : [ 
+                {
+                    "issueOfInterest" : "fairMarketingFactualAndUnbiasedInformati",
+                    "_id" : ObjectId("5f05ba7319a5ec51cc84d8ea"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 1,
+                    "relevanceValue" : 0.04,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "issueLevel" : 4,
+                            "relevanceValue" : 0,
+                            "actualPerformanceValue" : 0,
+                            "keyConsideration" : "lifeCycleOfProducts",
+                            "_id" : ObjectId("5f05ba7319a5ec51cc84d8eb"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "innovation",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba7919a5ec51cc84d8ee"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "ethicalConsumerPractices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba7f19a5ec51cc84d8f1"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "comparabilityWithAlternativeProductsAndServices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba8419a5ec51cc84d8f4"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "labelingContentsCountryOfOriginEnergyEfficiency",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba8d19a5ec51cc84d8f7"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "readilyAccessibleInformation",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05ba9419a5ec51cc84d8fa"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "performanceValue" : 0,
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 1,
+                            "keyConsideration" : "accountabilityAndAcceptanceOfLiabilitys",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 2,
+                            "issueLevel" : 6,
+                            "_id" : ObjectId("5f05ba9b19a5ec51cc84d8fd"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "controlOrAvoidanceOfSupplyOrUseOfDang",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05baa619a5ec51cc84d900"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "accessibility",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05baae19a5ec51cc84d903"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "WeightValue" : 0,
+                            "relevanceWeightValue" : 0,
+                            "keyConsideration" : "servicesAndProductsThatAreSimultaneouslyEnerg",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bab319a5ec51cc84d906"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "protectingConsumersHealthAndSafety",
+                    "_id" : ObjectId("5f05babc19a5ec51cc84d909"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "fullFrankAndCorrectDisclosureAndLabellingRegardi",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05babc19a5ec51cc84d90a"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "provisionOfProductsAndServicesThatAr",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bac119a5ec51cc84d90d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "specialCareInAdvertisingAndMarketingThatIsTarge",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bac819a5ec51cc84d910"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "healthWarningNotices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bacd19a5ec51cc84d913"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "specialProtectionOfVulnerableGroupsChildr",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bad319a5ec51cc84d916"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "productAndServiceImpactAssessments",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05badb19a5ec51cc84d919"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "sustainableConsumption",
+                    "_id" : ObjectId("5f05bae219a5ec51cc84d91c"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "promotingissueOfInterest",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bae219a5ec51cc84d91d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "optimizationOfEnergyUseInCommer",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bae819a5ec51cc84d920"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "undertakeInitiativesToPromot",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05baef19a5ec51cc84d923"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "encourageTheDevelopmentAndDiffusio",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05baf619a5ec51cc84d926"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "consumerServiceSupportAndComplai",
+                    "_id" : ObjectId("5f05bafb19a5ec51cc84d929"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "equityInContracts",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bafb19a5ec51cc84d92a"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "guarantees",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb0119a5ec51cc84d92d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "respectForConsumerRights",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb0719a5ec51cc84d930"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "warranties",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb0c19a5ec51cc84d933"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "creditAndFinancialServices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb1219a5ec51cc84d936"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "complianceWithMembershipOrganisation",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb1819a5ec51cc84d939"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "afterSupplyServiceAndSupport",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb2019a5ec51cc84d93c"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "productAndServiceSystemsAndSupport",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb2819a5ec51cc84d93f"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "rightToTestProducts",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb3019a5ec51cc84d942"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "rightToRefunds",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb3a19a5ec51cc84d945"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "productAndServiceRecallAndAfte",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb4019a5ec51cc84d948"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "consumerDataProtectionAndPrivacy",
+                    "_id" : ObjectId("5f05bb5919a5ec51cc84d94b"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "provisionOfResponsibleTruthfulAndEquitableAdverti",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb5919a5ec51cc84d94c"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "plainLanguageCommunications",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb6119a5ec51cc84d94f"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "multiLingualInformation",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb6919a5ec51cc84d952"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "fullDisclosureOfTermsAndConditions",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb7219a5ec51cc84d955"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "comparabilityWithAlternativeProductsAn",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb7d19a5ec51cc84d958"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "provisionOfFactualAndAdequateInformat",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb8b19a5ec51cc84d95b"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "truthfulCompleteCredibleTransparen",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb9019a5ec51cc84d95e"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "alternativeDisputeMechanisms",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bb9619a5ec51cc84d961"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "conflictResolutionAndRedre",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bba019a5ec51cc84d964"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "noMisleadingActionsOrOmissions",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bba619a5ec51cc84d967"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "advertisingShouldBeClearlyIdentif",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bbac19a5ec51cc84d96a"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "noAggressiveCommercialPractices",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bbb319a5ec51cc84d96d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }, 
+                        {
+                            "keyConsideration" : "accessToJustice",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bbbc19a5ec51cc84d970"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : true
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "accessToEssentialServices",
+                    "_id" : ObjectId("5f05bbc519a5ec51cc84d973"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "increaseTransparencyByActiveInform",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bbc519a5ec51cc84d974"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "managingAndInterpretingCustome",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bbcc19a5ec51cc84d977"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }, 
+                {
+                    "issueOfInterest" : "educationAndAwareness",
+                    "_id" : ObjectId("5f05bbd419a5ec51cc84d97a"),
+                    "WeightValue" : 0,
+                    "relevanceWeightValue" : 0,
+                    "relevanceValue" : 0,
+                    "performanceValue" : 0,
+                    "keyConsiderations" : [ 
+                        {
+                            "keyConsideration" : "promptEasyAndEffectiveConsumerCommuni",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bbd419a5ec51cc84d97b"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "requireContractorsToConformToOccupationalHeal",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bbda19a5ec51cc84d97e"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "conductOnTheJobTraining",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bbe119a5ec51cc84d981"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "awarenessForActionToCorrectHazards",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bbeb19a5ec51cc84d984"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "performSafetyAndHealthTraining",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bbf019a5ec51cc84d987"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "educationOfConsumersUsingTruthfulAndAccur",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bbf819a5ec51cc84d98a"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }, 
+                        {
+                            "keyConsideration" : "provisionOfInformationAboutTheProcessQual",
+                            "actualPerformanceValue" : 0,
+                            "relevanceValue" : 0,
+                            "issueLevel" : 4,
+                            "_id" : ObjectId("5f05bbff19a5ec51cc84d98d"),
+                            "noRelatedDocument" : false,
+                            "noDocument" : false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "__v" : 0
+}
+
+}
