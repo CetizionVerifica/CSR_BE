@@ -3,7 +3,7 @@ pipeline {
     environment {
         // Ensure the NVM path is available
         NVM_DIR = '/home/ubuntu/.nvm'
-        NODE_VERSION = 'v14.0.0'
+        NODE_VERSION = 'v18.20.5'
     }
     stages {
         stage('Upload Build') {
@@ -19,7 +19,6 @@ pipeline {
                                     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
                                     nvm use ${NODE_VERSION} && \
                                     cd /var/www/CSR_BE && \
-                                    git reset --hard && \
                                     git pull origin main && \
                                     npm install -f && \
                                     pm2 delete CSR_BE || true && \
