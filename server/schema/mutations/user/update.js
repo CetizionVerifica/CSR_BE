@@ -150,13 +150,15 @@ const updateUserDataById = {
   },
   resolve(root, params, context, options) {
     checkAuth(context.isAuthenticated())
-
     const projection = getProjection(options.fieldNodes[0])
     return updateUser({
       userId: params.id,
       projection,
       data: {
+        sector: params.data.sector,
+        type: params.data.type,
         ...params.data,
+
       },
     })
   },

@@ -36,6 +36,7 @@ const mutation = new GraphQLObjectType({
         personExtetion: {type: GraphQLString},
         personFax: {type: GraphQLString},
         lisence: {type: new GraphQLList(GraphQLString)},
+        password: {type: GraphQLString},
       },
       resolve(parentValue, args) {
         return Company.addCompany(args)
@@ -57,6 +58,7 @@ const mutation = new GraphQLObjectType({
         personPhone: {type: GraphQLString},
         personExtetion: {type: GraphQLString},
         personFax: {type: GraphQLString},
+        password: {type: GraphQLString},
       },
       resolve(parentValue, args) {
         return Company.findByIdAndUpdate(args.id, args)

@@ -49,6 +49,29 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  lisence: {
+    type: Array,
+    default: ['gap'],
+  },
+  website: {
+    type: String,
+  },
+  country: {
+    type: String,
+  },
+  sector: {
+    type: String,
+  },
+  type: {
+    type: String,
+  },
+  serviceProductInfo: {
+    type: String,
+  },
+  percentageServiceProduct: {
+    type: String,
+  }
+
 });
 
 userSchema.pre('save', async function (next) {

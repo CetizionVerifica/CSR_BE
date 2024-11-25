@@ -1,14 +1,14 @@
 const {
   GraphQLNonNull,
   GraphQLString,
-} = require('graphql')
-const getProjection = require('../../../helpers/getProjection')
-const userInputType = require('../../types/userInputType')
-const userType = require('../../types/userType')
-const UserModel = require('../../../models/user')
-const AgencyModel = require('../../../models/agency')
-const updateItem = require('../_helper/updateItem')
-const {checkAuth} = require('../../../services/checkAuth')
+} = require('graphql');
+const getProjection = require('../../../helpers/getProjection');
+const userInputType = require('../../types/userInputType');
+const userType = require('../../types/userType');
+const UserModel = require('../../../models/user');
+const AgencyModel = require('../../../models/agency');
+const CompanyModel = require('../../../models/company');
+const { checkAuth } = require('../../../services/checkAuth');
 
 module.exports = {
   type: userType,
@@ -23,51 +23,46 @@ module.exports = {
     },
   },
   async resolve(root, params, context, options) {
-    checkAuth(context.isAuthenticated())
+    // Check if the user is authenticated
+    checkAuth(context.isAuthenticated());
 
-    const projection = getProjection(options.fieldNodes[0])
-    const agency = await AgencyModel.findById(root.user.currentAgency)
+    const { agencies, companies, email } = params.data;
+    const agencyId = agencies[0];
+    const companyId = companies[0];
+    // Extract the projection
+    const projection = getProjection(options.fieldNodes[0]);
 
+    // Validate agency and company
+    const agency = await AgencyModel.findById(agencyId);
     if (!agency) {
-      throw new Error('Error cant find agency')
+      throw new Error('Error: Agency not found');
     }
 
-
-    const userData = Object.assign({}, params.data)
-    userData.createdBy = root.user._id
-    userData.updatedBy = root.user._id
-    userData.password = params.password
-    userData.currentAgency = root.user.currentAgency
-    userData.agencies = [root.user.currentAgency]
-
-    const existUser = await await UserModel.findOneAndUpdate({email: userData.email}, {
-      $push: {agencies: agency},
-    })
-    if (existUser) {
-      await updateItem({
-        id: agency.id,
-        type: 'agency',
-        changes: {users: [...agency.users, existUser]},
-        projection,
-        userId: root.user._id,
-      })
-      return existUser
-    } else {
-      const userModel = new UserModel(userData)
-      const user = await userModel.save()
-
-      if (!user) {
-        throw new Error('Error creating user')
-      }
-
-      await updateItem({
-        id: agency.id,
-        type: 'agency',
-        changes: {users: [...agency.users, user]},
-        projection,
-        userId: root.user._id,
-      })
-      return user
+    const company = await CompanyModel.findById(companyId);
+    if (!company) {
+      throw new Error('Error: Company not found');
     }
+    // Check for existing user by email
+    const existingUser = await UserModel.findOne({ email });
+    if (existingUser) {
+      throw new Error('Error: This user already exists');
+    }
+
+    // Prepare user data
+    const userData = {
+      ...params.data,
+      createdBy: root.user._id,
+      updatedBy: root.user._id,
+      password: params.password,
+      currentAgency: agencyId,
+      agencies: [agencyId],
+      companies: [companyId],
+      active: true,
+    };
+    // Save the new user
+    const userModel = new UserModel(userData);
+    const user = await userModel.save();
+
+    return user;
   },
-}
+};

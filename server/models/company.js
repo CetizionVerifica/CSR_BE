@@ -167,6 +167,9 @@ const CompanySchema = new Schema({
   externalReminderEmailTemplate: {
     type: String,
   },
+  password: {
+    type: String,
+  },
 })
 
 

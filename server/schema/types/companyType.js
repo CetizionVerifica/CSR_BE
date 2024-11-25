@@ -45,6 +45,7 @@ const CompanyType = new GraphQLObjectType({
     personFax: {type: GraphQLString},
     users: {type: new GraphQLList(UserType)},
     reseller: {type: GraphQLString},
+    password: {type: GraphQLString},
     agency: {
       type: require('./agencyType'),
       async resolve(company) {

@@ -34,6 +34,7 @@ const companyInputType = new GraphQLInputObjectType({
     internalReminderEmailTemplate: {type: GraphQLString},
     externalEmailTemplate: {type: GraphQLString},
     externalReminderEmailTemplate: {type: GraphQLString},
+    password: {type: GraphQLString},
     date: {
       type: GraphQLFloat,
       default: Date.now,

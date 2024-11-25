@@ -1,7 +1,7 @@
-const graphql = require('graphql')
+const graphql = require("graphql");
 //const ProjectType = require('./projectType')
-const UserModel = require('../../models/user')
-const AgencyModel = require('../../models/agency')
+const UserModel = require("../../models/user");
+const AgencyModel = require("../../models/agency");
 const {
   GraphQLObjectType,
   GraphQLID,
@@ -10,48 +10,57 @@ const {
   GraphQLNonNull,
   GraphQLList,
   GraphQLFloat,
-} = graphql
-
+} = graphql;
 
 const userType = new GraphQLObjectType({
-  name: 'UserType',
+  name: "UserType",
   fields: () => ({
-    _id: {type: new GraphQLNonNull(GraphQLID)},
-    email: {type: new GraphQLNonNull(GraphQLString)},
+    _id: { type: new GraphQLNonNull(GraphQLID) },
+    email: { type: GraphQLString },
     currentAgency: {
-      type: require('./agencyType'),
+      type: require("./agencyType"),
       async resolve(user) {
-        return await AgencyModel.findById(user.currentAgency).exec()
+        return await AgencyModel.findById(user.currentAgency).exec();
       },
     },
-    name: {type: GraphQLString},
-    jobPosition: {type: GraphQLString},
-    role: {type: GraphQLString},
-    phone: {type: GraphQLString},
-    extension: {type: GraphQLString},
-    lang: {type: GraphQLString},
-    active: {type: GraphQLBoolean},
-    termsAndConditions: {type: GraphQLBoolean},
+    name: { type: GraphQLString },
+    jobPosition: { type: GraphQLString },
+    role: { type: GraphQLString },
+    phone: { type: GraphQLString },
+    extension: { type: GraphQLString },
+    lang: { type: GraphQLString },
+    active: { type: GraphQLBoolean },
+    termsAndConditions: { type: GraphQLBoolean },
+    lisence: { type: new GraphQLList(GraphQLString) },
+    serviceProductInfo: { type: GraphQLString },
+    percentageServiceProduct: { type: GraphQLString },
+    country: { type: GraphQLString },
+    sector: { type: GraphQLString },
+    website: { type: GraphQLString },
+    type: { type: GraphQLString },
     date: {
       type: GraphQLFloat,
-      resolve({date}) {
-        return date && date.getTime()
+      resolve({ date }) {
+        return date && date.getTime();
       },
     },
     companies: {
-      type: new GraphQLList(require('./companyType')),
+      type: new GraphQLList(require("./companyType")),
       resolve(parentValue) {
-        return UserModel.findCompanies(parentValue.id)
+        return UserModel.findCompanies(parentValue.id);
       },
     },
     agencies: {
-      type: new GraphQLList(require('./agencyType')),
+      type: new GraphQLList(require("./agencyType")),
       resolve(parentValue) {
-        return UserModel.findAgencies(parentValue.id)
+        return UserModel.findAgencies(parentValue.id);
       },
     },
-
   }),
-})
+});
 
-module.exports = userType
+console.log(
+  "sdbnjshgfsdujgfdsujfydjgdhujfgydfujgydhk=======================>",
+  GraphQLString
+);
+module.exports = userType;
