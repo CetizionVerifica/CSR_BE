@@ -36,13 +36,13 @@ const { appEmail, appMailPassword } = require('../config/keys');
 const main = async (mailOptions) => {
   const transporter = nodemailer.createTransport({
     pool: true,
-    host: 'smtp.gmail.com',
+    host: 'mail.resilisense.com',
     port: 465,
     secure: true,
     auth: {
       type: 'login',
-      user: 'sakshamwbst@gmail.com',
-      pass: 'lwblfvnloruncwli',
+      user: appEmail,
+      pass: appMailPassword,
     },
     tls: {
       rejectUnauthorized: false,
