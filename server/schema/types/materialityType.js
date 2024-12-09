@@ -18,11 +18,9 @@ const MaterialityType = new GraphQLObjectType({
     id: {type: GraphQLID},
     project: {
       type: require('./projectType'),
-      resolve(parentValue) {
-        return Materiality.findById(parentValue).populate('project')
-          .then(materiality => {
-            return materiality.project
-          })
+      async resolve(parentValue) {
+        const materiality = await Materiality.findById(parentValue).populate('project')
+        return materiality.project
       },
     },
     stakeholders: {type: GraphQLList(MaterialityStakeholderType)},

@@ -12,11 +12,12 @@ const ActionsAndKPIsType = require('../../types/actionsAndKPIsType')
 const ProjectActionsAndKPIsInputType = require('../../types/projectActionsAndKPIsInputType')
 const updateItem = require('../_helper/updateItem')
 const {checkAuth} = require('../../../services/checkAuth')
+const ObjectId = mongoose.Types.ObjectId
 
 
 const updateProject = async(actionsAndKPI, data) => {
   //if()
-  const myObjectId = mongoose.Types.ObjectId(data.project)
+  const myObjectId = new mongoose.Types.ObjectId(data.project)
   const record = find(actionsAndKPI.projectPerformance, {project: myObjectId})
   if (record) {
     record.performance = data.performance
@@ -66,6 +67,40 @@ const updateActionsAndKPIs = {
   },
 }
 
+// const updateProjectActionsAndKPIs = {
+//   type: ActionsAndKPIsType,
+//   args: {
+//     id: {
+//       name: 'id',
+//       type: new GraphQLNonNull(GraphQLID),
+//     },
+//     data: {
+//       name: 'data',
+//       type: new GraphQLNonNull(ProjectActionsAndKPIsInputType),
+//     },
+//   },
+//   async resolve(root, params, context, options) {
+//     checkAuth(context.isAuthenticated())
+
+//     const projection = getProjection(options.fieldNodes[0])
+
+//     const actionsAndKPI = await ActionsAndKPIsModel.findById(params.id)
+//     if (!actionsAndKPI) {
+//       throw new Error('Error action and KPI not found')
+//     }
+//     const actionsAndKPIData = Object.assign({}, params.data)
+//     const projects = await updateProject(actionsAndKPI, actionsAndKPIData)
+//     const {item} = await updateItem({
+//       id: params.id,
+//       type: 'actionsAndKPIs',
+//       changes: {projectPerformance: projects},
+//       projection,
+//       userId: root.user._id,
+//     })
+//     return item
+//   },
+// }
+
 const updateProjectActionsAndKPIs = {
   type: ActionsAndKPIsType,
   args: {
@@ -79,26 +114,33 @@ const updateProjectActionsAndKPIs = {
     },
   },
   async resolve(root, params, context, options) {
-    checkAuth(context.isAuthenticated())
+    checkAuth(context.isAuthenticated());
 
-    const projection = getProjection(options.fieldNodes[0])
+    const projection = getProjection(options.fieldNodes[0]);
 
-    const actionsAndKPI = await ActionsAndKPIsModel.findById(params.id)
+    // Ensure `params.id` is an ObjectId
+    const objectId = new ObjectId(params.id); // Fixes `Class constructor ObjectId` issue
+
+    console.log(objectId, 'objectId===============================>');
+    const actionsAndKPI = await ActionsAndKPIsModel.findById(objectId);
     if (!actionsAndKPI) {
-      throw new Error('Error action and KPI not found')
+      throw new Error('Error action and KPI not found');
     }
-    const actionsAndKPIData = Object.assign({}, params.data)
-    const projects = await updateProject(actionsAndKPI, actionsAndKPIData)
-    const {item} = await updateItem({
-      id: params.id,
+
+    const actionsAndKPIData = { ...params.data };
+    const projects = await updateProject(actionsAndKPI, actionsAndKPIData);
+    
+    const { item } = await updateItem({
+      id: objectId,
       type: 'actionsAndKPIs',
-      changes: {projectPerformance: projects},
+      changes: { projectPerformance: projects },
       projection,
       userId: root.user._id,
-    })
-    return item
+    });
+    return item;
   },
-}
+};
+
 
 
 module.exports = {

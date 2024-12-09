@@ -68,7 +68,7 @@ exports.sendReminder = async function (req, res, next) {
       // get side id by project id, holderid, type
       const type = 'internal';
       console.log(projectSurveyId, holder.employee.toString(), type);
-      const { sideID } = await SSurvey.findOne({ projectSurveyID: ObjectId(projectSurveyId), type: type, stakeholderID: holder.employee });
+      const { sideID } = await SSurvey.findOne({ projectSurveyID: new ObjectId(projectSurveyId), type: type, stakeholderID: holder.employee });
 
       emailsObject.push({
         email: holder.email,
@@ -81,7 +81,7 @@ exports.sendReminder = async function (req, res, next) {
       // get side id by project id, holderid, type
       const type = 'external';
       console.log(projectSurveyId, holder.stakeholder.toString(), type);
-      const { sideID } = await SSurvey.findOne({ projectSurveyID: ObjectId(projectSurveyId), type: type, stakeholderID: holder.stakeholder });
+      const { sideID } = await SSurvey.findOne({ projectSurveyID: new ObjectId(projectSurveyId), type: type, stakeholderID: holder.stakeholder });
 
       // get side id
       emailsObject.push({
@@ -378,7 +378,7 @@ const sendSurveyEmail = async (emailsObject, companyName, externalEmailTemplate,
   }
 
   const mailOptions = (email, sideID, type, messageTemplate) => ({
-    from: 'Resilisense <noreply@resilisense.com>', // sender address
+    from: 'Resilisense <anjuwebsultanate@gmail.com>', // sender address
     to: [email], // list of receivers
     subject: `${reminder ? "Reminder: " : ' '}${companyName} - CSR: Stakeholder Survey`, // Subject line
     html: ` 
@@ -640,7 +640,7 @@ exports.sendSurvey = async function (req, res, next) {
       const surveysDocs = [];
       const emailsSenderConstructor = [];
       for (var data of internal) {
-        const sideID = mongoose.Types.ObjectId();
+        const sideID = new mongoose.Types.ObjectId();
         surveysDocs.push(generateSurvey(true, data.id, projectSurveyID, sideID));
         // surveysDocs.push({
         //   stakeholderID: data.id,
@@ -656,7 +656,7 @@ exports.sendSurvey = async function (req, res, next) {
         });
       }
       for (var data of external) {
-        const sideID = mongoose.Types.ObjectId();
+        const sideID = new mongoose.Types.ObjectId();
         surveysDocs.push(generateSurvey(false, data.id, projectSurveyID, sideID));
         // surveysDocs.push({
         //   stakeholderID: data.id,
@@ -779,7 +779,7 @@ exports.getSurveyBySideID = async function (req, res) {
 
     var { sideid } = req.params;
     sideid = encryptDecryptSideID(sideid, false);
-    const result = await (await SSurvey.findOne({ sideID: sideid })).toJSON();
+    const result = (await SSurvey.findOne({ sideID: sideid })).toJSON();
     if (!result) {
       throw Error('Data not found');
     }
@@ -806,31 +806,54 @@ exports.getSurveyBySideID = async function (req, res) {
     return Response(res, error.message);
   }
 }
-
 // change status of projectSurvey to partially_responded (projectSurveyID + stakeholderID + type)
 exports.updateSurveyAnswer = async function (req, res) {
   try {
     const { objectID, questionID, newAnswers } = req.body;
 
-    var isAnswred = false;
-    for (var answer of newAnswers) {
-      isAnswred = isAnswred || answer.selected;
+    // Ensure IDs are valid ObjectId instances
+    if (!ObjectId.isValid(objectID) || !ObjectId.isValid(questionID)) {
+      throw new Error('Invalid objectID or questionID');
     }
 
-    // update the answers of question from questionaire tha match the query 
-    const { projectSurveyID, stakeholderID, type } = await SSurvey.findOneAndUpdate(
-      { "_id": ObjectId(objectID), "questionnaire.questions": { "$elemMatch": { "_id": ObjectId(questionID) } } },
-      { $set: { "questionnaire.questions.$.answers": newAnswers, "questionnaire.questions.$.updatedOnce": isAnswred } }
+    let isAnswered = false;
+    for (const answer of newAnswers) {
+      isAnswered = isAnswered || answer.selected;
+    }
+    // Update the answers of the question in the questionnaire
+    const surveyUpdate = await SSurvey.findOneAndUpdate(
+      {
+        "_id": new ObjectId(objectID), // Properly convert to ObjectId
+        "questionnaire.questions": { "$elemMatch": { "_id": new ObjectId(questionID) } }
+      },
+      {
+        $set: {
+          "questionnaire.questions.$.answers": newAnswers,
+          "questionnaire.questions.$.updatedOnce": isAnswered
+        }
+      },
+      { new: true } // Return the updated document
     );
 
-    // change the status of projectSurvey
-    const stakeHolderFieldName = type === 'internal' ? 'employee' : 'stakeholder';
-    const result = await ProjectSurvey.update({ "_id": projectSurveyID, [`${type}.recipients`]: { "$elemMatch": { [stakeHolderFieldName]: stakeholderID } } },
-      { $set: { [`${type}.recipients.$.status`]: 'partially_responded' } });
-
-    if (!result) {
-      throw Error('Survey project status not updated');
+    if (!surveyUpdate) {
+      throw new Error('Survey update failed');
     }
+
+    const { projectSurveyID, stakeholderID, type } = surveyUpdate;
+    // Update the projectSurvey status
+    const stakeHolderFieldName = type === 'internal' ? 'employee' : 'stakeholder';
+    const result = await ProjectSurvey.updateOne(
+      {
+        "_id": new ObjectId(projectSurveyID), // Properly convert to ObjectId
+        [`${type}.recipients`]: { "$elemMatch": { [stakeHolderFieldName]: stakeholderID } }
+      },
+      { $set: { [`${type}.recipients.$.status`]: 'partially_responded' } }
+    );
+    if (!result.matchedCount) {
+      throw new Error('Survey project status not updated');
+    }
+
+    console.log('Update completed successfully');
 
     return Response(res, 'Update survey and projectSurvey status', {
       projectSurveyID: projectSurveyID,
@@ -839,9 +862,9 @@ exports.updateSurveyAnswer = async function (req, res) {
     }, 200);
 
   } catch (error) {
-    return Response(res, error.message);
+    return Response(res, error.message, null, 500);
   }
-}
+};
 
 exports.completeSurvey = async function (req, res) {
   try {
@@ -913,8 +936,8 @@ exports.calculateSurveyResults = async function (req, res) {
       }*/
 
     // const {internal, external} = await SSurvey.findById(projectSurveyId);
-    const internalSurveys = await SSurvey.find({ type: 'internal', projectSurveyID: ObjectId(projectSurveyId) });
-    const externalSurveys = await SSurvey.find({ type: 'external', projectSurveyID: ObjectId(projectSurveyId) });
+    const internalSurveys = await SSurvey.find({ type: 'internal', projectSurveyID: new ObjectId(projectSurveyId) });
+    const externalSurveys = await SSurvey.find({ type: 'external', projectSurveyID: new ObjectId(projectSurveyId) });
 
     // console.log("Internal surveys:", internalSurveys.length, "External surveys:", externalSurveys.length)
     const updateResults = async (surveys, internal = false) => {
@@ -995,7 +1018,7 @@ exports.calculateSurveyResults = async function (req, res) {
       //
       return surveyData;
     }
-
+    
     const dataInternal = await updateResults(internalSurveys, true);
     const dataExternal = await updateResults(externalSurveys, false);
 
@@ -1021,10 +1044,8 @@ exports.calculateSurveyResults = async function (req, res) {
     //}    
 
     const result = CalculateSurveyResult.execute([...dataExternal, ...dataInternal]);
-
     // update materiality
     const materialityResult = await MaterialityModel.findByIdAndUpdate(project.materiality, { $set: { coreSubjects: result } });
-
     return Response(res, 'Calculate final result of survey', {
       // input: [...dataExternal, ...dataInternal],
       output: result,

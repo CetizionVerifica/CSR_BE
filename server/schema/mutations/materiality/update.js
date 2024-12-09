@@ -154,10 +154,10 @@ const updateStakeholderGroup = {
       .findOneAndUpdate({'_id': params.id, 'stakeholders.stakeholder': params.stakeholderId},
         {$set: {'stakeholders.$.groupXFactor': params.groupXFactor}}, {new: true})
       .select(projection).exec()
-
-    const stakeholders =
-       updateStakeholdersGroup(updateMateriality, materiality, params.stakeholderId, params.groupXFactor)
-    materiality.coreSubjects = updateCoreSubjectsStakeholders(materiality, materiality.coreSubjects)
+      
+      const stakeholders =
+      updateStakeholdersGroup(updateMateriality, materiality, params.stakeholderId, params.groupXFactor)
+      materiality.coreSubjects = updateCoreSubjectsStakeholders(materiality, materiality.coreSubjects)
     const {item} = await updateItem({
       id: params.id,
       type: 'materiality',

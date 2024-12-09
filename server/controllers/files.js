@@ -1,9 +1,9 @@
-const GapFile = require('../models/gapFile')
+// const GapFile = require('../models/gapFile')
 
 const fs = require('fs')
 const {Response} = require('../helpers/response');
 const {searchQuery} = require('../schema/queryPagination');
-
+const GapFile = require('../models/gapFile');
 exports.uploadFile = function(req, res, next) {
 
   const file = req.file
@@ -22,14 +22,16 @@ exports.uploadFile = function(req, res, next) {
     path: file.path,
     uploadedBy: req.user.id,
   }
-
   const gapFile = new GapFile(document)
+  gapFile.save().then((gapFile) => {
+    //respond to request indicating the request was sent
+    res.json({message: 'File uploaded', fileId: gapFile.id})
+  })
 
   gapFile.save((error) => {
     if (error) {
       return next(error)
     }
-
     //respond to request indicating the request was sent
     res.json({message: 'File uploaded', fileId: gapFile.id})
   })

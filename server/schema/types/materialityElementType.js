@@ -61,12 +61,10 @@ const MaterialityStakeholderType = new GraphQLObjectType({
   name: 'MaterialityStakeholderType',
   fields: () => ({
     stakeholder: {
-      type: require('./stakeholderType'),
-      resolve(parentValue) {
-        return Stakeholder.findById(parentValue.stakeholder).populate('stakeholder')
-          .then(stakeholder => {
-            return stakeholder
-          })
+      type: require('./stakeholderType'), // Adjust to match your schema
+      async resolve(parentValue) {
+        if (!parentValue.stakeholder) return null;
+        return await Stakeholder.findById(parentValue.stakeholder).exec();
       },
     },
     coreSubjects: {type: GraphQLList(StakeholderCoreSubjectType)},
@@ -76,6 +74,9 @@ const MaterialityStakeholderType = new GraphQLObjectType({
     isCompany: {type: GraphQLBoolean},
   }),
 })
+
+
+
 
 
 module.exports = {

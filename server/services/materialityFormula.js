@@ -960,7 +960,7 @@ const findScoreWScore = (input) => {
     const externalSum = sum(_input, 'classValue', element => element.isExternal );
 
     const action = (ansersCount, answer, coreSubjectsRankIncrement, isExternal, classValue) => {
-        const score = Number.parseFloat((((ansersCount + 1) - answer.rating) * coreSubjectsRankIncrement).toFixed(2));
+        const score = Number.parseFloat((((ansersCount + 1) - answer.rating ||0) * coreSubjectsRankIncrement).toFixed(2));
         var weightedScore;
         if (isExternal) {
             weightedScore = (classValue / (isExternal ? externalSum : internalSum)) * score;
@@ -1009,11 +1009,11 @@ const findFinalScores = input => {
         }
 
         if (isExternal) {
-            finalScoresMap[elkey].external[key] = parseFloat(typeof finalScoresMap[elkey].external[key] === 'number' ? 
-            finalScoresMap[elkey].external[key] + answer.weightedScore : answer.weightedScore);
+            finalScoresMap[elkey].external[key] = 
+                (finalScoresMap[elkey].external[key] || 0) + (answer.weightedScore || 0);
         } else {
-            finalScoresMap[elkey].internal[key] = parseFloat(typeof finalScoresMap[elkey].internal[key] === 'number' ? 
-            finalScoresMap[elkey].internal[key] + answer.score : answer.score);  
+            finalScoresMap[elkey].internal[key] = 
+                (finalScoresMap[elkey].internal[key] || 0) + (answer.score || 0); 
             if (key === 'organizationalGovernance') {
                 console.log(answer.score);
             }              
@@ -1042,17 +1042,11 @@ const findFinalScores = input => {
     const mapElements = Object.keys(finalScoresMap);
     for (var id of mapElements) {
         var finalScoreMap = finalScoresMap[id];
-        // console.log("finalScoreMap:", finalScoreMap);
-
-        // find average of external stakeholder answers
-        const keys = Object.keys(finalScoreMap.internal);
-        for (var key of keys) {
-            finalScoreMap.internal[key] = parseFloat(finalScoreMap.internal[key] / internalCount);
-        }
-
-        // find overall score
-        for (var key of keys) {
-            finalScoreMap.overall[key] = parseFloat((finalScoreMap.internal[key] + finalScoreMap.external[key])/2);
+        for (const key of Object.keys(finalScoreMap.internal)) {
+            finalScoreMap.internal[key] = parseFloat(((finalScoreMap.internal[key] || 0) / internalCount).toFixed(2));
+            finalScoreMap.overall[key] = parseFloat(
+                ((finalScoreMap.internal[key] || 0) + (finalScoreMap.external[key] || 0)) / 2
+            );
         }
     }
 
@@ -1096,24 +1090,17 @@ const convertToDBStructure = (sortedIssueOfInterest, mapResults) => {
     const newArray = sortedIssueOfInterest.map(({elements, key}) => {
         const element = {
             coreSubject: key,
-            relevanceCompanyValue: mapResults.coreSubjects.internal[key],
-            relevanceStakeholdersValue: mapResults.coreSubjects.external[key],
+            relevanceCompanyValue: parseFloat((mapResults.coreSubjects.internal[key] || 0).toFixed(2)),
+            relevanceStakeholdersValue: parseFloat((mapResults.coreSubjects.external[key] || 0).toFixed(2)),
             relevanceEmployeesValue: 0,
-            weightValue: mapResults.coreSubjects.overall[key],      // overall   
-            issueOfInterests: elements.map(({label, value}) => {
-                return {
-                    issueOfInterest : label,
-                    // weightValue :   value,
-                    // relevanceEmployeesValue : 0,
-                    // relevanceStakeholdersValue : mapResults[key].external[label],
-                    // relevanceCompanyValue: mapResults[key].internal[label],
-
-                    weightValue :  parseFloat(value.toFixed(2)),
-                    relevanceEmployeesValue : 0,
-                    relevanceStakeholdersValue : parseFloat(mapResults[key].external[label].toFixed(2)),
-                    relevanceCompanyValue: parseFloat(mapResults[key].internal[label].toFixed(2)),
-                }
-            }),   
+            weightValue: parseFloat((mapResults.coreSubjects.overall[key] || 0).toFixed(2)), // Overall score
+            issueOfInterests: elements.map(({ label, value }) => ({
+                issueOfInterest: label,
+                weightValue: parseFloat((value || 0).toFixed(2)),
+                relevanceEmployeesValue: 0,
+                relevanceStakeholdersValue: parseFloat((mapResults[key]?.external?.[label] || 0).toFixed(2)),
+                relevanceCompanyValue: parseFloat((mapResults[key]?.internal?.[label] || 0).toFixed(2)),
+            })), 
         }
         return element;
     });

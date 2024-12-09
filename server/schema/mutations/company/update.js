@@ -5,6 +5,7 @@ const {
 } = require('graphql')
 const CompanyInputType = require('../../types/companyInputType')
 const CompanyType = require('../../types/companyType')
+const UserModel = require('../../../models/user')
 const updateItem = require('../_helper/updateItem')
 const {checkAuth} = require('../../../services/checkAuth')
 
@@ -23,7 +24,6 @@ const updateCompany = {
   },
   async resolve(root, params, context, options) {
     checkAuth(context.isAuthenticated())
-
     // console.log(params.data)
     const projection = getProjection(options.fieldNodes[0])
     const {item} = await updateItem({
@@ -33,6 +33,11 @@ const updateCompany = {
       projection,
       userId: root.user._id,
     })
+    const user = await UserModel.findOne({ email: params.data.personEmail });
+    if (user) {
+      user.password = params.data.password
+      await user.save()
+    }
     return item
   },
 }
