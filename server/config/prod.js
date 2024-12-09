@@ -13,8 +13,8 @@ module.exports = {
   adminEmail: process.env.ADMIN_EMAIL,
   adminDefaultPassword: process.env.ADMIN_DEFAULT_PASS,
   surveyMonkeyToken: process.env.SURVEY_MONKEY_TOKEN,
-  appEmail: 'noreply@resilisense.com',
-  appMailPassword: 'Resilisense321!@#' , // '7Toolkit!@#',
+  appEmail: 'notifyme@carbon-lens.com',
+  appMailPassword: 'piku@1234' , // '7Toolkit!@#',
   logger: {
     transports: {
       Console: {
