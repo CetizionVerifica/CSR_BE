@@ -36,13 +36,13 @@ const { appEmail, appMailPassword } = require('../config/keys');
 const main = async (mailOptions) => {
   const transporter = nodemailer.createTransport({
     pool: true,
-    host: 'mail.resilisense.com',
+    host: 'smtpout.secureserver.net',
     port: 465,
     secure: true,
     auth: {
       type: 'login',
-      user: appEmail,
-      pass: appMailPassword,
+      user: 'notifyme@carbon-lens.com',
+      pass: 'piku@1234',
     },
     tls: {
       rejectUnauthorized: false,
