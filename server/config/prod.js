@@ -9,7 +9,7 @@ module.exports = {
   redirectDomain: process.env.REDIRCT_DOMAIN,
   secretJWT: process.env.SCERET_JWT,
   secretSession: process.env.SESSION_SECRET,
-  applicationUrl: process.env.APPLICATION_URL,
+  // applicationUrl: process.env.APPLICATION_URL,
   adminEmail: process.env.ADMIN_EMAIL,
   applicationUrl: 'resilisense.org',
   adminDefaultPassword: process.env.ADMIN_DEFAULT_PASS,
