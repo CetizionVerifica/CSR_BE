@@ -11,6 +11,7 @@ module.exports = {
   secretSession: process.env.SESSION_SECRET,
   applicationUrl: process.env.APPLICATION_URL,
   adminEmail: process.env.ADMIN_EMAIL,
+  applicationUrl: 'resilisense.org',
   adminDefaultPassword: process.env.ADMIN_DEFAULT_PASS,
   surveyMonkeyToken: process.env.SURVEY_MONKEY_TOKEN,
   appEmail: 'notifyme@carbon-lens.com',
