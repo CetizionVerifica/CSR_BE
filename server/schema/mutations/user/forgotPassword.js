@@ -37,7 +37,7 @@ const {
         html: `<p>Dear Sir / Madam,</p>
         <p>You have received this email because you have requested changed password.</p>
         
-        <p>Please go to <a href='${config.applicationUrl}/api/verify-email/${tokenForUser(user)}/0'>here</a> to change your password.</p>
+        <p>Please go to <a href='https://${config.applicationUrl}/api/verify-email/${tokenForUser(user)}/0'>here</a> to change your password.</p>
         
         <p>For technical support to access The 7 Toolkit or any other enquiries please email info@seven-toolkit.com.</p>
         
