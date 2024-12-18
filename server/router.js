@@ -99,7 +99,7 @@ module.exports = function (app) {
 
   // gap analysis
   app.get('/api/gapanalysis/:projectID([0-9a-f]{24})/:coreSubject/:issueOfInterest', requireAuth, Gap.getGabAnalysisByIssueInterestAndProjectID);
-  app.post('/api/finished_actionKpi_notify', requireAuth, Assessment.finished_actionKpi_notify)
+  // app.post('/api/finished_actionKpi_notify', requireAuth, Assessment.finished_actionKpi_notify)
 
 }
 
