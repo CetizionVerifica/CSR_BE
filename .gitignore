@@ -10,5 +10,5 @@ npm-debug.log
 /.idea
 public
 
-server/config/dev.js
+# server/config/dev.js
 client/build.zip
