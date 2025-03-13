@@ -15,6 +15,7 @@ const userInputType = new GraphQLInputObjectType({
   fields: {
     email: {type: new GraphQLNonNull(GraphQLString)},
     name: {type: new GraphQLNonNull(GraphQLString)},
+    role :  {type: GraphQLString},
     jobPosition: {type: GraphQLString},
     phone: {type: GraphQLString},
     extension: {type: GraphQLString},
