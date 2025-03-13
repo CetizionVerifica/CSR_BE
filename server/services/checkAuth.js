@@ -1,13 +1,12 @@
 function checkAuth(isAuthenticated) {
   if (!isAuthenticated) {
-    throw new Error('Not authenticated as user')
+    throw new Error("Not authenticated as user");
   }
 }
 function checkAuthAdmin(roles) {
-  if (!roles.includes('Admin')) {
-    throw new Error('Not authenticated as admin')
-
+  if (!roles.includes("Admin")) {
+    throw new Error("Not authenticated as admin");
   }
 }
 
-module.exports = {checkAuth, checkAuthAdmin}
+module.exports = { checkAuth, checkAuthAdmin };
