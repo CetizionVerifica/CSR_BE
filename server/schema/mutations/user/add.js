@@ -1,32 +1,30 @@
-const {
-  GraphQLNonNull,
-  GraphQLString,
-} = require('graphql');
-const getProjection = require('../../../helpers/getProjection');
-const userInputType = require('../../types/userInputType');
-const userType = require('../../types/userType');
-const UserModel = require('../../../models/user');
-const AgencyModel = require('../../../models/agency');
-const CompanyModel = require('../../../models/company');
-const { checkAuth } = require('../../../services/checkAuth');
+const { GraphQLNonNull, GraphQLString } = require("graphql");
+const getProjection = require("../../../helpers/getProjection");
+const userInputType = require("../../types/userInputType");
+const userType = require("../../types/userType");
+const UserModel = require("../../../models/user");
+const AgencyModel = require("../../../models/agency");
+const CompanyModel = require("../../../models/company");
+const { checkAuth } = require("../../../services/checkAuth");
 
 module.exports = {
   type: userType,
   args: {
     password: {
-      name: 'password',
+      name: "password",
       type: new GraphQLNonNull(GraphQLString),
     },
     data: {
-      name: 'data',
+      name: "data",
       type: new GraphQLNonNull(userInputType),
     },
   },
   async resolve(root, params, context, options) {
     // Check if the user is authenticated
-    checkAuth(context.isAuthenticated());
-
+    // checkAuth(context.isAuthenticated());
+    console.log("params", params.data);
     const { agencies, companies, email } = params.data;
+
     const agencyId = agencies[0];
     const companyId = companies[0];
     // Extract the projection
@@ -35,17 +33,17 @@ module.exports = {
     // Validate agency and company
     const agency = await AgencyModel.findById(agencyId);
     if (!agency) {
-      throw new Error('Error: Agency not found');
+      throw new Error("Error: Agency not found");
     }
 
     const company = await CompanyModel.findById(companyId);
     if (!company) {
-      throw new Error('Error: Company not found');
+      throw new Error("Error: Company not found");
     }
     // Check for existing user by email
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
-      throw new Error('Error: This user already exists');
+      throw new Error("Error: This user already exists");
     }
 
     // Prepare user data

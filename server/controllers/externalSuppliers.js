@@ -4,6 +4,7 @@ const AgencyModel = require('../models/agency');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 
+const GapAnalysis = require('../models/gapAnalysis');
 exports.editExternalSupplier = async function (req, res, next) {
     try {
         // update by id
@@ -78,3 +79,182 @@ exports.setHighSupplierConcern = async function (req, res, next) {
        return Response(res, error.message);
     }
 }
+
+// getCompanyActivityLog =  async function(companyId) {
+//     try {
+//       // Validate companyId
+//       if (!mongoose.Types.ObjectId.isValid(companyId)) {
+//         throw new Error('Invalid company ID format');
+//       }
+      
+//       // Convert string ID to ObjectId if needed
+//       const objectId = typeof companyId === 'string' ? 
+//         new mongoose.Types.ObjectId(companyId) : companyId;
+//         console.log(objectId)
+      
+//       // Find all agencies related to this company
+//       const agencies = await AgencyModel.find({
+//         'users': objectId
+//       }).select('_id name date updatedAt').lean();
+      
+//       // Format the activity log entries
+//       const activityLog = agencies.map(agency => ({
+//         entityType: 'Agency',
+//         entityId: agency._id.toString(),
+//         entityName: agency.name,
+//         action: 'created',
+//         timestamp: agency.date,
+//         details: `Agency "${agency.name}" was created`
+//       }));
+      
+//       // Sort by date (newest first)
+//       activityLog.sort((a, b) => b.timestamp - a.timestamp);
+      
+//       console.log(activityLog)
+//       return activityLog;
+//     } catch (error) {
+//       console.error('Error fetching company activity log:', error);
+//       throw error;
+//     }
+//   }
+
+
+getCompanyActivityLog = async function(companyId) {
+    try {
+      // Validate companyId
+      if (!mongoose.Types.ObjectId.isValid(companyId)) {
+        throw new Error('Invalid company ID format');
+      }
+      
+      // Convert string ID to ObjectId if needed
+      const objectId = typeof companyId === 'string' ? 
+        new mongoose.Types.ObjectId(companyId) : companyId;
+      console.log(objectId);
+      
+      // Find all agencies related to this company
+      const agencies = await AgencyModel.find({
+        'users': objectId
+      }).select('_id name date updatedAt projects').lean();
+      
+      // Format the activity log entries
+      const activityLog = [];
+      
+      // Add agency creation entries
+      agencies.forEach(agency => {
+        // Add agency creation entry
+        activityLog.push({
+          entityType: 'Agency',
+          entityId: agency._id.toString(),
+          entityName: agency.name,
+          action: 'created',
+          timestamp: agency.date,
+          details: `Agency "${agency.name}" was created`
+        });
+        
+        // Add projects if available
+        if (agency.projects && agency.projects.length > 0) {
+          agency.projects.forEach(projectId => {
+            activityLog.push({
+              entityType: 'Project',
+              entityId: projectId.toString(),
+              entityName: `Project in ${agency.name}`,
+              action: 'added',
+              timestamp: agency.updatedAt || agency.date, // Use updatedAt if available, otherwise use date
+              details: `Project was added to agency "${agency.name}"`
+            });
+          });
+        }
+      });
+      
+      // Sort by date (newest first)
+      activityLog.sort((a, b) => b.timestamp - a.timestamp);
+      
+      console.log(activityLog);
+      return activityLog;
+    } catch (error) {
+      console.error('Error fetching company activity log:', error);
+      throw error;
+    }
+  }
+  
+  // Express route handler
+  exports.activityLogController =  function(req, res) {
+    const { companyId } = req.params;
+    console.log(companyId)
+    getCompanyActivityLog(companyId)
+      .then(logs => {
+        const safeData = Array.isArray(logs) ? logs : [];
+        res.status(200).json({
+          success: true,
+          data: safeData
+        });
+      })
+      .catch(error => {
+        res.status(400).json({
+          success: false,
+          message: error.message,
+          data: []
+        });
+      });
+  }
+
+  exports.getProjectsGapAnalysis = async (req, res) => {
+    try {
+      const { projectIds } = req.body;
+      
+      if (!projectIds || !Array.isArray(projectIds) || projectIds.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Please provide valid project IDs'
+        });
+      }
+      
+      // Convert string IDs to ObjectId if needed
+      const objectIdProjectIds = projectIds.map(id => {
+        if (typeof id === 'string' && ObjectId.isValid(id)) {
+          return new ObjectId(id);
+        }
+        return id;
+      });
+      
+      // Find gap analysis documents for the provided project IDs
+      const gapAnalysisData = await GapAnalysis.find({ 
+        project: { $in: objectIdProjectIds } 
+      })
+      .populate('createdBy', 'firstName lastName email') // Adjust based on your User model
+      .populate('updatedBy', 'firstName lastName email')
+      .select('project coreSubjects createdBy updatedBy date updatedDate');
+      
+      // Transform data to include only necessary fields
+      const transformedData = gapAnalysisData.map(analysis => {
+        const simplifiedCoreSubjects = analysis.coreSubjects.map(subject => ({
+          coreSubject: subject.coreSubject,
+          performanceValue: subject.performanceValue,
+          relevanceValue: subject.relevanceValue,
+          totalKeyConsiderations: subject.totalKeyConsiderations
+        }));
+        
+        return {
+          projectId: analysis.project.toString(),
+          coreSubjects: simplifiedCoreSubjects,
+          createdBy: analysis.createdBy,
+          updatedBy: analysis.updatedBy,
+          date: analysis.date,
+          updatedDate: analysis.updatedDate
+        };
+      });
+      
+      return res.status(200).json({
+        success: true,
+        data: transformedData
+      });
+      
+    } catch (error) {
+      console.error('Error fetching projects gap analysis:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to fetch gap analysis data',
+        error: error.message
+      });
+    }
+  };

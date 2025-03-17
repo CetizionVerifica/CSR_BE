@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -10,14 +10,16 @@ const userSchema = new Schema({
     trim: true,
     required: true,
   },
-  agencies: [{
-    type: Schema.Types.ObjectId,
-    ref: 'agency',
-    // unique: true,
-  }],
+  agencies: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "agency",
+      // unique: true,
+    },
+  ],
   currentAgency: {
     type: Schema.Types.ObjectId,
-    ref: 'agency',
+    ref: "agency",
   },
   name: {
     type: String,
@@ -29,7 +31,7 @@ const userSchema = new Schema({
   password: String,
   role: {
     type: String,
-    default: 'Client',
+    // default: 'Client',
   },
   lang: String,
   active: {
@@ -41,17 +43,19 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  companies: [{
-    type: Schema.Types.ObjectId,
-    ref: 'company',
-  }],
+  companies: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "company",
+    },
+  ],
   termsAndConditions: {
     type: Boolean,
     default: false,
   },
   lisence: {
     type: Array,
-    default: ['gap'],
+    default: ["gap"],
   },
   website: {
     type: String,
@@ -70,12 +74,11 @@ const userSchema = new Schema({
   },
   percentageServiceProduct: {
     type: String,
-  }
-
+  },
 });
 
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
@@ -98,20 +101,20 @@ userSchema.methods.compareChangePassword = function (candidatePassword) {
 };
 
 userSchema.statics.findProjects = async function (id) {
-  const user = await this.findById(id).populate('projects');
+  const user = await this.findById(id).populate("projects");
   return user.projects;
 };
 
 userSchema.statics.findCompanies = async function (id) {
-  const user = await this.findById(id).populate('companies');
+  const user = await this.findById(id).populate("companies");
   return user.companies;
 };
 
 userSchema.statics.findAgencies = async function (id) {
-  const user = await this.findById(id).populate('agencies');
+  const user = await this.findById(id).populate("agencies");
   return user.agencies;
 };
 
-const ModelClass = mongoose.model('user', userSchema);
+const ModelClass = mongoose.model("user", userSchema);
 
 module.exports = ModelClass;

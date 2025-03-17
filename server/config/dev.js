@@ -3,8 +3,8 @@ const { mongoURI } = require("./prod");
 //eslint-disable-this-file
 module.exports = {
   googleClientID:
-    '828082854480-4m5heb9dk0gueauf1u2eet3ejsnvr9da.apps.googleusercontent.com',
-  googleClientSecret: 'aWzndAHfEDbErbGMZpssoPGn',
+    "828082854480-4m5heb9dk0gueauf1u2eet3ejsnvr9da.apps.googleusercontent.com",
+  googleClientSecret: "aWzndAHfEDbErbGMZpssoPGn",
   // mongoURI: 'mongodb://10.10.0.8:27017/csr-prod2',
   //mongoURI: "mongodb+srv://shyam:piku1234@cluster0.b741l.mongodb.net/csr?retryWrites=true&w=majority",
   mongoURI : 'mongodb://localhost:27017/csr_dev',

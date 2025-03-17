@@ -96,6 +96,8 @@ module.exports = function (app) {
   app.post('/api/supplier/external', requireAuth, ExternalSuppliers.addExternalSupplier);
   app.patch('/api/supplier/external', requireAuth, ExternalSuppliers.setHighSupplierConcern);
   app.put('/api/supplier/external/:supplierid([0-9a-f]{24})', requireAuth, ExternalSuppliers.editExternalSupplier);
+  app.get('/api/activitylog/:companyId',requireAuth, ExternalSuppliers.activityLogController);
+  app.post('/api/projects/gapanalysis',requireAuth, ExternalSuppliers.getProjectsGapAnalysis);
 
   // gap analysis
   app.get('/api/gapanalysis/:projectID([0-9a-f]{24})/:coreSubject/:issueOfInterest', requireAuth, Gap.getGabAnalysisByIssueInterestAndProjectID);
