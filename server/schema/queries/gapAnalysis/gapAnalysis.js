@@ -17,6 +17,8 @@ module.exports = {
 
     const projection = getProjection(options.fieldNodes[0])
     let id = params.id
+    //console.log("id",id)
+    console.log("parentValue",parentValue)
     if (!id) {
       id = parentValue.user._id
     }

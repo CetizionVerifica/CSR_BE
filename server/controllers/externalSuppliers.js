@@ -198,6 +198,68 @@ getCompanyActivityLog = async function(companyId) {
       });
   }
 
+  // exports.getProjectsGapAnalysis = async (req, res) => {
+  //   try {
+  //     const { projectIds } = req.body;
+      
+  //     if (!projectIds || !Array.isArray(projectIds) || projectIds.length === 0) {
+  //       return res.status(400).json({
+  //         success: false,
+  //         message: 'Please provide valid project IDs'
+  //       });
+  //     }
+      
+  //     // Convert string IDs to ObjectId if needed
+  //     const objectIdProjectIds = projectIds.map(id => {
+  //       if (typeof id === 'string' && ObjectId.isValid(id)) {
+  //         return new ObjectId(id);
+  //       }
+  //       return id;
+  //     });
+      
+  //     // Find gap analysis documents for the provided project IDs
+  //     const gapAnalysisData = await GapAnalysis.find({ 
+  //       project: { $in: objectIdProjectIds } 
+  //     })
+  //     .populate('createdBy', 'firstName lastName email') // Adjust based on your User model
+  //     .populate('updatedBy', 'firstName lastName email')
+  //     .select('project coreSubjects createdBy updatedBy date updatedDate');
+      
+  //     // Transform data to include only necessary fields
+  //     const transformedData = gapAnalysisData.map(analysis => {
+  //       const simplifiedCoreSubjects = analysis.coreSubjects.map(subject => ({
+  //         coreSubject: subject.coreSubject,
+  //         performanceValue: subject.performanceValue,
+  //         relevanceValue: subject.relevanceValue,
+  //         totalKeyConsiderations: subject.totalKeyConsiderations
+  //       }));
+        
+  //       return {
+  //         projectId: analysis.project.toString(),
+  //         coreSubjects: simplifiedCoreSubjects,
+  //         createdBy: analysis.createdBy,
+  //         updatedBy: analysis.updatedBy,
+  //         date: analysis.date,
+  //         updatedDate: analysis.updatedDate
+  //       };
+  //     });
+      
+  //     return res.status(200).json({
+  //       success: true,
+  //       data: transformedData
+  //     });
+      
+  //   } catch (error) {
+  //     console.error('Error fetching projects gap analysis:', error);
+  //     return res.status(500).json({
+  //       success: false,
+  //       message: 'Failed to fetch gap analysis data',
+  //       error: error.message
+  //     });
+  //   }
+  // };
+
+
   exports.getProjectsGapAnalysis = async (req, res) => {
     try {
       const { projectIds } = req.body;
@@ -221,8 +283,8 @@ getCompanyActivityLog = async function(companyId) {
       const gapAnalysisData = await GapAnalysis.find({ 
         project: { $in: objectIdProjectIds } 
       })
-      .populate('createdBy', 'firstName lastName email') // Adjust based on your User model
-      .populate('updatedBy', 'firstName lastName email')
+      .populate('createdBy', 'name email _id') // Updated to match your user schema
+      .populate('updatedBy', 'name email _id')  // Updated to match your user schema
       .select('project coreSubjects createdBy updatedBy date updatedDate');
       
       // Transform data to include only necessary fields
@@ -234,11 +296,24 @@ getCompanyActivityLog = async function(companyId) {
           totalKeyConsiderations: subject.totalKeyConsiderations
         }));
         
+        // Format createdBy and updatedBy to contain only id, name and email
+        const formattedCreatedBy = analysis.createdBy ? {
+          _id: analysis.createdBy._id,
+          name: analysis.createdBy.name,
+          email: analysis.createdBy.email
+        } : null;
+        
+        const formattedUpdatedBy = analysis.updatedBy ? {
+          _id: analysis.updatedBy._id,
+          name: analysis.updatedBy.name,
+          email: analysis.updatedBy.email
+        } : null;
+        
         return {
           projectId: analysis.project.toString(),
           coreSubjects: simplifiedCoreSubjects,
-          createdBy: analysis.createdBy,
-          updatedBy: analysis.updatedBy,
+          createdBy: formattedCreatedBy,
+          updatedBy: formattedUpdatedBy,
           date: analysis.date,
           updatedDate: analysis.updatedDate
         };
