@@ -33,6 +33,7 @@ const GapAnalysisType = new GraphQLObjectType({
     updatedBy: {
       type: UserType,
       async resolve(gapAnalysis) {
+        // console.log("gapanalysis",gapAnalysis)
         return await UserModel.findById(gapAnalysis.updatedBy).exec();
       },
     },

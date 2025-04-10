@@ -31,7 +31,7 @@ const userSchema = new Schema({
   password: String,
   role: {
     type: String,
-    // default: 'Client',
+     default: 'Client',
   },
   lang: String,
   active: {
