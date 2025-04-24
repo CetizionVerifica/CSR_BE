@@ -3,23 +3,25 @@ const { mongoURI } = require("./prod");
 //eslint-disable-this-file
 module.exports = {
   googleClientID:
-    '828082854480-4m5heb9dk0gueauf1u2eet3ejsnvr9da.apps.googleusercontent.com',
-  googleClientSecret: 'aWzndAHfEDbErbGMZpssoPGn',
-  // mongoURI: 'mongodb://10.10.0.8:27017/csr-prod2',
-  mongoURI: "mongodb+srv://shyam:piku1234@cluster0.b741l.mongodb.net/csr?retryWrites=true&w=majority",
-  cookieKey: 'ffmkerfkemkfmrferfioerfio',
-  stripePublishableKey: 'pk_test_acoUiwMZ1KafM5TbFEZ88MYx',
-  stripeSecretKey: 'sk_test_n1LCKn93vrwC9HXzpOH80mKI',
-  sendGridKey: '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',
-  redirectDomain: 'test.seven-toolkit.com',
-  secretJWT: 'dsfdsfskfsklljfjjkjk32323lsjjljlljjk',
-  secretSession: 'dsfsdldsfdsfsdfsfsdfsdfdsf',
-  applicationUrl: 'resilisense.org',
-  url:'https://resilisense.org',
-  adminEmail: 'admin@admin.com',
-  adminDefaultPassword: '123456',
-  appEmail: 'noreply@seven-toolkit.com',
-  appMailPassword: '',
+    "828082854480-4m5heb9dk0gueauf1u2eet3ejsnvr9da.apps.googleusercontent.com",
+  googleClientSecret: "aWzndAHfEDbErbGMZpssoPGn",
+  mongoURI: "mongodb://10.10.0.8:27017/csr-prod2",
+  // mongoURI:
+  //   "mongodb+srv://shyam:piku1234@cluster0.b741l.mongodb.net/csr?retryWrites=true&w=majority",
+  cookieKey: "ffmkerfkemkfmrferfioerfio",
+  stripePublishableKey: "pk_test_acoUiwMZ1KafM5TbFEZ88MYx",
+  stripeSecretKey: "sk_test_n1LCKn93vrwC9HXzpOH80mKI",
+  sendGridKey:
+    "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",
+  redirectDomain: "test.seven-toolkit.com",
+  secretJWT: "dsfdsfskfsklljfjjkjk32323lsjjljlljjk",
+  secretSession: "dsfsdldsfdsfsdfsfsdfsdfdsf",
+  applicationUrl: "resilisense.org",
+  url: "https://resilisense.org",
+  adminEmail: "admin@admin.com",
+  adminDefaultPassword: "123456",
+  appEmail: "noreply@seven-toolkit.com",
+  appMailPassword: "",
   surveyMonkeyToken:
     "6FrUKDGf4uYmelpyP6LeDYmrQg-gy4wbdKlew7C8Q.Iv3hIamhx-F2wcaLs.axdMIx.W-ED53Jti1DO2oMtjqe-hr9w.KQs.RP5qjM0sf4fJl-tJ7gOdWhmspnE30PvE", //process.env.SURVEY_MONKEY_TOKEN,
   logger: {

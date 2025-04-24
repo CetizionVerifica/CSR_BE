@@ -1,54 +1,58 @@
-const {forEach} = require('lodash')
-const graphql = require('graphql')
-const filterType = require('./types/filterType')
-const {GraphQLString, GraphQLInt, GraphQLList} = graphql
+const { forEach } = require("lodash");
+const graphql = require("graphql");
+const filterType = require("./types/filterType");
+const { GraphQLString, GraphQLInt, GraphQLList } = graphql;
 const paginationQueryArgs = {
   sort: {
-    name: 'sort',
+    name: "sort",
     type: GraphQLString,
   },
   order: {
-    name: 'order',
+    name: "order",
     type: GraphQLString,
   },
   limit: {
-    name: 'limit',
+    name: "limit",
     type: GraphQLInt,
   },
   filters: {
-    name: 'filters',
+    name: "filters",
     type: new GraphQLList(filterType),
   },
   page: {
-    name: 'page',
+    name: "page",
     type: GraphQLInt,
   },
   search: {
-    name: 'search',
+    name: "search",
     type: GraphQLString,
   },
   s: {
-    name: 's',
+    name: "s",
     type: GraphQLString,
   },
-}
+  createdBy: {
+    name: "createdBy",
+    type: GraphQLString,
+  },
+};
 
 const parseFilterOperation = (op) => {
-  const result = {}
+  const result = {};
   forEach(op, (value, key) => {
-    result[`$${key}`] = value
-  })
-  return result
-}
+    result[`$${key}`] = value;
+  });
+  return result;
+};
 
 const searchQuery = (find, params) => {
-  const and = []
+  const and = [];
 
   // Search
   if (params.search && params.s) {
     and.push({
-      [params.search]: new RegExp(`.*${params.s}`, 'i'),
-    })
+      [params.search]: new RegExp(`.*${params.s}`, "i"),
+    });
   }
 
   // Filters
@@ -56,35 +60,35 @@ const searchQuery = (find, params) => {
     forEach(params.filters, (filter) => {
       and.push({
         [filter.property]: parseFilterOperation(filter.op),
-      })
-    })
+      });
+    });
   }
 
   // apply and operator with all the filters
   if (and.length > 0) {
     Object.assign(find, {
       $and: and,
-    })
+    });
   }
-  return find
-}
+  return find;
+};
 
 const paginateQuery = (query, params) => {
   if (params.sort) {
     query.sort({
-      [params.sort]: params.order || 'asc',
-    })
+      [params.sort]: params.order || "asc",
+    });
   }
   if (params.page && params.limit) {
-    query.skip((params.page - 1) * params.limit)
+    query.skip((params.page - 1) * params.limit);
   }
   if (params.limit) {
-    query.limit(params.limit)
+    query.limit(params.limit);
   }
-}
+};
 
 module.exports = {
   paginationQueryArgs,
   searchQuery,
   paginateQuery,
-}
+};

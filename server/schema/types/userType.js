@@ -38,6 +38,8 @@ const userType = new GraphQLObjectType({
     sector: { type: GraphQLString },
     website: { type: GraphQLString },
     type: { type: GraphQLString },
+    reseller: { type: GraphQLString },
+    totalCompaniesAllowed: { type: GraphQLString },
     date: {
       type: GraphQLFloat,
       resolve({ date }) {
