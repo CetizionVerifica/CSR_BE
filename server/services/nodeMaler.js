@@ -30,32 +30,32 @@
 // module.exports = main
 //main().catch(console.error)
 
-const nodemailer = require('nodemailer');
-const { appEmail, appMailPassword } = require('../config/keys');
+const nodemailer = require("nodemailer");
+const { appEmail, appMailPassword } = require("../config/keys");
 
 const main = async (mailOptions) => {
   const transporter = nodemailer.createTransport({
     pool: true,
-    host: 'smtpout.secureserver.net',
+    host: "smtpout.secureserver.net",
     port: 465,
     secure: true,
     auth: {
-      type: 'login',
-      user: 'notifyme@carbon-lens.com',
-      pass: 'piku@1234',
+      type: "login",
+      user: "notifyme@carbon-lens.com",
+      pass: "piku@1234",
     },
     tls: {
       rejectUnauthorized: false,
     },
     debug: true,
-    logger: true
+    logger: true,
   });
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log('Message sent: %s', info.messageId);
+    console.log("Message sent: %s", info.messageId);
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error("Error sending email:", error);
     throw error;
   }
 };

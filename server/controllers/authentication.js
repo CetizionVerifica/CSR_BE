@@ -1,49 +1,52 @@
 // const jwt = require('jwt-simple')
-const jwt = require('jwt-simple')
-const User = require('../models/user')
-const config = require('../config/keys')
-const nodeMaler = require('../services/nodeMaler')
+const jwt = require("jwt-simple");
+const User = require("../models/user");
+const config = require("../config/keys");
+const nodeMaler = require("../services/nodeMaler");
 
 function tokenForUser(user) {
-  const timestamp = new Date().getTime()
-  return jwt.encode({ sub: user.id, role: user.role, iat: timestamp }, config.secretJWT)
+  console.log(user);
+  const timestamp = new Date().getTime();
+  return jwt.encode(
+    { sub: user.id, role: user.role, iat: timestamp },
+    config.secretJWT
+  );
 }
 function decodeToken(token) {
-  return jwt.decode(token, config.secretJWT)
+  return jwt.decode(token, config.secretJWT);
 }
 
 exports.verifyEmail = function (req, res, next) {
-  const token = req.params.token
-  const newuser = req.params.newuser
+  const token = req.params.token;
+  const newuser = req.params.newuser;
 
   try {
-    const user = decodeToken(token)
-    var url = '';
+    const user = decodeToken(token);
+    var url = "";
 
     if (newuser == 1) {
-      url = `https://${config.applicationUrl}/newuser?token=${token}`
+      url = `https://${config.applicationUrl}/newuser?token=${token}`;
     } else {
-      url = `https://${config.applicationUrl}/change-password?token=${token}`
+      url = `https://${config.applicationUrl}/change-password?token=${token}`;
     }
 
     // const url = newuser === '1' ? `${config.applicationUrl}/newuser?token=${token}` : `${config.applicationUrl}/change-password?token=${token}`
-    res.writeHead(302,
-      { Location: url }
-    )
-    res.end()
+    res.writeHead(302, { Location: url });
+    res.end();
   } catch (error) {
-    res.json({ error })
+    res.json({ error });
   }
-}
+};
 
 exports.signin = function (req, res, next) {
   //User has already this email and password auth
   // we just need to give them token
+  console.log(req.user);
   if (!req.user) {
-    res.status(422).send({ error: 'wrong username or password' })
+    res.status(422).send({ error: "wrong username or password" });
   }
-  res.send({ token: tokenForUser(req.user) })
-}
+  res.send({ token: tokenForUser(req.user) });
+};
 
 // exports.signup = function (req, res, next) {
 //   const email = req.body.email
@@ -101,10 +104,23 @@ exports.signin = function (req, res, next) {
 // }
 
 exports.signup = async function (req, res, next) {
-  const { email, password, name, organisation, jobPosition, phone, comments } = req.body;
+  console.log("hello");
+  const {
+    email,
+    password,
+    name,
+    organisation,
+    jobPosition,
+    phone,
+    comments,
+    role,
+  } = req.body;
 
   if (!email || !password || !name || !organisation || !jobPosition || !phone) {
-    return res.status(422).send({ error: 'You must provide email, password, name, organisation, job position, and phone' });
+    return res.status(422).send({
+      error:
+        "You must provide email, password, name, organisation, job position, and phone",
+    });
   }
 
   try {
@@ -112,7 +128,7 @@ exports.signup = async function (req, res, next) {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      return res.status(422).send({ error: 'Email is in use' });
+      return res.status(422).send({ error: "Email is in use" });
     }
 
     // Create a new user
@@ -120,10 +136,11 @@ exports.signup = async function (req, res, next) {
       email,
       password,
       name,
+      role,
       jobPosition,
       phone,
       active: false,
-      agencies: []
+      agencies: [],
     });
 
     // Save the user
@@ -131,9 +148,9 @@ exports.signup = async function (req, res, next) {
 
     // Prepare and send email
     const mailOptions = {
-      from: 'Resilisense <noreply@resilisense.com>',
+      from: "Resilisense <noreply@resilisense.com>",
       to: email,
-      subject: 'New registration',
+      subject: "New registration",
       html: `
         <b>New registration</b>
         <p>Name: ${name}</p>

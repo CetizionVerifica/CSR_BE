@@ -1,30 +1,24 @@
+const graphql = require("graphql");
+const { GraphQLObjectType, GraphQLFloat, GraphQLID, GraphQLList } = graphql;
 
-const graphql = require('graphql')
-const {
-  GraphQLObjectType,
-  GraphQLFloat,
-  GraphQLID,
-  GraphQLList,
-} = graphql
-
-const GapCoreSubjectType = require('./gapCoreSubjectType')
-const UserType = require('./userType')
-const UserModel = require('../../models/user')
-const GapAnalysisModel = require('../../models/gapAnalysis')
-
+const GapCoreSubjectType = require("./gapCoreSubjectType");
+const UserType = require("./userType");
+const UserModel = require("../../models/user");
+const GapAnalysisModel = require("../../models/gapAnalysis");
 
 const GapAnalysisType = new GraphQLObjectType({
-  name: 'GapAnalysisType',
+  name: "GapAnalysisType",
   fields: () => ({
-    id: {type: GraphQLID},
-    coreSubjects: {type: GraphQLList(GapCoreSubjectType)},
+    id: { type: GraphQLID },
+    coreSubjects: { type: GraphQLList(GapCoreSubjectType) },
     project: {
-      type: require('./projectType'),
+      type: require("./projectType"),
       resolve(parentValue) {
-        return GapAnalysisModel.findById(parentValue).populate('project')
-          .then(GapAnalysisModel => {
-            return GapAnalysisModel.project
-          })
+        return GapAnalysisModel.findById(parentValue)
+          .populate("project")
+          .then((GapAnalysisModel) => {
+            return GapAnalysisModel.project;
+          });
       },
     },
     weightedPerformance: {
@@ -39,28 +33,30 @@ const GapAnalysisType = new GraphQLObjectType({
     updatedBy: {
       type: UserType,
       async resolve(gapAnalysis) {
-        return await UserModel.findById(gapAnalysis.updatedBy).exec()
+        // console.log("gapanalysis",gapAnalysis)
+        return await UserModel.findById(gapAnalysis.updatedBy).exec();
       },
     },
     createdBy: {
       type: UserType,
       async resolve(gapAnalysis) {
-        return await UserModel.findById(gapAnalysis.createdBy).exec()
+        console.log("gapAnalysis", gapAnalysis);
+        return await UserModel.findById(gapAnalysis.createdBy).exec();
       },
     },
     date: {
       type: GraphQLFloat,
-      resolve({date}) {
-        return date && date.getTime()
+      resolve({ date }) {
+        return date && date.getTime();
       },
     },
     updatedDate: {
       type: GraphQLFloat,
-      resolve({updatedDate}) {
-        return updatedDate && updatedDate.getTime()
+      resolve({ updatedDate }) {
+        return updatedDate && updatedDate.getTime();
       },
     },
   }),
-})
+});
 
-module.exports = GapAnalysisType
+module.exports = GapAnalysisType;
