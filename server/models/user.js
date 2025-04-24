@@ -21,6 +21,10 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "agency",
   },
+  reseller: {
+    type: Schema.Types.ObjectId,
+    ref: "company",
+  },
   name: {
     type: String,
     required: true,
@@ -31,7 +35,7 @@ const userSchema = new Schema({
   password: String,
   role: {
     type: String,
-     default: 'Client',
+    default: "Client",
   },
   lang: String,
   active: {
@@ -51,7 +55,7 @@ const userSchema = new Schema({
   ],
   termsAndConditions: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   lisence: {
     type: Array,
@@ -68,6 +72,12 @@ const userSchema = new Schema({
   },
   type: {
     type: String,
+  },
+  otp: {
+    type: String,
+  },
+  totalCompaniesAllowed: {
+    type: Number,
   },
   serviceProductInfo: {
     type: String,

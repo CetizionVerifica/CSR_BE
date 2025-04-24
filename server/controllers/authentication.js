@@ -5,6 +5,7 @@ const config = require("../config/keys");
 const nodeMaler = require("../services/nodeMaler");
 
 function tokenForUser(user) {
+  console.log(user);
   const timestamp = new Date().getTime();
   return jwt.encode(
     { sub: user.id, role: user.role, iat: timestamp },
@@ -40,6 +41,7 @@ exports.verifyEmail = function (req, res, next) {
 exports.signin = function (req, res, next) {
   //User has already this email and password auth
   // we just need to give them token
+  console.log(req.user);
   if (!req.user) {
     res.status(422).send({ error: "wrong username or password" });
   }

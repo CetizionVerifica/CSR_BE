@@ -112,6 +112,7 @@ module.exports = {
       });
       agency.users = [user];
       agency.companies = [company];
+      agency.reseller = comapanyData.reseller;
       // agency.reseller = user
       await agency.save();
       // add agency to user

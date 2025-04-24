@@ -22,7 +22,7 @@ module.exports = {
   async resolve(root, params, context, options) {
     // Check if the user is authenticated
     // checkAuth(context.isAuthenticated());
-    console.log("params", params.data);
+
     const { agencies, companies, email } = params.data;
 
     const agencyId = agencies[0];
@@ -45,6 +45,7 @@ module.exports = {
     if (existingUser) {
       throw new Error("Error: This user already exists");
     }
+    console.log("47", company);
 
     // Prepare user data
     const userData = {
@@ -56,6 +57,7 @@ module.exports = {
       agencies: [agencyId],
       companies: [companyId],
       active: true,
+      reseller: company.reseller,
     };
     // Save the new user
     const userModel = new UserModel(userData);
