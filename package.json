@@ -4,7 +4,7 @@
   "description": "copper t social responsibility",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production nodemon ./index.js --ignore client",
+    "start": "NODE_ENV=development nodemon ./index.js --ignore client",
     "start:prod": "NODE_ENV=development nodemon ./index.js --ignore client",
     "debug": "nodemon --inspect index.js --ignore client",
     "client": "npm run start --prefix client",
