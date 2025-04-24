@@ -18,7 +18,7 @@ module.exports = {
   secretSession: "dsfsdldsfdsfsdfsfsdfsdfdsf",
   applicationUrl: "localhost:3000",
   url: "https://localhost:3000",
-  adminEmail: "admin@admin.com",
+  adminEmail: "superadmin@admin.com",
   adminDefaultPassword: "123456",
   appEmail: "noreply@seven-toolkit.com",
   appMailPassword: "",

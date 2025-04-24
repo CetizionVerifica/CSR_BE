@@ -18,7 +18,7 @@ module.exports = {
   secretSession: "dsfsdldsfdsfsdfsfsdfsdfdsf",
   applicationUrl: "resilisense.org",
   url: "https://resilisense.org",
-  adminEmail: "admin@admin.com",
+  adminEmail: "superadmin@admin.com",
   adminDefaultPassword: "123456",
   appEmail: "noreply@seven-toolkit.com",
   appMailPassword: "",
