@@ -21,7 +21,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
+    - run: npm ci -force
     
     
   build-and-deploy:
@@ -36,7 +36,7 @@ jobs:
       with:
         node-version: '18.x'
         cache: 'npm'
-    - run: npm ci
+    - run: npm ci --force
     - run: npm run build --if-present
     
     - name: Configure AWS credentials
@@ -56,6 +56,6 @@ jobs:
           cd app/CSR_BE
           git remote set-url origin https://x-access-token:${{ secrets.GIT_SECRET }}@github.com/shyamsharma23/CSR_BE.git
           git pull
-          npm ci
+          npm ci --force
           npm run build --if-present
           pm2 restart index || pm2 start npm --name "index" -- start
