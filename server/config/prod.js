@@ -1,5 +1,3 @@
-const { mongoURI } = require("./prod");
-
 //eslint-disable-this-file
 module.exports = {
   googleClientID:
