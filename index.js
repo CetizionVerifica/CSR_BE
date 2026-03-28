@@ -73,6 +73,7 @@ app.use(
     let authUser = req.user;
 
     // Fallback to JWT if session auth is not available (cross-origin)
+    logger.debug("GraphQL auth - session auth:", isAuth, "has token:", !!req.headers.authorization);
     if (!isAuth && req.headers.authorization) {
       try {
         const decoded = require("jwt-simple").decode(
@@ -81,9 +82,14 @@ app.use(
         );
         const User = require("./server/models/user");
         authUser = await User.findById(decoded.sub);
-        if (authUser) isAuth = true;
+        if (authUser) {
+          isAuth = true;
+          logger.debug("GraphQL JWT auth successful for user:", authUser.email);
+        } else {
+          logger.debug("GraphQL JWT auth - user not found for decoded sub:", decoded.sub);
+        }
       } catch (e) {
-        // Invalid token — isAuth stays false
+        logger.error("JWT decode error in GraphQL:", e.message);
       }
     }
 
