@@ -49,7 +49,15 @@ app.use(
   })
 );
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'https://resilisense-fe.vercel.app',
+    'https://resilisense.org',
+    'https://www.resilisense.org',
+    'http://localhost:3001'
+  ],
+  credentials: true
+}));
 app.use("/api", userRoutes);
 app.use(passport.initialize());
 app.use(passport.session());
