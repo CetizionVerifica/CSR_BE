@@ -38,20 +38,21 @@ module.exports = function (app) {
     }
   });
   app.get("/api/check_authentication", async (req, res) => {
-    const isAuthenticated = req.isAuthenticated();
-    if (isAuthenticated) {
-      res.status(200).json({ isAuthenticated: true });
-    } else {
+    const token = req.headers.authorization;
+    if (!token) {
+      return res.status(401).json({ isAuthenticated: false });
+    }
+    try {
+      const decoded = jwt.decode(token, config.secretJWT);
+      const user = await UserModel.findById(decoded.sub);
+      if (user) {
+        res.status(200).json({ isAuthenticated: true });
+      } else {
+        res.status(401).json({ isAuthenticated: false });
+      }
+    } catch (error) {
       res.status(401).json({ isAuthenticated: false });
     }
-    // const token = req.headers.authorization
-    // try {
-    //   const decoded = jwt.decode(token, config.secretJWT)
-    //   const user = await UserModel.findById(decoded.sub)
-    //   res.send(user)
-    // } catch (error) {
-    //   throw new Error(error)
-    // }
   });
 
   app.get("/api/projects/:year", requireAuth, Projects.getProjectsByYear);
