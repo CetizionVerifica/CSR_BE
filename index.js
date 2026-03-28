@@ -74,17 +74,9 @@ app.use(
 // Routes
 require("./server/router")(app);
 
-// Serve static assets in production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-  });
-} else {
-  app.get("/", (req, res) => {
-    res.json("Welcome to CSR API");
-  });
-}
+app.get("/", (req, res) => {
+  res.json("Welcome to CSR API");
+});
 
 // Error Handling
 app.use((err, req, res, next) => {
