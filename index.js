@@ -96,6 +96,10 @@ app.use(
     return {
       schema: schema.getSchema(),
       rootValue: {
+        user: authUser,
+        req,
+      },
+      context: {
         isAuthenticated: () => isAuth,
         user: authUser,
         req,
