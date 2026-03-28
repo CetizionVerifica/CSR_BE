@@ -68,15 +68,35 @@ app.use(globalLogger);
 // GraphQL
 app.use(
   "/graphql",
-  graphqlHTTP((req) => ({
-    schema: schema.getSchema(),
-    rootValue: {
-      isAuthenticated: req.isAuthenticated(),
-      user: req.user,
-      req,
-    },
-    graphiql: true,
-  }))
+  graphqlHTTP(async (req) => {
+    let isAuth = req.isAuthenticated();
+    let authUser = req.user;
+
+    // Fallback to JWT if session auth is not available (cross-origin)
+    if (!isAuth && req.headers.authorization) {
+      try {
+        const decoded = require("jwt-simple").decode(
+          req.headers.authorization,
+          config.secretJWT
+        );
+        const User = require("./server/models/user");
+        authUser = await User.findById(decoded.sub);
+        if (authUser) isAuth = true;
+      } catch (e) {
+        // Invalid token — isAuth stays false
+      }
+    }
+
+    return {
+      schema: schema.getSchema(),
+      rootValue: {
+        isAuthenticated: () => isAuth,
+        user: authUser,
+        req,
+      },
+      graphiql: true,
+    };
+  })
 );
 
 // Routes
