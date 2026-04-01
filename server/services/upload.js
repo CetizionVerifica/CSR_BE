@@ -1,20 +1,13 @@
 const multer = require('multer')
+const multerS3 = require('multer-s3')
+const { S3Client } = require('@aws-sdk/client-s3')
 const path = require('path')
-const fs = require('fs')
 
-/** Storage Engine */
-const storageEngine = multer.diskStorage({
-  destination: function(req, file, cb) {
-    const destination = `./public/files/${req.params.projectId}`
-
-    if (!fs.existsSync(destination)) {
-      fs.mkdirSync(destination, {recursive: true})
-    }
-
-    cb(null, destination)
-  },
-  filename: function(req, file, fn) {
-    fn(null, new Date().getTime().toString() + path.extname(file.originalname))
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   },
 })
 
@@ -29,10 +22,15 @@ const validateFile = function(file, cb) {
   }
 }
 
-//init
 const upload = multer({
-  storage: storageEngine,
-  // file size 50MB
+  storage: multerS3({
+    s3: s3,
+    bucket: process.env.AWS_S3_BUCKET,
+    key: function(req, file, cb) {
+      const filename = new Date().getTime().toString() + path.extname(file.originalname)
+      cb(null, `files/${req.params.projectId}/${filename}`)
+    },
+  }),
   limits: {fileSize: 50000000},
   fileFilter: function(req, file, callback) {
     validateFile(file, callback)

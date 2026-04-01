@@ -1,9 +1,16 @@
-// const GapFile = require('../models/gapFile')
-
-const fs = require("fs");
+const { S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { Response } = require("../helpers/response");
 const { searchQuery } = require("../schema/queryPagination");
 const GapFile = require("../models/gapFile");
+
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
+
 exports.uploadFile = function (req, res, next) {
   const file = req.file;
 
@@ -11,20 +18,16 @@ exports.uploadFile = function (req, res, next) {
     return res.status(400).json({ error: "No file provided" });
   }
 
-  /**
-   * Create new record in mongoDB
-   */
   const document = {
     project: req.params.projectId,
     name: file.originalname,
-    path: file.path,
+    path: file.key,
     uploadedBy: req.user.id,
   };
   const gapFile = new GapFile(document);
   gapFile
     .save()
     .then((gapFile) => {
-      //respond to request indicating the request was sent
       res.json({ message: "File uploaded", fileId: gapFile.id });
     })
     .catch((error) => {
@@ -41,44 +44,19 @@ exports.deleteFile = async function (req, res, next) {
       return res.status(404).json({ error: "File not found in database" });
     }
 
-    // Check if file exists before trying to delete it
-    fs.access(gapFile.path, fs.constants.F_OK, (err) => {
-      if (err) {
-        // File doesn't exist, just remove from database
+    try {
+      await s3.send(
+        new DeleteObjectCommand({
+          Bucket: process.env.AWS_S3_BUCKET,
+          Key: gapFile.path,
+        })
+      );
+    } catch (s3Err) {
+      console.error("Error deleting file from S3 (continuing with DB cleanup):", s3Err);
+    }
 
-        GapFile.findByIdAndDelete(req.params.fileId)
-          .then(() => {
-            res.json({ message: "File entry deleted from database" });
-          })
-          .catch((e) => {
-            console.error("Error removing file from database:", e);
-            res
-              .status(500)
-              .json({ error: "Error removing file from database" });
-          });
-      } else {
-        // File exists, proceed with deletion
-        fs.unlink(gapFile.path, (unlinkErr) => {
-          if (unlinkErr) {
-            console.error("Error deleting file from filesystem:", unlinkErr);
-            return res
-              .status(500)
-              .json({ error: "Error deleting file from filesystem" });
-          }
-
-          GapFile.findByIdAndDelete(req.params.fileId)
-            .then(() => {
-              res.json({ message: "File deleted successfully" });
-            })
-            .catch((e) => {
-              console.error("Error removing file from database:", e);
-              res
-                .status(500)
-                .json({ error: "Error removing file from database" });
-            });
-        });
-      }
-    });
+    await GapFile.findByIdAndDelete(req.params.fileId);
+    res.json({ message: "File deleted successfully" });
   } catch (error) {
     console.error("Unexpected error in deleteFile:", error);
     res.status(500).json({ error: "Internal server error" });
