@@ -174,6 +174,14 @@ Scheduled cleanup job deletes expired tokens/resets daily. `users` and `membersh
 - `/settings/members` (DataTable: name, email, role, scope, status, last active; invite via Sheet; bulk CSV).
 - Top bar workspace switcher with search when > 5 workspaces.
 
+FE implementation notes (2026-09-30):
+- `/settings/notifications` is deferred to M12: `PATCH /me` has no notification-preference fields yet.
+- Avatar upload waits for M14 (only `avatarFileId` exists); profiles show initials.
+- Invite / member scope is shown as counts ("Whole workspace" or "n companies, m projects") and invites are workspace-wide until M02/M03 expose companies and projects to pick from; the API already accepts `companyIds`/`projectIds`.
+- Terms gate: blocks the app while `termsAcceptanceRequired` (skipped while impersonating); the document link comes from `VITE_TERMS_URL` (`{version}` placeholder) until the API serves the document.
+- `/verify-email/:token` sends the single-use token only on an explicit "Confirm" click, so mail-scanner prefetches can't burn it.
+- Platform user admin (`/platform/users`, impersonate, sessions) UI belongs to M13; M01 ships the impersonation banner and "End impersonation" only.
+
 ## 10. Events & audit
 `auth.login.succeeded|failed`, `auth.logout`, `auth.password.reset.requested|completed`, `auth.mfa.enabled|disabled`, `user.invited`, `membership.created|updated|removed`, `workspace.switched`, `impersonation.started|ended` — all in `AuditEvent` (M12). Emails: invitation, password reset, email verification, new-device login (optional), MFA changes.
 
