@@ -69,6 +69,7 @@ RLS on `companies`, `entitlements` by `workspace_id`. `workspaces` readable only
 ## 7. Business rules
 - Entitlement check order: authenticated → member/grant → role permission → module entitled → limit not exceeded.
 - A partner cannot grant itself modules; entitlements are platform-owned.
+- Which permission needs which module, and how a user becomes `partner_admin` in a client workspace (owner/admin of the partner workspace holding an active grant), is defined in M01 §2. The M01 PR creates the `entitlements` table (shape above, RLS by `workspace_id`) because permission resolution reads it; M02 adds its management API.
 - Deleting a company with projects requires typing the company name; projects, answers and files are soft-deleted together; restorable 30 days.
 - A workspace must always have ≥ 1 owner.
 

@@ -81,7 +81,7 @@ Why change now that we start from scratch:
 
 ### ADR-006 Authorisation — **RBAC + entitlements + scope, deny by default**
 - Permission strings `<resource>:<action>` (`gap:answer`, `gap:review`, `survey:send`…). Roles per membership; entitlements per workspace (modules bought, limits).
-- Every controller method must carry `@Can('…')` or `@Public()`; a unit test enumerates all routes and fails if one has neither. Role matrix in **M01**.
+- Every controller method must carry `@Can('…')`, `@Authenticated()` (caller's own resources, no permission — M01 §7.1) or `@Public()`; a test enumerates all routes and fails if one has none. Role matrix in **M01**.
 
 ### ADR-007 Background work — **BullMQ on Redis**
 Queues: `email`, `report-render`, `import`, `survey`, `ai`, `scheduled`, `retention`. Retries with backoff, dead-letter queue, Bull Board for platform owners only. Scheduled jobs via BullMQ repeatable jobs (replaces the broken, never-run `Cronjob/cronjobs.js`).

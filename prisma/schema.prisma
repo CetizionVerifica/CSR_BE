@@ -5,8 +5,8 @@
 // - numeric (Decimal) for audited values, never floats
 
 generator client {
-  provider     = "prisma-client"
-  output       = "../src/generated/prisma"
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
   moduleFormat        = "cjs"
   importFileExtension = ""
 }
@@ -37,13 +37,13 @@ enum AnswerType {
 }
 
 model TaxonomyVersion {
-  id           String         @id @db.Uuid
-  code         String         @unique
-  status       TaxonomyStatus @default(draft)
-  publishedAt  DateTime?      @map("published_at") @db.Timestamptz(6)
-  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
-  coreSubjects CoreSubject[]
-  issues       Issue[]
+  id                String             @id @db.Uuid
+  code              String             @unique
+  status            TaxonomyStatus     @default(draft)
+  publishedAt       DateTime?          @map("published_at") @db.Timestamptz(6)
+  createdAt         DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  coreSubjects      CoreSubject[]
+  issues            Issue[]
   keyConsiderations KeyConsideration[]
 
   @@map("taxonomy_versions")
@@ -118,15 +118,33 @@ enum WorkspaceStatus {
 }
 
 model Workspace {
-  id        String          @id @db.Uuid
-  name      String
-  slug      String          @unique
-  status    WorkspaceStatus @default(active)
-  createdAt DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt DateTime        @updatedAt @map("updated_at") @db.Timestamptz(6)
-  companies Company[]
+  id                    String          @id @db.Uuid
+  name                  String
+  slug                  String          @unique
+  status                WorkspaceStatus @default(active)
+  createdAt             DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime        @updatedAt @map("updated_at") @db.Timestamptz(6)
+  companies             Company[]
+  memberships           Membership[]
+  invitations           Invitation[]
+  entitlement           Entitlement?
+  partnerGrantsGiven    PartnerGrant[]  @relation("PartnerGrantPartner")
+  partnerGrantsReceived PartnerGrant[]  @relation("PartnerGrantClient")
 
   @@map("workspaces")
+}
+
+// Tenant-owned (RLS). Created by M01 because permission resolution reads it; managed by M02.
+model Entitlement {
+  workspaceId String    @id @map("workspace_id") @db.Uuid
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  plan        String
+  modules     String[]
+  limits      Json      @default("{}")
+  updatedBy   String?   @map("updated_by") @db.Uuid
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("entitlements")
 }
 
 // First tenant-owned table: RLS policy in migration 0002_rls.
@@ -143,4 +161,232 @@ model Company {
 
   @@index([workspaceId])
   @@map("companies")
+}
+
+// ─── Identity & access — M01 ─────────────────────────────────────────────────
+// users, memberships and the token tables span workspaces: not RLS-scoped, only the identity
+// repositories touch them (M01 §6). invitations are tenant-owned and RLS-scoped.
+
+enum UserStatus {
+  invited
+  active
+  disabled
+
+  @@map("user_status")
+}
+
+enum PlatformRole {
+  platform_owner
+  platform_assessor
+  platform_support
+
+  @@map("platform_role")
+}
+
+enum MembershipRole {
+  workspace_owner
+  workspace_admin
+  contributor
+  viewer
+  auditor
+
+  @@map("membership_role")
+}
+
+enum PasswordAlgo {
+  argon2id
+  bcrypt
+
+  @@map("password_algo")
+}
+
+enum Theme {
+  system
+  light
+  dark
+
+  @@map("theme")
+}
+
+enum EmailVerificationPurpose {
+  signup
+  email_change
+
+  @@map("email_verification_purpose")
+}
+
+model User {
+  id               String        @id @db.Uuid
+  email            String        @unique @db.Citext
+  emailVerifiedAt  DateTime?     @map("email_verified_at") @db.Timestamptz(6)
+  passwordHash     String?       @map("password_hash")
+  passwordAlgo     PasswordAlgo  @default(argon2id) @map("password_algo")
+  name             String
+  jobTitle         String?       @map("job_title")
+  phone            String?
+  locale           String        @default("en")
+  timezone         String        @default("UTC")
+  theme            Theme         @default(system)
+  avatarFileId     String?       @map("avatar_file_id") @db.Uuid
+  platformRole     PlatformRole? @map("platform_role")
+  mfaTotpSecretEnc String?       @map("mfa_totp_secret_enc")
+  mfaEnabledAt     DateTime?     @map("mfa_enabled_at") @db.Timestamptz(6)
+  status           UserStatus    @default(active)
+  lastLoginAt      DateTime?     @map("last_login_at") @db.Timestamptz(6)
+  failedLoginCount Int           @default(0) @map("failed_login_count")
+  lockedUntil      DateTime?     @map("locked_until") @db.Timestamptz(6)
+  termsVersion     String?       @map("terms_version")
+  termsAcceptedAt  DateTime?     @map("terms_accepted_at") @db.Timestamptz(6)
+  legacyId         String?       @unique @map("legacy_id")
+  createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  memberships        Membership[]
+  refreshTokens      RefreshToken[]
+  passwordResets     PasswordReset[]
+  emailVerifications EmailVerification[]
+  mfaRecoveryCodes   MfaRecoveryCode[]
+
+  @@map("users")
+}
+
+model Membership {
+  id            String         @id @db.Uuid
+  userId        String         @map("user_id") @db.Uuid
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspaceId   String         @map("workspace_id") @db.Uuid
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  role          MembershipRole
+  companyIds    String[]       @default([]) @map("company_ids") @db.Uuid
+  projectIds    String[]       @default([]) @map("project_ids") @db.Uuid
+  expiresAt     DateTime?      @map("expires_at") @db.Timestamptz(6)
+  deactivatedAt DateTime?      @map("deactivated_at") @db.Timestamptz(6)
+  invitedBy     String?        @map("invited_by") @db.Uuid
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, workspaceId])
+  @@index([workspaceId])
+  @@map("memberships")
+}
+
+model PartnerGrant {
+  id                 String    @id @db.Uuid
+  partnerWorkspaceId String    @map("partner_workspace_id") @db.Uuid
+  partnerWorkspace   Workspace @relation("PartnerGrantPartner", fields: [partnerWorkspaceId], references: [id], onDelete: Cascade)
+  clientWorkspaceId  String    @map("client_workspace_id") @db.Uuid
+  clientWorkspace    Workspace @relation("PartnerGrantClient", fields: [clientWorkspaceId], references: [id], onDelete: Cascade)
+  grantedBy          String?   @map("granted_by") @db.Uuid
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  revokedAt          DateTime? @map("revoked_at") @db.Timestamptz(6)
+
+  @@index([partnerWorkspaceId])
+  @@index([clientWorkspaceId])
+  @@map("partner_grants")
+}
+
+// Tenant-owned (RLS). The token embeds the workspace id so the public accept route can open
+// the tenant context before looking up token_hash (M01 §6).
+model Invitation {
+  id          String         @id @db.Uuid
+  workspaceId String         @map("workspace_id") @db.Uuid
+  workspace   Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  email       String         @db.Citext
+  role        MembershipRole
+  companyIds  String[]       @default([]) @map("company_ids") @db.Uuid
+  projectIds  String[]       @default([]) @map("project_ids") @db.Uuid
+  tokenHash   String         @unique @map("token_hash")
+  expiresAt   DateTime       @map("expires_at") @db.Timestamptz(6)
+  acceptedAt  DateTime?      @map("accepted_at") @db.Timestamptz(6)
+  invitedBy   String         @map("invited_by") @db.Uuid
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([workspaceId, email])
+  @@map("invitations")
+}
+
+/// One row per issued refresh token; family_id is the session id (rotation + reuse detection).
+model RefreshToken {
+  id                 String    @id @db.Uuid
+  userId             String    @map("user_id") @db.Uuid
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyId           String    @map("family_id") @db.Uuid
+  tokenHash          String    @unique @map("token_hash")
+  userAgent          String?   @map("user_agent")
+  ip                 String?   @db.Inet
+  currentWorkspaceId String?   @map("current_workspace_id") @db.Uuid
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt          DateTime  @map("expires_at") @db.Timestamptz(6)
+  revokedAt          DateTime? @map("revoked_at") @db.Timestamptz(6)
+  replacedBy         String?   @map("replaced_by") @db.Uuid
+
+  @@index([userId])
+  @@index([familyId])
+  @@map("refresh_tokens")
+}
+
+model PasswordReset {
+  id        String    @id @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(6)
+  usedAt    DateTime? @map("used_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([userId])
+  @@map("password_resets")
+}
+
+model EmailVerification {
+  id        String                   @id @db.Uuid
+  userId    String                   @map("user_id") @db.Uuid
+  user      User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email     String                   @db.Citext
+  purpose   EmailVerificationPurpose
+  payload   Json?
+  tokenHash String                   @unique @map("token_hash")
+  expiresAt DateTime                 @map("expires_at") @db.Timestamptz(6)
+  usedAt    DateTime?                @map("used_at") @db.Timestamptz(6)
+  createdAt DateTime                 @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([userId])
+  @@map("email_verifications")
+}
+
+model MfaRecoveryCode {
+  id       String    @id @db.Uuid
+  userId   String    @map("user_id") @db.Uuid
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  codeHash String    @map("code_hash")
+  usedAt   DateTime? @map("used_at") @db.Timestamptz(6)
+
+  @@index([userId])
+  @@map("mfa_recovery_codes")
+}
+
+// ─── Audit trail — M12 (minimal table created by M01; hash chain + partitioning in M12) ──
+
+model AuditEvent {
+  id             BigInt   @id @default(autoincrement())
+  workspaceId    String?  @map("workspace_id") @db.Uuid
+  occurredAt     DateTime @default(now()) @map("occurred_at") @db.Timestamptz(6)
+  actorType      String   @map("actor_type") // user | system | anonymous
+  actorId        String?  @map("actor_id") @db.Uuid
+  impersonatorId String?  @map("impersonator_id") @db.Uuid
+  action         String
+  entityType     String   @map("entity_type")
+  entityId       String?  @map("entity_id")
+  diff           Json?
+  requestId      String?  @map("request_id")
+  ipHash         String?  @map("ip_hash")
+  userAgent      String?  @map("user_agent")
+  prevHash       String?  @map("prev_hash")
+  hash           String?
+
+  @@index([workspaceId, occurredAt])
+  @@index([entityType, entityId])
+  @@index([actorId])
+  @@map("audit_events")
 }

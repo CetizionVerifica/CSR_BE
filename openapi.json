@@ -86,6 +86,3123 @@
           "health"
         ]
       }
+    },
+    "/v1/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "maxLength": 254,
+                    "format": "email",
+                    "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "workspaceId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Session (refresh cookie set), or an MFA step",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string"
+                        },
+                        "tokenType": {
+                          "type": "string",
+                          "enum": [
+                            "Bearer"
+                          ]
+                        },
+                        "expiresIn": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "workspaceId": {
+                          "nullable": true,
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "accessToken",
+                        "tokenType",
+                        "expiresIn",
+                        "workspaceId"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "mfaRequired": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        },
+                        "mfaToken": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "mfaRequired",
+                        "mfaToken"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "mfaEnrollmentRequired": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        },
+                        "mfaToken": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "mfaEnrollmentRequired",
+                        "mfaToken"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Rotates the refresh cookie",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string"
+                    },
+                    "tokenType": {
+                      "type": "string",
+                      "enum": [
+                        "Bearer"
+                      ]
+                    },
+                    "expiresIn": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "workspaceId": {
+                      "nullable": true,
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  },
+                  "required": [
+                    "accessToken",
+                    "tokenType",
+                    "expiresIn",
+                    "workspaceId"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [
+          {
+            "name": "all",
+            "required": false,
+            "in": "query",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/signup": {
+      "post": {
+        "operationId": "AuthController_signup",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "email": {
+                    "type": "string",
+                    "maxLength": 254,
+                    "format": "email",
+                    "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "workspaceName": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 120
+                  }
+                },
+                "required": [
+                  "name",
+                  "email",
+                  "password",
+                  "workspaceName"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Always the same response; a verification email follows",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "accepted"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/verify-email": {
+      "post": {
+        "operationId": "AuthController_verifyEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "minLength": 16,
+                    "maxLength": 256
+                  }
+                },
+                "required": [
+                  "token"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "verified"
+                      ]
+                    },
+                    "purpose": {
+                      "type": "string",
+                      "enum": [
+                        "signup",
+                        "email_change"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "purpose"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/verify-email/resend": {
+      "post": {
+        "operationId": "AuthController_resendVerification",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "maxLength": 254,
+                    "format": "email",
+                    "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  }
+                },
+                "required": [
+                  "email"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "accepted"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/password/forgot": {
+      "post": {
+        "operationId": "AuthController_forgot",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "maxLength": 254,
+                    "format": "email",
+                    "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  }
+                },
+                "required": [
+                  "email"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Identical whether or not the email exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "accepted"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/password/reset": {
+      "post": {
+        "operationId": "AuthController_reset",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "minLength": 16,
+                    "maxLength": 256
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  }
+                },
+                "required": [
+                  "token",
+                  "password"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Password set; all sessions revoked"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/mfa/verify": {
+      "post": {
+        "operationId": "AuthController_verifyMfa",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "mfaToken": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "code": {
+                    "type": "string",
+                    "pattern": "^\\d{6}$"
+                  },
+                  "recoveryCode": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 32
+                  }
+                },
+                "required": [
+                  "mfaToken"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string"
+                    },
+                    "tokenType": {
+                      "type": "string",
+                      "enum": [
+                        "Bearer"
+                      ]
+                    },
+                    "expiresIn": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "workspaceId": {
+                      "nullable": true,
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  },
+                  "required": [
+                    "accessToken",
+                    "tokenType",
+                    "expiresIn",
+                    "workspaceId"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/mfa/setup": {
+      "post": {
+        "operationId": "AuthController_setupMfa",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "secret": {
+                      "type": "string"
+                    },
+                    "otpauthUri": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "secret",
+                    "otpauthUri"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/mfa/confirm": {
+      "post": {
+        "operationId": "AuthController_confirmMfa",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "pattern": "^\\d{6}$"
+                  }
+                },
+                "required": [
+                  "code"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recovery codes (shown once); a session when called with the enrolment token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "recoveryCodes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "session": {
+                      "nullable": true,
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string"
+                        },
+                        "tokenType": {
+                          "type": "string",
+                          "enum": [
+                            "Bearer"
+                          ]
+                        },
+                        "expiresIn": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "workspaceId": {
+                          "nullable": true,
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "accessToken",
+                        "tokenType",
+                        "expiresIn",
+                        "workspaceId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "recoveryCodes",
+                    "session"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/mfa": {
+      "delete": {
+        "operationId": "AuthController_disableMfa",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "code": {
+                    "type": "string",
+                    "pattern": "^\\d{6}$"
+                  }
+                },
+                "required": [
+                  "password",
+                  "code"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/impersonation/end": {
+      "post": {
+        "operationId": "AuthController_endImpersonation",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/me": {
+      "get": {
+        "operationId": "MeController_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "emailVerified": {
+                          "type": "boolean"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "jobTitle": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "phone": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "locale": {
+                          "type": "string"
+                        },
+                        "timezone": {
+                          "type": "string"
+                        },
+                        "theme": {
+                          "type": "string",
+                          "enum": [
+                            "system",
+                            "light",
+                            "dark"
+                          ]
+                        },
+                        "avatarFileId": {
+                          "nullable": true,
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "platformRole": {
+                          "nullable": true,
+                          "type": "string",
+                          "enum": [
+                            "platform_owner",
+                            "platform_assessor",
+                            "platform_support"
+                          ]
+                        },
+                        "mfaEnabled": {
+                          "type": "boolean"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "invited",
+                            "active",
+                            "disabled"
+                          ]
+                        },
+                        "lastLoginAt": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "termsVersion": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "termsAcceptedAt": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "email",
+                        "emailVerified",
+                        "name",
+                        "jobTitle",
+                        "phone",
+                        "locale",
+                        "timezone",
+                        "theme",
+                        "avatarFileId",
+                        "platformRole",
+                        "mfaEnabled",
+                        "status",
+                        "lastLoginAt",
+                        "termsVersion",
+                        "termsAcceptedAt"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "currentWorkspace": {
+                      "nullable": true,
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "trial",
+                            "active",
+                            "suspended",
+                            "closed"
+                          ]
+                        },
+                        "role": {
+                          "nullable": true,
+                          "type": "string",
+                          "enum": [
+                            "workspace_owner",
+                            "workspace_admin",
+                            "contributor",
+                            "viewer",
+                            "auditor",
+                            "partner_admin"
+                          ]
+                        },
+                        "crossTenant": {
+                          "type": "boolean"
+                        },
+                        "scope": {
+                          "type": "object",
+                          "properties": {
+                            "companyIds": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "format": "uuid",
+                                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                              }
+                            },
+                            "projectIds": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "format": "uuid",
+                                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                              }
+                            }
+                          },
+                          "required": [
+                            "companyIds",
+                            "projectIds"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "slug",
+                        "status",
+                        "role",
+                        "crossTenant",
+                        "scope"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "memberships": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "workspaceId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "workspaceName": {
+                            "type": "string"
+                          },
+                          "role": {
+                            "type": "string"
+                          },
+                          "via": {
+                            "type": "string",
+                            "enum": [
+                              "membership",
+                              "partner_grant"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "workspaceId",
+                          "workspaceName",
+                          "role",
+                          "via"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "permissions": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "workspace:manage",
+                          "billing:manage",
+                          "org:manage-users",
+                          "company:create",
+                          "company:update",
+                          "project:create",
+                          "project:configure",
+                          "project:read",
+                          "gap:answer",
+                          "gap:submit-for-review",
+                          "gap:review",
+                          "evidence:upload",
+                          "materiality:rate",
+                          "stakeholder:manage",
+                          "survey:send",
+                          "kpi:enter",
+                          "kpi:manage",
+                          "supplier:manage",
+                          "supplier:rank",
+                          "report:export",
+                          "report:publish",
+                          "audit:read",
+                          "ai:use",
+                          "ai:configure",
+                          "platform:*"
+                        ]
+                      }
+                    },
+                    "entitlements": {
+                      "nullable": true,
+                      "type": "object",
+                      "properties": {
+                        "plan": {
+                          "type": "string"
+                        },
+                        "modules": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "limits": {
+                          "type": "object",
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "plan",
+                        "modules",
+                        "limits"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "impersonatedBy": {
+                      "nullable": true,
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "termsAcceptanceRequired": {
+                      "type": "boolean"
+                    },
+                    "currentTermsVersion": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "user",
+                    "currentWorkspace",
+                    "memberships",
+                    "permissions",
+                    "entitlements",
+                    "impersonatedBy",
+                    "termsAcceptanceRequired",
+                    "currentTermsVersion"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "me"
+        ]
+      },
+      "patch": {
+        "operationId": "MeController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "jobTitle": {
+                    "nullable": true,
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "phone": {
+                    "nullable": true,
+                    "type": "string",
+                    "pattern": "^\\+?[0-9 ()-]{4,32}$"
+                  },
+                  "locale": {
+                    "type": "string",
+                    "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$"
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "maxLength": 64
+                  },
+                  "theme": {
+                    "type": "string",
+                    "enum": [
+                      "system",
+                      "light",
+                      "dark"
+                    ]
+                  },
+                  "avatarFileId": {
+                    "nullable": true,
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "emailVerified": {
+                      "type": "boolean"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "jobTitle": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "phone": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "timezone": {
+                      "type": "string"
+                    },
+                    "theme": {
+                      "type": "string",
+                      "enum": [
+                        "system",
+                        "light",
+                        "dark"
+                      ]
+                    },
+                    "avatarFileId": {
+                      "nullable": true,
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "platformRole": {
+                      "nullable": true,
+                      "type": "string",
+                      "enum": [
+                        "platform_owner",
+                        "platform_assessor",
+                        "platform_support"
+                      ]
+                    },
+                    "mfaEnabled": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "invited",
+                        "active",
+                        "disabled"
+                      ]
+                    },
+                    "lastLoginAt": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "termsVersion": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "termsAcceptedAt": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "email",
+                    "emailVerified",
+                    "name",
+                    "jobTitle",
+                    "phone",
+                    "locale",
+                    "timezone",
+                    "theme",
+                    "avatarFileId",
+                    "platformRole",
+                    "mfaEnabled",
+                    "status",
+                    "lastLoginAt",
+                    "termsVersion",
+                    "termsAcceptedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/v1/me/password": {
+      "post": {
+        "operationId": "MeController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currentPassword": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  }
+                },
+                "required": [
+                  "currentPassword",
+                  "newPassword"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Password changed; other sessions revoked"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/v1/me/email": {
+      "post": {
+        "operationId": "MeController_changeEmail",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Replays the first response for 24 h",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "newEmail": {
+                    "type": "string",
+                    "maxLength": 254,
+                    "format": "email",
+                    "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  }
+                },
+                "required": [
+                  "newEmail",
+                  "password"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "A verification link is sent to the new address",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "accepted"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/v1/me/terms": {
+      "post": {
+        "operationId": "MeController_acceptTerms",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "version": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 32
+                  }
+                },
+                "required": [
+                  "version"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/v1/me/workspace": {
+      "post": {
+        "operationId": "MeController_switchWorkspace",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "workspaceId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  }
+                },
+                "required": [
+                  "workspaceId"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New access token scoped to the workspace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string"
+                    },
+                    "tokenType": {
+                      "type": "string",
+                      "enum": [
+                        "Bearer"
+                      ]
+                    },
+                    "expiresIn": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "workspaceId": {
+                      "nullable": true,
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  },
+                  "required": [
+                    "accessToken",
+                    "tokenType",
+                    "expiresIn",
+                    "workspaceId"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/v1/me/sessions": {
+      "get": {
+        "operationId": "MeController_sessions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "userAgent": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "ip": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "lastActiveAt": {
+                            "type": "string"
+                          },
+                          "expiresAt": {
+                            "type": "string"
+                          },
+                          "current": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "userAgent",
+                          "ip",
+                          "lastActiveAt",
+                          "expiresAt",
+                          "current"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "items"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/v1/me/sessions/{id}": {
+      "delete": {
+        "operationId": "MeController_revokeSession",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/v1/workspaces/{wid}/members": {
+      "get": {
+        "operationId": "MembersController_list",
+        "parameters": [
+          {
+            "name": "wid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 25,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "role",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "workspace_owner",
+                "workspace_admin",
+                "contributor",
+                "viewer",
+                "auditor"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "deactivated"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "userId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "email": {
+                            "type": "string"
+                          },
+                          "role": {
+                            "type": "string",
+                            "enum": [
+                              "workspace_owner",
+                              "workspace_admin",
+                              "contributor",
+                              "viewer",
+                              "auditor"
+                            ]
+                          },
+                          "companyIds": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            }
+                          },
+                          "projectIds": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            }
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "active",
+                              "deactivated",
+                              "disabled"
+                            ]
+                          },
+                          "lastLoginAt": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "expiresAt": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "userId",
+                          "name",
+                          "email",
+                          "role",
+                          "companyIds",
+                          "projectIds",
+                          "status",
+                          "lastLoginAt",
+                          "expiresAt",
+                          "createdAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "nextCursor": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "members"
+        ]
+      }
+    },
+    "/v1/workspaces/{wid}/members/{id}": {
+      "patch": {
+        "operationId": "MembersController_update",
+        "parameters": [
+          {
+            "name": "wid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "workspace_owner",
+                      "workspace_admin",
+                      "contributor",
+                      "viewer",
+                      "auditor"
+                    ]
+                  },
+                  "companyIds": {},
+                  "projectIds": {},
+                  "expiresAt": {
+                    "nullable": true,
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                  },
+                  "active": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "userId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string",
+                      "enum": [
+                        "workspace_owner",
+                        "workspace_admin",
+                        "contributor",
+                        "viewer",
+                        "auditor"
+                      ]
+                    },
+                    "companyIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      }
+                    },
+                    "projectIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      }
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "active",
+                        "deactivated",
+                        "disabled"
+                      ]
+                    },
+                    "lastLoginAt": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "expiresAt": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "userId",
+                    "name",
+                    "email",
+                    "role",
+                    "companyIds",
+                    "projectIds",
+                    "status",
+                    "lastLoginAt",
+                    "expiresAt",
+                    "createdAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "members"
+        ]
+      },
+      "delete": {
+        "operationId": "MembersController_remove",
+        "parameters": [
+          {
+            "name": "wid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "members"
+        ]
+      }
+    },
+    "/v1/workspaces/{wid}/invitations": {
+      "post": {
+        "operationId": "MembersController_invite",
+        "parameters": [
+          {
+            "name": "wid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Replays the first response for 24 h",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "invitations": {
+                    "minItems": 1,
+                    "maxItems": 200,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "maxLength": 254,
+                          "format": "email",
+                          "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                        },
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "workspace_owner",
+                            "workspace_admin",
+                            "contributor",
+                            "viewer",
+                            "auditor"
+                          ]
+                        },
+                        "companyIds": {
+                          "default": []
+                        },
+                        "projectIds": {
+                          "default": []
+                        }
+                      },
+                      "required": [
+                        "email",
+                        "role",
+                        "companyIds",
+                        "projectIds"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "invitations"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "email": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "invited",
+                              "already_member"
+                            ]
+                          },
+                          "invitationId": {
+                            "nullable": true,
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          }
+                        },
+                        "required": [
+                          "email",
+                          "status",
+                          "invitationId"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "results"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "members"
+        ]
+      },
+      "get": {
+        "operationId": "MembersController_invitations",
+        "parameters": [
+          {
+            "name": "wid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 25,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "email": {
+                            "type": "string"
+                          },
+                          "role": {
+                            "type": "string",
+                            "enum": [
+                              "workspace_owner",
+                              "workspace_admin",
+                              "contributor",
+                              "viewer",
+                              "auditor"
+                            ]
+                          },
+                          "companyIds": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            }
+                          },
+                          "projectIds": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            }
+                          },
+                          "expiresAt": {
+                            "type": "string"
+                          },
+                          "expired": {
+                            "type": "boolean"
+                          },
+                          "invitedBy": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "email",
+                          "role",
+                          "companyIds",
+                          "projectIds",
+                          "expiresAt",
+                          "expired",
+                          "invitedBy",
+                          "createdAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "nextCursor": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "members"
+        ]
+      }
+    },
+    "/v1/workspaces/{wid}/invitations/csv": {
+      "post": {
+        "operationId": "MembersController_inviteCsv",
+        "parameters": [
+          {
+            "name": "wid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Replays the first response for 24 h",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "csv": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200000
+                  }
+                },
+                "required": [
+                  "csv"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "email": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "invited",
+                              "already_member"
+                            ]
+                          },
+                          "invitationId": {
+                            "nullable": true,
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          }
+                        },
+                        "required": [
+                          "email",
+                          "status",
+                          "invitationId"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "results"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "members"
+        ]
+      }
+    },
+    "/v1/workspaces/{wid}/invitations/{id}/resend": {
+      "post": {
+        "operationId": "MembersController_resend",
+        "parameters": [
+          {
+            "name": "wid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Replays the first response for 24 h",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string",
+                      "enum": [
+                        "workspace_owner",
+                        "workspace_admin",
+                        "contributor",
+                        "viewer",
+                        "auditor"
+                      ]
+                    },
+                    "companyIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      }
+                    },
+                    "projectIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      }
+                    },
+                    "expiresAt": {
+                      "type": "string"
+                    },
+                    "expired": {
+                      "type": "boolean"
+                    },
+                    "invitedBy": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "email",
+                    "role",
+                    "companyIds",
+                    "projectIds",
+                    "expiresAt",
+                    "expired",
+                    "invitedBy",
+                    "createdAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "members"
+        ]
+      }
+    },
+    "/v1/workspaces/{wid}/invitations/{id}": {
+      "delete": {
+        "operationId": "MembersController_revoke",
+        "parameters": [
+          {
+            "name": "wid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "members"
+        ]
+      }
+    },
+    "/v1/invitations/accept": {
+      "post": {
+        "operationId": "InvitationsController_accept",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "minLength": 16,
+                    "maxLength": 256
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  }
+                },
+                "required": [
+                  "token"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "accepted"
+                      ]
+                    },
+                    "workspaceId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "newUser": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "workspaceId",
+                    "newUser"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "members"
+        ]
+      }
+    },
+    "/v1/platform/users": {
+      "get": {
+        "operationId": "PlatformUsersController_list",
+        "parameters": [
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 25,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "invited",
+                "active",
+                "disabled"
+              ]
+            }
+          },
+          {
+            "name": "platformRole",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "platform_owner",
+                "platform_assessor",
+                "platform_support"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "email": {
+                            "type": "string"
+                          },
+                          "emailVerified": {
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "jobTitle": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "phone": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "locale": {
+                            "type": "string"
+                          },
+                          "timezone": {
+                            "type": "string"
+                          },
+                          "theme": {
+                            "type": "string",
+                            "enum": [
+                              "system",
+                              "light",
+                              "dark"
+                            ]
+                          },
+                          "avatarFileId": {
+                            "nullable": true,
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "platformRole": {
+                            "nullable": true,
+                            "type": "string",
+                            "enum": [
+                              "platform_owner",
+                              "platform_assessor",
+                              "platform_support"
+                            ]
+                          },
+                          "mfaEnabled": {
+                            "type": "boolean"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "invited",
+                              "active",
+                              "disabled"
+                            ]
+                          },
+                          "lastLoginAt": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "termsVersion": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "termsAcceptedAt": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "email",
+                          "emailVerified",
+                          "name",
+                          "jobTitle",
+                          "phone",
+                          "locale",
+                          "timezone",
+                          "theme",
+                          "avatarFileId",
+                          "platformRole",
+                          "mfaEnabled",
+                          "status",
+                          "lastLoginAt",
+                          "termsVersion",
+                          "termsAcceptedAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "nextCursor": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "platform"
+        ]
+      }
+    },
+    "/v1/platform/users/{id}": {
+      "patch": {
+        "operationId": "PlatformUsersController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "active",
+                      "disabled"
+                    ]
+                  },
+                  "platformRole": {
+                    "nullable": true,
+                    "type": "string",
+                    "enum": [
+                      "platform_owner",
+                      "platform_assessor",
+                      "platform_support"
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "emailVerified": {
+                      "type": "boolean"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "jobTitle": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "phone": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "timezone": {
+                      "type": "string"
+                    },
+                    "theme": {
+                      "type": "string",
+                      "enum": [
+                        "system",
+                        "light",
+                        "dark"
+                      ]
+                    },
+                    "avatarFileId": {
+                      "nullable": true,
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "platformRole": {
+                      "nullable": true,
+                      "type": "string",
+                      "enum": [
+                        "platform_owner",
+                        "platform_assessor",
+                        "platform_support"
+                      ]
+                    },
+                    "mfaEnabled": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "invited",
+                        "active",
+                        "disabled"
+                      ]
+                    },
+                    "lastLoginAt": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "termsVersion": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "termsAcceptedAt": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "email",
+                    "emailVerified",
+                    "name",
+                    "jobTitle",
+                    "phone",
+                    "locale",
+                    "timezone",
+                    "theme",
+                    "avatarFileId",
+                    "platformRole",
+                    "mfaEnabled",
+                    "status",
+                    "lastLoginAt",
+                    "termsVersion",
+                    "termsAcceptedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "platform"
+        ]
+      }
+    },
+    "/v1/platform/users/{id}/sessions": {
+      "get": {
+        "operationId": "PlatformUsersController_sessions",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "userAgent": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "ip": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "lastActiveAt": {
+                            "type": "string"
+                          },
+                          "expiresAt": {
+                            "type": "string"
+                          },
+                          "current": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "userAgent",
+                          "ip",
+                          "lastActiveAt",
+                          "expiresAt",
+                          "current"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "items"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "platform"
+        ]
+      }
+    },
+    "/v1/platform/users/{id}/sessions/{sid}": {
+      "delete": {
+        "operationId": "PlatformUsersController_revokeSession",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "platform"
+        ]
+      }
+    },
+    "/v1/platform/users/{id}/impersonate": {
+      "post": {
+        "operationId": "PlatformUsersController_impersonate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "workspaceId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Access token only (no refresh), at most 60 minutes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string"
+                    },
+                    "tokenType": {
+                      "type": "string",
+                      "enum": [
+                        "Bearer"
+                      ]
+                    },
+                    "expiresIn": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "workspaceId": {
+                      "nullable": true,
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  },
+                  "required": [
+                    "accessToken",
+                    "tokenType",
+                    "expiresIn",
+                    "workspaceId"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "platform"
+        ]
+      }
     }
   },
   "info": {

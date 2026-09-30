@@ -1,11 +1,11 @@
 import { type INestApplication } from '@nestjs/common';
 import { DiscoveryService, MetadataScanner, Reflector } from '@nestjs/core';
 import { PATH_METADATA } from '@nestjs/common/constants';
-import { PERMISSION_KEY, PUBLIC_KEY } from '../src/common/auth/decorators';
+import { AUTHENTICATED_KEY, PERMISSION_KEY, PUBLIC_KEY } from '../src/common/auth/decorators';
 import { createTestApp } from './app';
 
 /**
- * ADR-006: every controller route must declare @Public() or @Can(permission).
+ * ADR-006 / US-01-4: every controller route must declare @Public(), @Authenticated() or @Can(permission).
  * This test fails the build when a new route forgets it.
  */
 describe('route authorization coverage', () => {
@@ -16,7 +16,7 @@ describe('route authorization coverage', () => {
   });
   afterAll(() => app.close());
 
-  it('every route handler is @Public or @Can', () => {
+  it('every route handler is @Public, @Authenticated or @Can', () => {
     const discovery = app.get(DiscoveryService);
     const scanner = app.get(MetadataScanner);
     const reflector = app.get(Reflector);
@@ -34,6 +34,7 @@ describe('route authorization coverage', () => {
         const targets = [handler, instance.constructor];
         const ok =
           reflector.getAllAndOverride<boolean>(PUBLIC_KEY, targets) ||
+          reflector.getAllAndOverride<boolean>(AUTHENTICATED_KEY, targets) ||
           reflector.getAllAndOverride<string>(PERMISSION_KEY, targets);
         if (!ok) missing.push(`${instance.constructor.name}.${name}`);
       }

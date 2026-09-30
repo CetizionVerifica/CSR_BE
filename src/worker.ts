@@ -11,6 +11,11 @@ import { LoggingModule } from './infra/logging/logging.module';
 import { PrismaModule } from './infra/prisma/prisma.module';
 import { bullRoot, type EmailJob, QUEUES, registerQueues } from './infra/queue/queues';
 import { StorageModule } from './infra/storage/storage.module';
+import {
+  IdentityCleanupProcessor,
+  IdentityCleanupScheduler,
+} from './modules/identity/identity-cleanup.processor';
+import { SessionsRepository } from './modules/identity/sessions.repository';
 
 /** Sends queued emails. Retries/backoff come from the queue defaults (ADR-007). */
 @Processor(QUEUES.email)
@@ -34,9 +39,9 @@ export class EmailProcessor extends WorkerHost {
     StorageModule,
     EmailModule,
     bullRoot(),
-    registerQueues(QUEUES.email),
+    registerQueues(QUEUES.email, QUEUES.scheduled),
   ],
-  providers: [EmailProcessor],
+  providers: [EmailProcessor, SessionsRepository, IdentityCleanupProcessor, IdentityCleanupScheduler],
 })
 export class WorkerModule {}
 

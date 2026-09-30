@@ -1,5 +1,5 @@
 import { applyDecorators, type PipeTransform } from '@nestjs/common';
-import { ApiBody, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { type z } from 'zod';
 import { toJSONSchema } from 'zod';
 
@@ -35,3 +35,7 @@ export const ApiZodQuery = (schema: z.ZodObject) =>
       }),
     ),
   );
+
+/** Documents a Zod response with an explicit status (201, 202, …). */
+export const ApiZodResponse = (status: number, schema: z.ZodType, description = 'OK') =>
+  ApiResponse({ status, description, schema: openApiSchema(schema) });
