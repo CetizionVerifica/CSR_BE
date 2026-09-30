@@ -41,6 +41,8 @@
 
 > **Scaffold notes (2026-09-30, CSR_BE):** NestJS 12 ships ESM-only; the API stays CommonJS and loads Nest via Node's `require(esm)`. Tests use **Vitest** (Jest cannot load ESM Nest on Node 22). **TypeScript 6** because typescript-eslint and @nestjs/swagger don't support 7 yet. `nestjs-zod` doesn't support Nest 12, so Zod validation/OpenAPI helpers live in `src/common/validation/zod.ts`. Prisma pinned to 7.10.0 (npm `latest` points to an 8.0 RC).
 >
+> **Scaffold notes (2026-09-30, Resilisense-FE):** `eslint-plugin-jsx-a11y` does not support ESLint 10 yet, so it is left out (no forced installs); accessibility is enforced by axe in Playwright (every journey) and the Storybook a11y panel until the plugin catches up. `intl-messageformat` is pinned to 11.x because `i18next-icu` does not accept 12 yet. The orval client is regenerated on install from the committed `api/openapi.json` (pinned to a CSR_BE commit in `api/openapi.lock.json`).
+>
 > **Versions** below are the current stable majors as of 2026-09 (checked on npm: Node 24 LTS, NestJS 12, Prisma 7, Zod 4, BullMQ 6, Vite 8, React 19, React Router 8, TanStack Query 5 / Table 9, Tailwind 4, ECharts 6, Storybook 10, ESLint 10, Vitest 5, TypeScript 7). At scaffold time, use the latest stable major of each and record the exact versions in `package.json` + `.nvmrc`; if a tool in the chain doesn't support TypeScript 7 yet, use the latest 6.x for that repo and note it here.
 
 ### ADR-001 Rebuild from scratch in the existing repositories — **Proposed**
