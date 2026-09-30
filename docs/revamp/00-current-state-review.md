@@ -57,7 +57,7 @@ Both repositories are private, but production is internet-facing. Severity: **C*
 | M | Uploads: unanchored MIME/extension regex on client-supplied values, multer 1.4 (CVE-2022-24434), no ownership checks, 1-hour presigned URLs; SMTP with `rejectUnauthorized:false`; user input injected unescaped into HTML emails; ECharts tooltip formatters interpolate user-controlled names into HTML. | `services/upload.js`, `controllers/files.js`, `services/nodeMaler.js:47-51`, FE `report/CoreSubjectOverall.js:51` |
 
 **Phase 0 checklist** (on the `legacy` branch — see roadmap):
-1. Rotate every credential listed above; move config to environment/Secrets Manager; separate dev and prod databases; purge secrets from git history (`git filter-repo`) and enable GitHub push protection + secret scanning.
+1. Rotate every credential listed above; move config to environment variables (never committed; no new AWS services are introduced); separate dev and prod databases; purge secrets from git history (`git filter-repo`) and enable GitHub push protection + secret scanning.
 2. Put auth + admin role on `/api/users*`; delete the FE `/super-admin` route; never serialise `otp`/`password`.
 3. Remove `updateNewUserPassword`'s unauthenticated path and the `personEmail` password write; drop `Company.password` and purge stored values; hash via `save()` only.
 4. Fix signup (no client role, no token before verification), the inverted `active` check, and JWT `active` check.
@@ -65,7 +65,7 @@ Both repositories are private, but production is internet-facing. Severity: **C*
 6. Add JWT `exp` + rotate secret (forces re-login); add a minimal ownership check helper to every resolver taking an id; fix `updateCurrentAgencyUser`.
 7. Disable GraphiQL/introspection in prod, add `express-rate-limit` on auth + GraphQL, lower body limit to 1 MB.
 8. Redact/disable the request logger, make `/api/logs` admin-only, purge the `logs` collection, set log level `info`.
-9. Serve the FE as a static build (nginx/S3), stop committing `build/`, remove public source maps, upgrade `pdfjs-dist` or disable in-app PDF preview.
+9. Serve the FE as a static build (nginx on the existing server — no new AWS resources), stop committing `build/`, remove public source maps, upgrade `pdfjs-dist` or disable in-app PDF preview.
 
 ---
 

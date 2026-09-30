@@ -25,7 +25,7 @@ Collect stakeholder views at scale — first for materiality (ranking of core su
 ### 4.1 Must have (parity + fixes)
 - **Campaign** per project and purpose (`materiality_internal`, `materiality_external`, later `custom`), from a versioned **template** (M13). Materiality templates reproduce the legacy content (§7.1).
 - Recipient selection from M07 (filters by group, department, tags; excludes do-not-contact, shows why), add people inline, dedupe by email.
-- **Email** invite + up to 3 reminders: per-company templates with variables (`{{firstName}}`, `{{companyName}}`, `{{surveyLink}}`, `{{deadline}}`), preview & test-send, sent in the recipient's language, from the platform domain with the company name as display name and reply-to the company contact (SES, SPF/DKIM/DMARC aligned).
+- **Email** invite + up to 3 reminders: per-company templates with variables (`{{firstName}}`, `{{companyName}}`, `{{surveyLink}}`, `{{deadline}}`), preview & test-send, sent in the recipient's language, from the platform domain with the company name as display name and reply-to the company contact (via the `EmailAdapter` — default Postmark; SPF/DKIM/DMARC aligned).
 - **Personal link**: 256-bit random token, stored hashed, bound to one recipient + campaign, expires at campaign close (+ grace), rate-limited; optional anonymous public link (one per campaign) with CAPTCHA-free abuse limits (per-IP, per-device cookie) for broad community surveys.
 - **Respondent experience** (design system §5 public survey): mobile-first, language switch (campaign languages), progress bar, **accessible ranking control** (drag + keyboard up/down + "move to position"), autosave (debounced), save & resume, review page, submit, thank-you page with company branding; privacy notice & consent checkbox; works at 360 px, RTL.
 - Campaign dashboard: sent / opened / started / completed per audience and group, bounce/complaint status, reminders schedule, live response rate; close campaign (manual or at deadline).
@@ -85,7 +85,7 @@ Public (token in path, rate-limited, no auth header):
 | `PUT /public/surveys/:token/answers/:questionKey` | autosave (debounced client-side) |
 | `POST /public/surveys/:token/submit` | validates required answers; 422 with missing keys |
 | `POST /public/surveys/:token/delete-request` | GDPR |
-Email provider webhooks: `POST /webhooks/ses` (SNS-signed) → bounces/complaints/deliveries.
+Email provider webhooks: `POST /webhooks/email/:provider` (signature or basic-auth verified per provider) → bounces/complaints/deliveries.
 
 ## 9. UI
 - `/projects/:pid/surveys` list; `/surveys/new` wizard: Template & languages → Recipients → Email (templates, preview, test) → Schedule & review.

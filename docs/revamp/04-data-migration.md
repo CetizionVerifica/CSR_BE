@@ -19,7 +19,7 @@
 5. `companies` → companies; licences → entitlements (M02).
 6. `employees`, `stakeholders` → people (M07).
 7. `projects` → projects + workstreams + transitions (M03).
-8. `gapfiles` + S3 objects → files, versions, links (M14) — S3 batch copy job runs before, keyed by `legacy_id`.
+8. `gapfiles` + legacy evidence objects → files, versions, links (M14) — an `rclone copy` job first pulls the objects out of the **legacy AWS bucket** (read-only credentials, the only AWS interaction, and only during migration) into the new object storage (DigitalOcean Spaces), keyed by `legacy_id`.
 9. `gapanalyses` → gap_assessments + gap_answers (+ answer files) (M04); `gapfile.criteria` → doc assessment rounds (M05).
 10. `projectsurveys`, `new_surveys` → survey campaigns, recipients, responses, answers (M08).
 11. `materialities` → materiality results/scores, stakeholder classes (M06).
@@ -33,7 +33,7 @@
 |---|---|
 | Password stored in plaintext (not bcrypt format) | Do not import; user gets a reset email at launch |
 | `Company.password`, `user.otp`, request `logs` | Never migrated |
-| Orphans (project without company, answers without project, files missing in S3) | Skip + report; files missing → evidence link marked "file missing in migration" |
+| Orphans (project without company, answers without project, files missing in the legacy bucket) | Skip + report; files missing → evidence link marked "file missing in migration" |
 | Duplicate emails (case variants) | Merge users; memberships unioned; report |
 | Two projects same company + year | Second becomes `is_additional = true` |
 | Unknown KC keys in gap answers | Report; keep in `gap_answers_unmapped` table for manual review |
@@ -61,10 +61,10 @@
 
 ## 6. Cut-over runbook (outline)
 1. T-14 days: announce date, freeze feature work on `legacy`, close legacy survey campaigns or ask customers to finish.
-2. T-1 day: final DR3 fixes merged; S3 incremental copy of new evidence.
+2. T-1 day: final DR3 fixes merged; incremental `rclone copy` of new evidence from the legacy bucket.
 3. T0: legacy app in **read-only maintenance mode** (banner + API write block on the `legacy` branch deployment); final `mongodump`; ETL run; validation report; go/no-go meeting.
 4. Go: switch DNS `app.resilisense.org` → new SPA, `api.resilisense.org` → new API; send "welcome to the new ResiliSense" email (with reset link for users without importable passwords).
-5. Legacy stays reachable read-only at `legacy.resilisense.org` for 90 days (internal/admin only), then archived (encrypted Mongo dump + S3 objects retained per retention policy) and decommissioned.
+5. Legacy stays reachable read-only at `legacy.resilisense.org` for 90 days (internal/admin only), then archived (encrypted Mongo dump + legacy evidence objects stored in the new provider's cold storage per retention policy) and **all legacy AWS resources (EC2 instances, S3 buckets, CloudFront distributions, IAM users/keys) are deleted**.
 6. **Rollback** (within 48 h): if no-go or severe issue, point DNS back to legacy and lift read-only; data created in the new system during the window is exported for manual re-entry (keep the window short).
 
 ## 7. Open questions

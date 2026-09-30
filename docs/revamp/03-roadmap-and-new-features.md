@@ -10,10 +10,10 @@ The owner decided to **start the code from scratch** (ADR-001). The legacy syste
 - Create `legacy` branch + `legacy-v1` tag in both repos; **re-point all production deploy pipelines to `legacy`** before `main` is reset for the new code.
 - Apply the Phase 0 security checklist in `00-current-state-review.md` §2 (credential rotation, auth on `/api/users*`, password-reset rebuild, remove password-write paths, JWT expiry, GraphiQL off, rate limits, log redaction, static FE build without public source maps).
 - Take an anonymised production snapshot → golden-master fixtures and ETL development data.
-- Confirm the open decisions: database (ADR-003), launch languages, stakeholder-class semantics, scoring edge cases (see `00-current-state-review.md` §6).
+- Confirm the open decisions: hosting provider (ADR-011 — **no AWS**; default DigitalOcean + Cloudflare), database (ADR-003), launch languages, stakeholder-class semantics, scoring edge cases (see `00-current-state-review.md` §6).
 
 ### Phase 1 — Foundations (6–8 weeks)
-- **BE**: NestJS scaffold, config/logging/errors, Prisma + PostgreSQL + RLS, OpenAPI pipeline, BullMQ worker, Docker/compose, CI/CD to staging; **M01** identity & access, **M02** workspaces/companies/entitlements, **M14** files, **M12** audit + email core, **M13** platform admin (workspaces/users) + reference-data seeding (taxonomy, 609 KCs, templates), **M15** i18n framework.
+- **BE**: NestJS scaffold, config/logging/errors, Prisma + PostgreSQL + RLS, OpenAPI pipeline, BullMQ worker, Docker/compose, provider accounts & infrastructure (DigitalOcean App Platform, managed PostgreSQL/Valkey, Spaces; Cloudflare DNS/Pages; Postmark; Sentry) and CI/CD to staging; **M01** identity & access, **M02** workspaces/companies/entitlements, **M14** files, **M12** audit + email core, **M13** platform admin (workspaces/users) + reference-data seeding (taxonomy, 609 KCs, templates), **M15** i18n framework.
 - **FE**: Vite + React + TS scaffold, design system in Storybook (`02-design-system.md`), app shell (sidebar, top bar, workspace switcher, command palette, notification bell), auth screens, settings pages, generated API client, i18n + RTL + dark mode, Playwright/axe CI.
 - ETL skeleton for users/workspaces/companies (DR0 on anonymised data).
 
@@ -23,7 +23,7 @@ The owner decided to **start the code from scratch** (ADR-001). The legacy syste
 
 ### Phase 3 — Performance, supply chain & intelligence (8–10 weeks) → **cut-over**
 - **M09** actions/KPIs/targets, **M10** supply chain (links, sharing, ranking, SAQ, risk), **M17** AI assistant, **M18** carbon MVP, **M13** content editor & help centre, SSO/MFA enforcement.
-- ETL DR3 → cut-over (see `04-data-migration.md` §6); legacy read-only for 90 days, then decommissioned.
+- ETL DR3 → cut-over (see `04-data-migration.md` §6); legacy read-only for 90 days, then decommissioned together with **all legacy AWS resources** (EC2, S3, CloudFront).
 
 ### Phase 4 — Scale & differentiation (ongoing)
 Benchmarking, integrations & public API, billing, iXBRL, report builder v2, PWA/offline, HRIS/ERP connectors, custom question packs.

@@ -8,10 +8,10 @@ Keep multi-person, multi-week assessments moving (notifications, reminders, assi
 
 ## 2. Scope
 ### 2.1 Email (transactional)
-- Single `NotificationService` → `email` queue → Amazon SES; templates in React Email, localised (M15), with plain-text part, workspace branding, unsubscribe/preferences link for non-critical mail.
+- Single `NotificationService` → `email` queue → `EmailAdapter` (default Postmark; SMTP adapter for other providers — no AWS SES); templates in React Email, localised (M15), with plain-text part, workspace branding, unsubscribe/preferences link for non-critical mail.
 - Sender: `notifications@resilisense.org` (SPF/DKIM/DMARC aligned); display name "<Company> via ResiliSense" for survey/supplier mail; reply-to where meaningful.
 - Events inventory (replaces the legacy scattered emails): invitation, email verification, password reset, new-device login, MFA change; project submitted for review (assessor inbox), review round completed, workstream transitions; assignment created, due soon, overdue; survey invite/reminder (M08); supplier invite/access request/decision; KPI data request/due/overdue; report ready/shared; certificate expiring; AI job complete; weekly digest.
-- Delivery tracking via SES events (bounce, complaint, delivery) → `email_messages`; suppression list honoured.
+- Delivery tracking via provider webhooks (bounce, complaint, delivery) → `email_messages`; suppression list honoured.
 
 ### 2.2 In-app notification centre
 - Bell with unread count, list grouped by day, filters (mentions, assignments, reviews, system), mark read/all, deep links; real-time via Server-Sent Events (`GET /v1/notifications/stream`), fallback polling.
@@ -28,7 +28,7 @@ Keep multi-person, multi-week assessments moving (notifications, reminders, assi
 - Captures: actor (user/impersonator/system/API token), action, entity type/id, workspace, before/after diff for data changes (PII-redacted), IP hash, user agent, request id.
 - Coverage: all auth/security events (M01), membership & entitlement changes, every answer/score/value change, state transitions, review decisions, overrides, exports/downloads/shares, deletions/restores, AI suggestion decisions, platform cross-tenant access.
 - Auditor UI: searchable log with filters and CSV export; per-entity "History" tab.
-- **Request logging** is operational only (pino → CloudWatch, bodies never logged); the legacy `logs` collection is not migrated.
+- **Request logging** is operational only (pino → platform log forwarding to Grafana Cloud / Better Stack, bodies never logged); the legacy `logs` collection is not migrated.
 
 ### 2.5 Scheduled jobs (BullMQ repeatables)
 Due-soon/overdue scan (hourly), survey auto-reminders & auto-close, digest emails (daily 07:00 user TZ / weekly Monday), certificate expiry, token/session cleanup, report schedules, data-retention purge, SLA escalation (M05).

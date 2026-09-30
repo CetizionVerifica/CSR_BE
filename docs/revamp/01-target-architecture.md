@@ -1,6 +1,6 @@
 # 01 — Target Architecture & Decisions (greenfield rebuild)
 
-> Status: **Proposed**. The product owner decided (2026-09-30) to **rebuild from scratch** rather than refactor the legacy code. The ADRs below follow from that decision and need tech-lead sign-off before the scaffold PRs. When accepted, change each ADR status to **Accepted** with the date.
+> Status: **Proposed**. The product owner decided (2026-09-30) to **rebuild from scratch** rather than refactor the legacy code, and that **no AWS services or resources are used for deployment** (ADR-011). The ADRs below follow from that decision and need tech-lead sign-off before the scaffold PRs. When accepted, change each ADR status to **Accepted** with the date.
 
 ## 1. Guiding principles
 
@@ -13,21 +13,28 @@
 
 ## 2. System context
 
+**Hard constraint (owner decision, 2026-09-30): no AWS services or AWS resources are used to host, deploy or operate the new system** (no EC2/ECS, S3, CloudFront, RDS, SES, Secrets Manager, CloudWatch, Bedrock, …). All components below are provider-neutral (containers, PostgreSQL, Redis-protocol store, S3-*API*-compatible object storage, SMTP/HTTP email) so the platform can move between providers. Default provider choice: ADR-011.
+
 ```
-                 ┌──────────────────────────────── AWS (eu-central-1 / ap-south-1 per data residency) ──────┐
- Browser ──HTTPS─▶ CloudFront ─▶ S3 (web SPA, hashed assets, strict CSP)                                    │
-   │                                                                                                         │
-   └──HTTPS─▶ api.resilisense.org ─▶ ALB ─▶ api (NestJS, ECS Fargate, N tasks) ──▶ PostgreSQL 16 (RDS/Aurora)│
- Survey respondents / suppliers (public, token links) ─┘        │    │   └──────▶ Redis (queues, rate limits, cache)
-                                                                  │    └──────────▶ S3 (evidence, reports; private, versioned)
-                                                                  ▼
-                                                     worker (same image, `node dist/worker.js`)
-                                                       ├─ email (Amazon SES)
-                                                       ├─ report rendering (Playwright/Chromium → PDF; docx/pptx)
-                                                       ├─ imports (CSV/XLSX)
-                                                       ├─ scheduled jobs (reminders, digests, expiries, retention)
-                                                       └─ AI jobs (Claude API) — M17
-                 └────────────────────────────────────────────────────────────────────────────────────────────┘
+                        ┌──────────── Cloudflare (DNS, WAF, TLS, CDN) ─────────────┐
+ Browser ──HTTPS──────▶ │ app.resilisense.org     → Cloudflare Pages (web SPA)      │
+ Respondents ─HTTPS───▶ │ survey.resilisense.org  → Cloudflare Pages (public app)   │
+                        │ api.resilisense.org     → proxied to the API origin ─────┐│
+                        └──────────────────────────────────────────────────────────┼┘
+                                                                                   ▼
+        ┌──────────────── DigitalOcean region (EU: FRA1/AMS3 · India: BLR1) ─────────────────┐
+        │  App Platform                                                                       │
+        │   ├─ api     (NestJS container, ≥ 2 instances, health-checked, rolling deploys) ──┐  │
+        │   ├─ worker  (same image, `node dist/worker.js`)                                  │  │
+        │   │    ├─ email (Postmark / SMTP adapter)        ├─ imports (CSV/XLSX)            │  │
+        │   │    ├─ report rendering (Playwright/Chromium) ├─ scheduled jobs                │  │
+        │   │    └─ AI jobs (Claude API, direct)           └─ retention                     │  │
+        │   └─ clamav  (clamd, malware scanning for uploads)                                │  │
+        │  Managed PostgreSQL 16 (PITR) ◀───────────────────────────────────────────────────┤  │
+        │  Managed Valkey (Redis-compatible: BullMQ queues, rate limits, cache) ◀───────────┤  │
+        │  Spaces (S3-API-compatible object storage: evidence, reports; private) ◀──────────┘  │
+        └─────────────────────────────────────────────────────────────────────────────────────┘
+   External SaaS: Postmark (email) · Sentry (errors) · Grafana Cloud or Better Stack (logs/metrics/uptime) · Anthropic API (M17)
 ```
 
 ## 3. Architecture Decision Records
@@ -63,7 +70,7 @@ Why change now that we start from scratch:
 - *Why not GraphQL (legacy choice)?* Per-operation authorisation, rate limiting, caching, file transfer and a public API are all simpler with REST; the legacy GraphQL layer is where most authorisation holes were. Dashboard read-models get dedicated endpoints (`GET /v1/projects/:id/dashboard`).
 
 ### ADR-005 Authentication — **short-lived access token + rotating refresh cookie**
-- `POST /v1/auth/login` → access JWT (15 min, EdDSA, `aud`, `iss`, `exp`; kept **in memory** by the SPA) + refresh token (30 days, opaque, `HttpOnly; Secure; SameSite=Lax; Path=/v1/auth`), stored hashed with rotation and family-reuse detection.
+- `POST /v1/auth/login` → access JWT (15 min, EdDSA signing key from the platform's encrypted env, `aud`, `iss`, `exp`; kept **in memory** by the SPA) + refresh token (30 days, opaque, `HttpOnly; Secure; SameSite=Lax; Path=/v1/auth`), stored hashed with rotation and family-reuse detection.
 - API on `api.resilisense.org`, SPA on `app.resilisense.org` → same site, first-party cookie.
 - Passwords `argon2id`; legacy bcrypt hashes are imported and upgraded at first login.
 - TOTP MFA; OIDC SSO (Entra ID, Google) in Phase 3. Details in **M01**.
@@ -101,15 +108,35 @@ Queues: `email`, `report-render`, `import`, `survey`, `ai`, `scheduled`, `retent
 ### ADR-010 Cross-cutting services
 | Concern | Choice |
 |---|---|
-| Config | `@nestjs/config` + Zod env schema; boot fails on missing/invalid env; secrets from AWS Secrets Manager; `.env.example` only in git |
+| Config | `@nestjs/config` + Zod env schema; boot fails on missing/invalid env; secrets injected as encrypted environment variables by the hosting platform (App Platform encrypted env / GitHub Environments secrets; optional Doppler or Infisical as secret manager); `.env.example` only in git |
 | Logging | `pino` (nestjs-pino) JSON; request id, user id, workspace id; redaction of `authorization`, `cookie`, `password`, `token`, `otp` |
 | Security headers | `helmet`, strict CORS allow-list from env, CSP on the SPA (no inline scripts), HSTS |
 | Rate limiting | `@nestjs/throttler` with Redis store; stricter on auth, public survey and upload endpoints |
-| Files | S3 private bucket, presigned POST with size/type conditions (5 min), magic-byte check after upload, GuardDuty Malware Protection for S3, `files` table (M14) |
-| Email | Amazon SES via `email` queue; React Email templates, localised, plain-text part; per-workspace branding |
-| Observability | OpenTelemetry traces + metrics; `/health/live`, `/health/ready` (DB + Redis) |
+| Files | `StorageAdapter` interface over any S3-API-compatible store (default DigitalOcean Spaces; Cloudflare R2, MinIO, Backblaze B2 work unchanged) using the vendor-neutral `minio` JS client; private bucket, presigned **PUT** URLs (5 min) with signed content-type/length, server-side size + magic-byte verification, ClamAV scan before a file becomes available, `files` table (M14) |
+| Email | `EmailAdapter` interface via the `email` queue; default Postmark (HTTP API + signed webhooks); SMTP adapter (Nodemailer) for any other provider — choose an EU-hosted provider (e.g. Brevo, Mailjet) if EU residency of email data is required; React Email templates, localised, plain-text part; per-workspace branding |
+| Observability | OpenTelemetry traces + metrics exported to Grafana Cloud or Better Stack; App Platform log forwarding; Sentry for errors (FE + BE); uptime checks; `/health/live`, `/health/ready` (DB + Redis) |
 | Audit | append-only `audit_events` table (M12) |
 | Feature flags | simple `feature_flags` table + per-workspace overrides (no external service needed initially) |
+
+### ADR-011 Hosting & deployment — **no AWS; DigitalOcean + Cloudflare by default** — Proposed
+Constraint from the owner: nothing is deployed on AWS. Requirements: managed PostgreSQL with PITR, Redis-protocol store, S3-API object storage, container hosting with health checks and rolling deploys, EU **and** India regions, simple operations for a small team.
+
+| Layer | Default | Why |
+|---|---|---|
+| API + worker + ClamAV containers | **DigitalOcean App Platform** (one app per environment and region) | Managed containers, health checks, rolling deploys, encrypted env vars, autoscaling; no servers to patch |
+| Database | **DigitalOcean Managed PostgreSQL 16** (primary + standby node in production) | Standard Postgres (RLS, `citext`, `pgcrypto`), PITR, automated failover |
+| Queues/cache | **DigitalOcean Managed Valkey** (Redis-compatible) | BullMQ-compatible |
+| Object storage | **DigitalOcean Spaces** (S3-API-compatible) behind `StorageAdapter` | Same region as data; portable to R2/B2/MinIO |
+| Web SPA + public survey app | **Cloudflare Pages** | Global CDN, per-PR previews, free TLS |
+| DNS, WAF, DDoS, rate limiting at edge | **Cloudflare** | In front of both SPA and API |
+| Email | **Postmark** via `EmailAdapter` (SMTP adapter for alternatives) | Deliverability, bounce webhooks |
+| Errors / logs / uptime | **Sentry**, **Grafana Cloud** or **Better Stack** | Vendor-neutral OpenTelemetry |
+| Container registry | DigitalOcean Container Registry (or GHCR) | Close to App Platform |
+| AI | **Anthropic API directly** (never via Amazon Bedrock) | M17 |
+
+Alternatives, if the owner prefers: **Microsoft Azure** (Container Apps, Azure Database for PostgreSQL Flexible Server, Azure Cache for Redis, Blob Storage via a Blob `StorageAdapter`, Key Vault, Static Web Apps; Central India + West Europe regions; fits Microsoft 365 / Entra SSO customers) or **Hetzner/OVH VPS + Coolify/Docker Compose** (lowest cost, but you operate PostgreSQL backups, patching and failover yourself). Because every integration sits behind an adapter and ships as a container, switching provider is a deployment change, not a code change.
+
+**Legacy note:** the legacy system currently runs on AWS (EC2, S3, CloudFront). It stays there only until cut-over; the ETL reads legacy evidence files out of the legacy bucket once (read-only credentials), then all AWS resources are decommissioned (`04-data-migration.md` §6).
 
 ## 4. Backend layout (`CSR_BE`, new)
 ```
@@ -120,7 +147,7 @@ CSR_BE/
 │  ├─ app.module.ts
 │  ├─ common/                  # guards (@Can, @Public), tenancy context, errors, pagination, zod pipes
 │  ├─ config/                  # env schema
-│  ├─ infra/                   # prisma, redis, s3, ses, pdf renderer, anthropic client
+│  ├─ infra/                   # prisma, redis, storage adapter, email adapter, clamav, pdf renderer, anthropic client
 │  └─ modules/
 │     ├─ identity/             # M01
 │     ├─ workspaces/           # M02 (workspaces, companies, entitlements, partners)
@@ -148,7 +175,8 @@ CSR_BE/
 ├─ etl/                        # one-off Mongo → Postgres migration (04-data-migration.md)
 ├─ test/                       # e2e (supertest + Testcontainers Postgres/Redis), golden fixtures
 ├─ openapi.json                # generated, committed
-├─ docker-compose.yml          # postgres, redis, minio, mailpit
+├─ docker-compose.yml          # postgres, valkey/redis, minio (S3-API), clamav, mailpit
+├─ .do/app.yaml               # DigitalOcean App Platform spec (api, worker, clamav) per environment
 └─ Dockerfile
 ```
 Each module: `*.module.ts`, `*.controller.ts`, `*.service.ts`, `*.repository.ts` (Prisma access only here), `dto/*.ts` (Zod), `engine/*.ts` (pure, no I/O), `events.ts`, `__tests__/`.
@@ -180,13 +208,13 @@ Resilisense-FE/
 ## 7. Environments & CI/CD
 | Env | Purpose | Data |
 |---|---|---|
-| local | `docker compose up` (postgres, redis, minio, mailpit) + `npm run dev` | seed: reference data + demo workspaces |
+| local | `docker compose up` (postgres, valkey, minio, clamav, mailpit) + `npm run dev` | seed: reference data + demo workspaces |
 | preview | per-PR FE preview against staging API | staging |
 | staging | full stack, prod-like | anonymised ETL output, refreshed monthly |
 | production | | |
 
 CI (GitHub Actions) on every PR in both repos: `npm ci` (never `--force`) → `lint` → `typecheck` → `unit tests + coverage` → `build` → BE: `e2e (Testcontainers)` + `openapi diff`; FE: `Playwright smoke + axe` against preview → `npm audit --omit=dev`, gitleaks, CodeQL.
-CD: merge to `main` → deploy to staging (BE Docker image → ECR via GitHub OIDC → ECS rolling deploy with health checks; FE → S3 + CloudFront invalidation). Production via release tag + manual approval (GitHub Environments). No SSH deploys, no `git pull` on servers, no pm2.
+CD (no AWS): merge to `main` → build the BE Docker image → push to DigitalOcean Container Registry (or GHCR) → `doctl apps create-deployment` for the **staging** app (App Platform rolling deploy with health checks and automatic rollback on failed checks); FE → Cloudflare Pages (preview deployment per PR, staging on `main`). Production via release tag + manual approval (GitHub Environments) promoting the same image digest. No SSH deploys, no `git pull` on servers, no pm2.
 
 ## 8. Non-functional requirements
 | Area | Target |
@@ -195,7 +223,7 @@ CD: merge to `main` → deploy to staging (BE Docker image → ECR via GitHub OI
 | Availability | 99.9 % monthly; zero-downtime deploys |
 | Scale (3-year) | 2,000 workspaces, 50k users, 5M survey answers, 2 TB evidence |
 | Security | OWASP ASVS L2; annual pen-test; critical dependency alerts fixed < 48 h |
-| Privacy | GDPR/DPDP: export & erasure per workspace and per survey respondent; data residency (EU / India) by deployment region |
+| Privacy | GDPR/DPDP: export & erasure per workspace and per survey respondent; data residency by deploying one stack per region (EU: Frankfurt/Amsterdam, India: Bangalore); sub-processor list (hosting, email, Sentry, logs, Anthropic) published |
 | Accessibility | WCAG 2.2 AA |
 | Browsers | last 2 versions of Chrome, Edge, Firefox, Safari; iOS 16+, Android 10+ (public survey) |
-| Backups | PITR 7 days, daily snapshots 35 days, S3 versioning; quarterly restore drill |
+| Backups | Managed PostgreSQL daily backups + PITR 7 days, plus nightly logical dump (`pg_dump`, encrypted) to a second provider (e.g. Backblaze B2 or Cloudflare R2); object storage replicated nightly with `rclone` to the second provider; app-level file versioning (M14); quarterly restore drill |

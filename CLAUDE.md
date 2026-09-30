@@ -14,12 +14,14 @@ Work on the `legacy` branch, keep changes minimal, and follow `docs/revamp/00-cu
 
 ## Target stack (see `docs/revamp/01-target-architecture.md`)
 
-Node 22 LTS · NestJS 11 · TypeScript strict · PostgreSQL 16 + Prisma (RLS for tenant isolation) · REST + OpenAPI 3.1 (Zod via `nestjs-zod`) · BullMQ + Redis · S3 (presigned POST) · Amazon SES · pino · Vitest/Jest + supertest + Testcontainers · Docker → ECS.
+Node 22 LTS · NestJS 11 · TypeScript strict · PostgreSQL 16 + Prisma (RLS for tenant isolation) · REST + OpenAPI 3.1 (Zod via `nestjs-zod`) · BullMQ + Redis-compatible Valkey · S3-API-compatible object storage via `StorageAdapter` (presigned PUT, ClamAV scan) · `EmailAdapter` (Postmark/SMTP) · pino · Vitest/Jest + supertest + Testcontainers · Docker → DigitalOcean App Platform; Cloudflare in front.
+
+**No AWS.** The owner has ruled out AWS for hosting and deployment (ADR-011): do not add AWS services, AWS-specific SDK features, IAM/CloudFormation/CDK/Terraform-for-AWS, Bedrock, SES, S3-hosted assets or GitHub Actions that deploy to AWS. Keep integrations behind adapters (`StorageAdapter`, `EmailAdapter`) so the provider stays swappable. The only AWS interaction allowed is the one-off, read-only copy of legacy evidence files during migration (`docs/revamp/04-data-migration.md`).
 
 ## Commands (available after the scaffold PR)
 
 ```bash
-docker compose up -d          # postgres, redis, minio (S3), mailpit
+docker compose up -d          # postgres, valkey, minio (S3-API), clamav, mailpit
 npm ci
 npm run db:migrate            # prisma migrate dev (+ RLS policies in prisma/rls)
 npm run db:seed               # reference data: ISO 26000 taxonomy (609 KCs), templates, sectors, units
@@ -43,12 +45,12 @@ Run lint, typecheck and the relevant tests before every commit. Never use `npm i
 - **State machines** — project/workstream transitions only through the transition service (M03 §7), which validates the transition, writes `state_transitions`, emits events and enforces edit locks.
 - **API** — REST under `/v1`, Zod DTOs, cursor pagination, errors as RFC 9457 problem+json with stable `type` codes, `Idempotency-Key` on POSTs that send email or start jobs. Every change to the API must regenerate and commit `openapi.json`.
 - **Side effects** — email, report rendering, imports, AI calls and reminders run in BullMQ workers, never in the request path. Emit domain events; write `audit_events` for data changes and security events (M12).
-- **Config** — all config from env validated by Zod at boot; `.env.example` is the only env file in git. No secrets in code, tests, fixtures or logs.
+- **Config** — all config from env validated by Zod at boot (secrets arrive as encrypted platform env vars); `.env.example` is the only env file in git. No secrets in code, tests, fixtures or logs.
 - **Logging** — pino with redaction (`authorization`, `cookie`, `password`, `token`, `otp`); never log request/response bodies.
 
 ## Security checklist (every PR)
 
-Auth/permission decorator present · tenant scoping tested (another workspace gets 404) · input validated with Zod · no raw user input in regexes or dynamic field names · no secrets/PII in logs · file uploads via presigned POST with type/size limits and magic-byte check · rate limits on public endpoints.
+Auth/permission decorator present · tenant scoping tested (another workspace gets 404) · input validated with Zod · no raw user input in regexes or dynamic field names · no secrets/PII in logs · file uploads via presigned PUT with signed type/size, post-upload size + magic-byte check and ClamAV scan · rate limits on public endpoints.
 
 ## Testing expectations
 

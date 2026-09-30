@@ -49,7 +49,7 @@ ai_settings    { workspace_id pk, enabled boolean default false, monthly_budget_
 Indexes: `ai_jobs (workspace_id, created_at)`, `ai_suggestions (workspace_id, target_type, target_id, status)`.
 
 ## 6. Technical design
-- **SDK:** `@anthropic-ai/sdk` (official TypeScript SDK) inside `src/infra/ai/anthropic.client.ts`; all calls go through `AiService` (no direct SDK use in feature modules).
+- **SDK:** `@anthropic-ai/sdk` (official TypeScript SDK) calling the **Anthropic API directly** (not via Amazon Bedrock — no AWS, ADR-011) inside `src/infra/ai/anthropic.client.ts`; all calls go through `AiService` (no direct SDK use in feature modules).
 - **Model:** default `claude-opus-5-5` for every route; model id is a config value per feature (`AI_MODEL_EVIDENCE`, `AI_MODEL_SURVEY`, …) so a cheaper model can be evaluated later against the eval set (§9) — change it only when measurements show quality holds. Use adaptive thinking (default) and set `output_config.effort` explicitly per route (start at `medium`; raise only if the eval shows headroom). Use streaming for long inputs/outputs.
 - **Refusals:** check `stop_reason` before reading content; handle `refusal` gracefully (job → `failed` with a user-readable message) and enable the server-side `fallbacks` option.
 - **Evidence input:** PDFs sent as `document` content blocks (Files API for files reused across questions of the same project, so each evidence file is uploaded once); `citations: { enabled: true }` on each document to get page-level `page_location` citations.

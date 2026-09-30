@@ -148,7 +148,7 @@ Status never reuses amber-500 (accent) so "warning" and "brand highlight" are ne
 | Group | Components |
 |---|---|
 | Actions | `Button` (primary / secondary / ghost / destructive / link; sm/md/lg; loading), `IconButton`, `ButtonGroup`, `SplitButton`, `DropdownMenu` |
-| Inputs | `Input`, `Textarea` (auto-grow), `NumberInput` (unit suffix), `Select`, `Combobox` (async search), `MultiSelect` (tags), `DatePicker`, `DateRangePicker` (presets), `Checkbox`, `RadioGroup`, `Switch`, `Slider`, `FileDropzone` (S3 presigned, progress, type/size limits) |
+| Inputs | `Input`, `Textarea` (auto-grow), `NumberInput` (unit suffix), `Select`, `Combobox` (async search), `MultiSelect` (tags), `DatePicker`, `DateRangePicker` (presets), `Checkbox`, `RadioGroup`, `Switch`, `Slider`, `FileDropzone` (presigned upload, progress, type/size limits) |
 | Assessment inputs | `YesNoNA`, `LikertScale` (1–5 / 0–4, labelled ends), `RatingSegmented`, `RankOrder` (drag + keyboard), `EvidenceList` |
 | Data display | `DataTable` (sort, filter chips, column picker, row selection, bulk actions, pagination/virtual, CSV export, saved views, empty/loading/error states), `StatTile` (value, delta, sparkline), `Badge`, `StatusPill`, `ProgressBar`, `ProgressRing`, `Avatar`/`AvatarGroup`, `KeyValueList`, `Timeline`, `Tree` (core subject → issue → question) |
 | Feedback | `Toast` (sonner), `Alert`/`Banner`, `Skeleton`, `EmptyState` (illustration + CTA), `ErrorState` (retry), `ConfirmDialog` (typed confirmation for destructive ops) |
