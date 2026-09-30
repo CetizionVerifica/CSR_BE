@@ -1,15 +1,13 @@
 node_modules
-/bot
-bundle.js
-npm-debug.log
-.DS_Store
-.vscode
+dist
+coverage
 .env
-
-# IntelliJ
-*.iml
-/.idea
-public
-
-# server/config/dev.js
-client/build.zip
+.env.*
+!.env.example
+.data
+src/generated
+*.log
+.DS_Store
+.idea
+.vscode
+*.tsbuildinfo
