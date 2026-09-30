@@ -7,6 +7,7 @@
 Independent verification of the company's self-assessment. A ResiliSense/CSRC **platform assessor** checks every evidence document against quality criteria and whether it really supports the linked key considerations. The result is a **revised (verified) score** that is more credible than the self-assessment and is what buyers see in supplier ranking. Legacy runs two rounds: the company can improve evidence after round 1.
 
 ## 2. Users & permissions
+
 | Role | Can |
 |---|---|
 | platform_assessor | See review queue across tenants (only projects in `submitted_*`/`in_review_*`), claim a project, assess files, comment, complete a round |
@@ -67,6 +68,7 @@ Criteria: `authentic`, `up_to_date`, `communicated` (20 points each) + KC covera
 > The `DocAssessmentReport` per-file "overall" formula (`20/20/20 + 40 × share of the file's KCs addressed`) is kept only as a **file-level** summary metric, clearly labelled, and computed server-side.
 
 ### 7.2 Multiplier per KC (legacy `updateKeyConsiderationRevisingScore`)
+
 | KC evidence situation | multiplier `m` |
 |---|---|
 | file(s) linked | `revising_score` from §7.1 |
@@ -89,6 +91,7 @@ With `a` = KC performance (0–4) and weights from M04 §7.1:
 - SLA: default 10 business days per round; queue highlights overdue; weekly digest to platform owner.
 
 ## 8. API contract (REST `/v1`)
+
 | Route | Permission |
 |---|---|
 | `GET /reviews?filter[status]=&filter[assignee]=me&sort=sla_due_at` | `gap:review` (platform, cross-tenant read model) |
@@ -98,6 +101,7 @@ With `a` = KC performance (0–4) and weights from M04 §7.1:
 | `POST /reviews/:roundId/complete` | `gap:review`; 409 with unassessed files |
 | `POST /reviews/:roundId/reopen` `{ reason }` | platform_owner |
 | `GET /projects/:id/doc-assessment` (company view: rounds, per-file results, per-KC verified scores, comments) | `project:read` |
+
 Cross-tenant access for assessors is implemented as an explicit, audited platform query path (separate DB role / `crossTenant()` repository method), never by disabling RLS globally.
 
 ## 9. UI

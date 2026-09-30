@@ -7,6 +7,7 @@
 Collect stakeholder views at scale — first for materiality (ranking of core subjects and issues), later for any questionnaire (employee commuting for M18, supplier self-assessment for M10, custom pulse surveys). Respondents answer via a personal link without an account, on any device, in their language.
 
 ## 2. Users & permissions
+
 | Role | Can |
 |---|---|
 | workspace_admin / lead | Create campaign, choose template, pick recipients, customise emails, send, remind, close, export (`survey:send`) |
@@ -71,6 +72,7 @@ Token = 32 random bytes base64url; only SHA-256 stored; link `https://survey.res
 
 ## 8. API contract (REST `/v1`)
 Authenticated:
+
 | Route | Permission |
 |---|---|
 | `GET/POST /projects/:pid/surveys` · `GET/PATCH /surveys/:id` | `project:read` / `survey:send` |
@@ -78,13 +80,16 @@ Authenticated:
 | `POST /surveys/:id/send` · `POST /surveys/:id/remind` · `POST /surveys/:id/close` · `POST /surveys/:id/reopen` | `survey:send` (Idempotency-Key) |
 | `POST /surveys/:id/test-email` `{ to, language }` | `survey:send` |
 | `GET /surveys/:id/stats` · `GET /surveys/:id/results` · `GET /surveys/:id/export.xlsx` | `project:read` / `report:export` |
+
 Public (token in path, rate-limited, no auth header):
+
 | Route | Notes |
 |---|---|
 | `GET /public/surveys/:token` | questionnaire definition in requested language + saved answers + branding |
 | `PUT /public/surveys/:token/answers/:questionKey` | autosave (debounced client-side) |
 | `POST /public/surveys/:token/submit` | validates required answers; 422 with missing keys |
 | `POST /public/surveys/:token/delete-request` | GDPR |
+
 Email provider webhooks: `POST /webhooks/email/:provider` (signature or basic-auth verified per provider) → bounces/complaints/deliveries.
 
 ## 9. UI

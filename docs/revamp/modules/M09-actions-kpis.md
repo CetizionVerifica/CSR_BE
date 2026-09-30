@@ -7,6 +7,7 @@
 Turn assessment results into a managed improvement plan: actions for material or weak issues, KPIs that measure progress, targets, and periodic data collection — year over year.
 
 ## 2. Users & permissions
+
 | Role | Can |
 |---|---|
 | workspace_admin / lead | Create/edit actions, KPIs, targets; approve data (`kpi:manage`) |
@@ -59,6 +60,7 @@ library_kpis { id, code, name_key, unit_code, direction, framework_refs text[] }
 - Legacy rule "actions only after materiality" is dropped: actions can be created anytime (M03 §7).
 
 ## 8. API contract (REST `/v1`)
+
 | Route | Permission |
 |---|---|
 | `GET/POST /companies/:cid/actions` · `GET/PATCH/DELETE /actions/:id` | `project:read` / `kpi:manage` |

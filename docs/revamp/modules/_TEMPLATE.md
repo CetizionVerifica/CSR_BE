@@ -7,6 +7,7 @@
 One paragraph: the user problem this module solves and who uses it.
 
 ## 2. Users & permissions
+
 | Role | Can |
 |---|---|
 | | |

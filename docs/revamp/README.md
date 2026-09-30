@@ -12,7 +12,7 @@ This folder is the **single source of truth** for rebuilding ResiliSense from sc
 | # | Document | What it answers |
 |---|---|---|
 | 00 | [Current-state review](00-current-state-review.md) | What the legacy product does, what is broken/insecure, what we keep |
-| 01 | [Target architecture & ADRs](01-target-architecture.md) | Stack, repo layout, API style, auth, tenancy, hosting (no AWS), delivery, NFRs |
+| 01 | [Target architecture & ADRs](01-target-architecture.md) | Stack, repo layout, API style, auth, tenancy, VPS hosting (no AWS), delivery, NFRs |
 | 02 | [Design system](02-design-system.md) | Brand tokens, components, layouts, charts, accessibility |
 | 03 | [Roadmap & new features](03-roadmap-and-new-features.md) | Phases, prioritised feature backlog, success metrics, risks |
 | 04 | [Data migration & cut-over](04-data-migration.md) | Mongo → Postgres ETL, validation, runbook |
@@ -54,7 +54,7 @@ New specs start from [`modules/_TEMPLATE.md`](modules/_TEMPLATE.md).
 
 | # | Decision | Recommendation | Where |
 |---|---|---|---|
-| 0 | Hosting (**no AWS** — owner constraint) | DigitalOcean (App Platform, managed PostgreSQL/Valkey, Spaces) + Cloudflare (Pages, DNS, WAF) + Postmark; alternatives Azure or Hetzner/Coolify | ADR-011 |
+| 0 | Hosting — **decided: self-managed VPS, no AWS** | Pick the VPS provider per region (EU + India), S3-compatible object storage and off-site backup provider; deploy with Kamal 2, provision with Ansible, Cloudflare in front | ADR-011 |
 | 1 | Database | PostgreSQL 16 + Prisma (alternative: stay on MongoDB) | ADR-003 |
 | 2 | API style | REST + OpenAPI (legacy was GraphQL) | ADR-004 |
 | 3 | Repos | Keep 2 repos; legacy on `legacy` branch; `main` reset for new code after deploys re-pointed | ADR-001, ADR-009 |

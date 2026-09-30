@@ -10,10 +10,10 @@ The owner decided to **start the code from scratch** (ADR-001). The legacy syste
 - Create `legacy` branch + `legacy-v1` tag in both repos; **re-point all production deploy pipelines to `legacy`** before `main` is reset for the new code.
 - Apply the Phase 0 security checklist in `00-current-state-review.md` §2 (credential rotation, auth on `/api/users*`, password-reset rebuild, remove password-write paths, JWT expiry, GraphiQL off, rate limits, log redaction, static FE build without public source maps).
 - Take an anonymised production snapshot → golden-master fixtures and ETL development data.
-- Confirm the open decisions: hosting provider (ADR-011 — **no AWS**; default DigitalOcean + Cloudflare), database (ADR-003), launch languages, stakeholder-class semantics, scoring edge cases (see `00-current-state-review.md` §6).
+- Confirm the open decisions: VPS provider per region (ADR-011 — self-managed VPS, **no AWS**), object-storage and off-site backup providers, database (ADR-003), launch languages, stakeholder-class semantics, scoring edge cases (see `00-current-state-review.md` §6).
 
 ### Phase 1 — Foundations (6–8 weeks)
-- **BE**: NestJS scaffold, config/logging/errors, Prisma + PostgreSQL + RLS, OpenAPI pipeline, BullMQ worker, Docker/compose, provider accounts & infrastructure (DigitalOcean App Platform, managed PostgreSQL/Valkey, Spaces; Cloudflare DNS/Pages; Postmark; Sentry) and CI/CD to staging; **M01** identity & access, **M02** workspaces/companies/entitlements, **M14** files, **M12** audit + email core, **M13** platform admin (workspaces/users) + reference-data seeding (taxonomy, 609 KCs, templates), **M15** i18n framework.
+- **BE**: NestJS scaffold, config/logging/errors, Prisma + PostgreSQL + RLS, OpenAPI pipeline, BullMQ worker, Docker/compose, VPS infrastructure as code (Ansible provisioning & hardening of `staging`, `app-1`, `data-1`; PostgreSQL + pgBackRest off-site backups with a first restore drill; Valkey; object storage; Cloudflare DNS/WAF; Postmark; Sentry; monitoring & alerts; runbooks) and CI/CD with Kamal 2 to staging; **M01** identity & access, **M02** workspaces/companies/entitlements, **M14** files, **M12** audit + email core, **M13** platform admin (workspaces/users) + reference-data seeding (taxonomy, 609 KCs, templates), **M15** i18n framework.
 - **FE**: Vite + React + TS scaffold, design system in Storybook (`02-design-system.md`), app shell (sidebar, top bar, workspace switcher, command palette, notification bell), auth screens, settings pages, generated API client, i18n + RTL + dark mode, Playwright/axe CI.
 - ETL skeleton for users/workspaces/companies (DR0 on anonymised data).
 
@@ -22,6 +22,7 @@ The owner decided to **start the code from scratch** (ADR-001). The legacy syste
 - ETL DR1/DR2 with golden-master sign-off; pilot with 2–3 customers.
 
 ### Phase 3 — Performance, supply chain & intelligence (8–10 weeks) → **cut-over**
+- Infra: PostgreSQL streaming replica (`data-2`) + fail-over runbook tested, second app node if load requires, load test on production-sized VPSs.
 - **M09** actions/KPIs/targets, **M10** supply chain (links, sharing, ranking, SAQ, risk), **M17** AI assistant, **M18** carbon MVP, **M13** content editor & help centre, SSO/MFA enforcement.
 - ETL DR3 → cut-over (see `04-data-migration.md` §6); legacy read-only for 90 days, then decommissioned together with **all legacy AWS resources** (EC2, S3, CloudFront).
 

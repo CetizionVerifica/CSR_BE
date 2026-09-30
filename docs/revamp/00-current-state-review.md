@@ -29,6 +29,7 @@ Project lifecycle (statuses): `New → FirstAssessmentRequest → FirstAssessmen
 Both repositories are private, but production is internet-facing. Severity: **C** critical · **H** high · **M** medium.
 
 ### 2.1 Account takeover without logging in
+
 | Sev | Finding | Location |
 |---|---|---|
 | C | REST `POST/GET /api/users`, `GET /api/users/:id`, `POST /api/users/reset-password` have **no auth**. Anyone can create a user with any role (incl. admin) and list all users **including their current reset OTP**. The FE even ships an unguarded `/super-admin` page that calls it. | BE `server/routes/userRoutes.js:7-15`, `controllers/userController.js:10-27,100-110`; FE `App.js:311`, `superadmin/index.js:96` |
@@ -37,6 +38,7 @@ Both repositories are private, but production is internet-facing. Severity: **C*
 | C | Survey answer/side/complete endpoints are public and keyed by guessable/forgeable ids (`sideID` "encrypted" with a hardcoded secret). SurveyMonkey webhooks don't verify signatures. | `server/router.js:84-111`, `controllers/surveys.js:810-866,1072-1080` |
 
 ### 2.2 Privilege escalation & cross-tenant access (authenticated)
+
 | Sev | Finding | Location |
 |---|---|---|
 | C | `updateCompany` sets the password of the user whose email is `personEmail` — any user can take over any account, incl. superadmin. `Company.password` is stored **in plaintext** and exposed through GraphQL. | `mutations/company/update.js:36-39`, `models/company.js:170`, `types/companyType.js:48` |
@@ -47,6 +49,7 @@ Both repositories are private, but production is internet-facing. Severity: **C*
 | H | Client-chosen filter/sort field names and unescaped regex in pagination → data oracle on `password`/`otp`, ReDoS. | `schema/queryPagination.js:54-79` |
 
 ### 2.3 Secrets, tokens, logging
+
 | Sev | Finding | Location |
 |---|---|---|
 | C | Committed and **identical in dev and prod**: MongoDB Atlas URI with password, JWT/session/cookie secrets, SendGrid key, SurveyMonkey token, Google OAuth secret, Stripe test keys, default admin password; SMTP username/password hardcoded; a `.env` with secrets is in git history (commit `e3bcecb`). `npm run dev` therefore touches production data. | `server/config/dev.js`, `server/config/prod.js`, `services/nodeMaler.js:44-45`, `.gitignore:14` |

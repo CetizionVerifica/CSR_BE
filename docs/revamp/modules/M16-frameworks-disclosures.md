@@ -6,6 +6,7 @@
 Today the platform is built around the **ISO 26000** structure only (7 core subjects → 41 issues of interest → ~609 key considerations, see `CSR_BE/Docs/GapAnalysisV2.xlsx`). Customers increasingly have to report against mandatory or investor frameworks. This module adds a **framework layer**: every question, KPI and materiality topic can be tagged to disclosure requirements, so one assessment produces coverage and a disclosure index for several frameworks.
 
 Supported frameworks (initial):
+
 | Framework | Why |
 |---|---|
 | **ESRS** (EU CSRD) — ESRS 2 + E1–E5, S1–S4, G1 | Mandatory for in-scope EU companies and their value chain; requires double materiality (M06) |
@@ -17,6 +18,7 @@ Supported frameworks (initial):
 | **UN Global Compact** | Legacy "annual review" checklist becomes a real framework (10 principles, CoP-style export) |
 
 ## 2. Users & permissions
+
 | Role | Can |
 |---|---|
 | Platform admin / content editor | Import framework versions, maintain mappings (`framework:manage`) |
@@ -52,6 +54,7 @@ Global (non-tenant) collections for catalogue & mappings; selections are tenant-
 - Framework versions are immutable once published; projects pin a version; upgrading a project to a new version shows a diff.
 
 ## 6. API contract (REST `/v1`)
+
 | Route | Permission |
 |---|---|
 | `GET /frameworks` · `GET /frameworks/:id/nodes?parentId=&q=` (tree, localised) | authenticated |

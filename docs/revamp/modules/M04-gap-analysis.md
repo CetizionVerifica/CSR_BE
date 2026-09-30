@@ -7,6 +7,7 @@
 The company assesses its current CSR performance and the relevance of each ISO 26000 **key consideration (KC)**, attaches evidence, and gets a weighted performance score per issue, core subject and overall — the baseline for materiality, actions and supplier ranking.
 
 ## 2. Users & permissions
+
 | Role | Can |
 |---|---|
 | workspace_admin / project lead | Everything below + submit for review, assign sections |
@@ -121,6 +122,7 @@ Progress % = answered applicable KCs ÷ applicable non-header KCs (server-side d
 Copy `performance_input`, `relevance`, `note`, evidence links (files are shared, not copied) with `carried_forward = true`; they count as answered but show "confirm"; submission requires confirmation of all carried-forward answers (configurable per project).
 
 ## 8. API contract (REST `/v1`)
+
 | Route | Permission |
 |---|---|
 | `GET /taxonomy/:version` (tree with labels in requested locale; cacheable, ETag) | authenticated |

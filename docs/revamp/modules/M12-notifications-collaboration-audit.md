@@ -28,7 +28,7 @@ Keep multi-person, multi-week assessments moving (notifications, reminders, assi
 - Captures: actor (user/impersonator/system/API token), action, entity type/id, workspace, before/after diff for data changes (PII-redacted), IP hash, user agent, request id.
 - Coverage: all auth/security events (M01), membership & entitlement changes, every answer/score/value change, state transitions, review decisions, overrides, exports/downloads/shares, deletions/restores, AI suggestion decisions, platform cross-tenant access.
 - Auditor UI: searchable log with filters and CSV export; per-entity "History" tab.
-- **Request logging** is operational only (pino → platform log forwarding to Grafana Cloud / Better Stack, bodies never logged); the legacy `logs` collection is not migrated.
+- **Request logging** is operational only (pino JSON to container stdout → shipped by Grafana Alloy/Vector to Grafana/Loki, bodies never logged); the legacy `logs` collection is not migrated.
 
 ### 2.5 Scheduled jobs (BullMQ repeatables)
 Due-soon/overdue scan (hourly), survey auto-reminders & auto-close, digest emails (daily 07:00 user TZ / weekly Monday), certificate expiry, token/session cleanup, report schedules, data-retention purge, SLA escalation (M05).
@@ -45,6 +45,7 @@ webhook_endpoints { id, workspace_id, kind: 'teams'|'slack'|'generic', url_enc, 
 ```
 
 ## 4. API contract (REST `/v1`)
+
 | Route | Permission |
 |---|---|
 | `GET /notifications?cursor=` · `POST /notifications/read` `{ ids|all }` · `GET /notifications/stream` (SSE) | authenticated |

@@ -14,9 +14,9 @@ Work on the `legacy` branch, keep changes minimal, and follow `docs/revamp/00-cu
 
 ## Target stack (see `docs/revamp/01-target-architecture.md`)
 
-Node 22 LTS · NestJS 11 · TypeScript strict · PostgreSQL 16 + Prisma (RLS for tenant isolation) · REST + OpenAPI 3.1 (Zod via `nestjs-zod`) · BullMQ + Redis-compatible Valkey · S3-API-compatible object storage via `StorageAdapter` (presigned PUT, ClamAV scan) · `EmailAdapter` (Postmark/SMTP) · pino · Vitest/Jest + supertest + Testcontainers · Docker → DigitalOcean App Platform; Cloudflare in front.
+Node 22 LTS · NestJS 11 · TypeScript strict · PostgreSQL 16 + Prisma (RLS for tenant isolation) · REST + OpenAPI 3.1 (Zod via `nestjs-zod`) · BullMQ + Redis-compatible Valkey · S3-API-compatible object storage via `StorageAdapter` (presigned PUT, ClamAV scan) · `EmailAdapter` (Postmark/SMTP) · pino · Vitest/Jest + supertest + Testcontainers · Docker images deployed with **Kamal 2** to self-managed **VPS** servers (provisioned with Ansible in `infra/ansible/`); Cloudflare in front.
 
-**No AWS.** The owner has ruled out AWS for hosting and deployment (ADR-011): do not add AWS services, AWS-specific SDK features, IAM/CloudFormation/CDK/Terraform-for-AWS, Bedrock, SES, S3-hosted assets or GitHub Actions that deploy to AWS. Keep integrations behind adapters (`StorageAdapter`, `EmailAdapter`) so the provider stays swappable. The only AWS interaction allowed is the one-off, read-only copy of legacy evidence files during migration (`docs/revamp/04-data-migration.md`).
+**No AWS — self-managed VPS.** The owner has ruled out AWS and chose VPS hosting (ADR-011): do not add AWS services, AWS-specific SDK features, IAM/CloudFormation/CDK/Terraform-for-AWS, Bedrock, SES, S3-hosted assets or GitHub Actions that deploy to AWS. Keep integrations behind adapters (`StorageAdapter`, `EmailAdapter`) so the provider stays swappable. The only AWS interaction allowed is the one-off, read-only copy of legacy evidence files during migration (`docs/revamp/04-data-migration.md`).
 
 ## Commands (available after the scaffold PR)
 
@@ -32,7 +32,9 @@ npm test                      # unit (engines, services)
 npm run test:e2e              # API e2e with Testcontainers
 npm run openapi               # regenerate openapi.json — commit it; FE generates its client from it
 npm run seed:owner -- --email you@example.com   # first platform owner (prints one-time reset link)
+kamal deploy -d staging       # deploy (CI does this on main); kamal rollback <version> to roll back
 ```
+Infrastructure changes (hosts, firewall, backups) go through `infra/ansible/` and `config/deploy*.yml`, never by hand on a server; update the runbooks in `infra/runbooks/` when operations change.
 Run lint, typecheck and the relevant tests before every commit. Never use `npm install --force` / `npm ci --force`.
 
 ## Architecture rules

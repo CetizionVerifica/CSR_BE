@@ -18,6 +18,7 @@ Give each audience the view it needs — contributors (what's next), sustainabil
 
 ## 4. Scope
 ### 4.1 Dashboards
+
 | Dashboard | Audience | Content |
 |---|---|---|
 | **Project dashboard** (M03) | project team | journey, key results widgets (each independent, entitlement-aware) |
@@ -27,6 +28,7 @@ Give each audience the view it needs — contributors (what's next), sustainabil
 | **Performance** (M09) | lead/exec | KPI trends vs targets, actions board |
 | **Portfolio** | partner_admin, platform_assessor/owner | all client projects: stage, % complete, verified score, overdue items, SLA; filters; CSV |
 | **Year-over-year** | exec | two or more years side by side (gap per core subject, material topics movement, KPI deltas) |
+
 Rules: every widget has loading skeleton, empty state with CTA, error state with retry; one chart = one message (design system §6); "View as table" + CSV/PNG/SVG download on every chart card.
 
 ### 4.2 Reports (server-rendered)
@@ -69,6 +71,7 @@ report_sections  { id, workspace_id, document_id, key, order, kind: 'narrative'|
 - Share links never expose evidence files unless explicitly included.
 
 ## 8. API contract (REST `/v1`)
+
 | Route | Permission |
 |---|---|
 | `GET /projects/:pid/dashboard` · `GET /companies/:cid/overview` · `GET /portfolio` · `GET /companies/:cid/yoy?years=` | `project:read` (portfolio: partner/platform) |

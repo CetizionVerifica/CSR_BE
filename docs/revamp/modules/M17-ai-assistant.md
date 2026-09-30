@@ -6,12 +6,14 @@
 Cut the manual effort of CSR/ESG assessments without removing human judgement. The assistant reads the evidence customers already upload, suggests answers and scores with citations, summarises stakeholder free-text, and drafts report narratives — every suggestion is reviewed and accepted by a person before it changes official data.
 
 ## 2. Users & permissions
+
 | Role | Can |
 |---|---|
 | Company contributor | Request evidence analysis on own questions; accept/reject suggestions on own answers |
 | Company admin | Everything above; enable/disable AI for the org; view AI usage |
 | Agency assessor | Request pre-review analysis on submitted assessments; accept suggested scores as *proposals* (still requires the assessor's explicit confirmation) |
 | Platform admin | Configure model, quotas, prompt versions; view cost dashboards |
+
 Permission keys: `ai:use`, `ai:configure`, `ai:usage:read`.
 
 ## 3. Scope
@@ -63,6 +65,7 @@ Indexes: `ai_jobs (workspace_id, created_at)`, `ai_suggestions (workspace_id, ta
 - **Cost control:** per-org monthly budget; hard stop at 100 %, warning at 80 %; token usage stored per job.
 
 ## 7. API contract (REST `/v1`)
+
 | Route | Permission |
 |---|---|
 | `POST /projects/:pid/gap/answers/:kcCode/ai-analysis` `{ fileIds? }` → 202 job | `ai:use` + `gap:answer` |

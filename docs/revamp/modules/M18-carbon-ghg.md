@@ -6,6 +6,7 @@
 Climate is the most requested disclosure (ESRS E1, IFRS S2, GRI 305, BRSR Principle 6, CDP). The platform currently records environment only as ISO 26000 questions. This module lets a company calculate its **Scope 1, 2 and 3 greenhouse-gas inventory** following the GHG Protocol, set reduction targets and track progress — and feeds those numbers into KPIs, reports and supplier engagement.
 
 ## 2. Users & permissions
+
 | Role | Can |
 |---|---|
 | Company data contributor | Enter/upload activity data for assigned sites/categories (`carbon:enter`) |
@@ -52,6 +53,7 @@ Use PostgreSQL `numeric` for all quantities — never JS floats for audited numb
 - Totals: Scope 2 is reported both ways; headline total uses market-based where contractual instruments exist (configurable, disclosed).
 
 ## 6. API contract (REST `/v1`)
+
 | Route | Permission |
 |---|---|
 | `GET /companies/:cid/carbon/inventory?year=&scope2Method=market|location` | `carbon:read` |

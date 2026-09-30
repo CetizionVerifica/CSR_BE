@@ -7,6 +7,7 @@
 Maintain the company's directory of **internal stakeholders** (employees) and **external stakeholders** (customers, suppliers, investors, NGOs, community, regulators…) who are invited to materiality surveys (M08), weighted by class (M06), and referenced in the IRO register and engagement log.
 
 ## 2. Users & permissions
+
 | Role | Can |
 |---|---|
 | workspace_admin / lead | CRUD, import, export, merge duplicates, anonymise (`stakeholder:manage`) |
@@ -54,6 +55,7 @@ import_jobs { id, workspace_id, type: 'people'|'gap_answers'|'kpi_values'|'activ
 - The legacy "self" stakeholder becomes the optional "company voice" setting in M06, not a person.
 
 ## 8. API contract (REST `/v1`)
+
 | Route | Permission |
 |---|---|
 | `GET /companies/:cid/people?filter[kind]=&filter[group]=&q=&cursor=` | `project:read` |

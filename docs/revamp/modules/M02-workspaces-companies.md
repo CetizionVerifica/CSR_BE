@@ -9,6 +9,7 @@ Model *who the customer is*: the tenant workspace, the reporting companies insid
 Legacy mapping: an **agency** is the tenant workspace (one is auto-created per onboarded client company in `company/add.js:117-143`); a **company** is the reporting entity; **resellers** are users who onboard companies (`company.reseller`); **licences** (`lisence: gap | materiality | actions`) gate features; `totalCompaniesAllowed` limits how many companies a reseller/admin can add.
 
 ## 2. Users & permissions
+
 | Role | Can |
 |---|---|
 | workspace_owner | Everything in the workspace incl. entitlements view, delete workspace, transfer ownership |
@@ -72,6 +73,7 @@ RLS on `companies`, `entitlements` by `workspace_id`. `workspaces` readable only
 - A workspace must always have ≥ 1 owner.
 
 ## 8. API contract (REST `/v1`)
+
 | Route | Permission |
 |---|---|
 | `GET /workspaces/current` · `PATCH /workspaces/current` | member · `workspace:manage` |

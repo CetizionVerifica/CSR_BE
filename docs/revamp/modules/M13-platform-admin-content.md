@@ -18,6 +18,7 @@ Operate the SaaS (workspaces, users, entitlements, assessors, support) and manag
 - Seeding: CLI `npm run seed:owner` for the first platform owner; nothing seeded on boot.
 
 ### 3.2 Content library (versioned, i18n)
+
 | Content | Structure | Source for seeding |
 |---|---|---|
 | Taxonomy & question library (M04) | versions → core subjects → issues → KCs (code, legacy key, labels, evidence hint, answer type, scoring rule, group, order) | `Docs/GapAnalysisV2.xlsx`, FE `gapAnalysisQuestions.js`, BE `services/mappings.js` |
@@ -28,6 +29,7 @@ Operate the SaaS (workspaces, users, entitlements, assessors, support) and manag
 | Reference lists | sectors, countries/regions, stakeholder groups, units, emission factors (M18) | FE `common/enum/{companySectors,countries,countryRegions}.js` |
 | Help centre | articles (markdown), categories, contextual help keys attached to screens/questions, tooltips | FE `Helps.js` (36 FAQs), `tooltips.js` (18), handbook PDF |
 | Legal | terms of service, licence agreement, privacy notice, DPA — versioned; users re-accept on major version | `public/assets/user-license-agreeementV2.pdf` |
+
 - Editing workflow: draft → review → publish (new version, immutable); diff view between versions; impact analysis ("used by N active projects"); projects keep the version they started with and can be upgraded explicitly.
 - Translations per content item & language with status (missing/machine/reviewed); export/import XLIFF or XLSX for translators (M15).
 - Custom question packs per workspace (Phase 4): workspace-scoped additions to the library, never altering the global library.

@@ -26,6 +26,7 @@ Legacy role strings: `Client` (default), `Admin`, `Reseller`, `superadmin`, `use
 **Entitlements** (what the workspace has bought) are separate from roles: `modules: ['gap','materiality','actions','ranking','surveys','ai','carbon','frameworks']`, `limits: { companies: n (legacy totalCompaniesAllowed), users: n, projectsPerYear: n }`. A permission check passes only if role **and** entitlement allow it.
 
 ### Permission matrix (initial)
+
 | Permission | owner | admin | contributor | viewer | auditor | partner_admin* | assessor | platform_owner |
 |---|---|---|---|---|---|---|---|---|
 | `workspace:manage` / `billing:manage` | ✔ | — | — | — | — | — | — | ✔ |
@@ -42,6 +43,7 @@ Legacy role strings: `Client` (default), `Admin`, `Reseller`, `superadmin`, `use
 | `report:export` | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `audit:read` | ✔ | ✔ | — | — | ✔ | — | — | ✔ |
 | `platform:*` | — | — | — | — | — | — | — | ✔ |
+
 \* on workspaces covered by a `PartnerGrant` only.
 
 ## 3. Current state (legacy) — must-fix list
@@ -110,6 +112,7 @@ Scheduled cleanup job deletes expired tokens/resets daily. `users` and `membersh
 - Legacy bcrypt hashes are accepted and re-hashed to argon2id at next successful login. Plaintext passwords found in migration (users updated via `updateUser`, `Company.password`) are **not** migrated — those users get a forced reset email.
 
 ## 8. API contract (REST, `/v1`)
+
 | Method & path | Permission | Notes |
 |---|---|---|
 | `POST /auth/login` | public (rate-limited) | → `{ accessToken, expiresIn, mfaRequired? }` + refresh cookie |

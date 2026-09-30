@@ -13,28 +13,28 @@
 
 ## 2. System context
 
-**Hard constraint (owner decision, 2026-09-30): no AWS services or AWS resources are used to host, deploy or operate the new system** (no EC2/ECS, S3, CloudFront, RDS, SES, Secrets Manager, CloudWatch, Bedrock, …). All components below are provider-neutral (containers, PostgreSQL, Redis-protocol store, S3-*API*-compatible object storage, SMTP/HTTP email) so the platform can move between providers. Default provider choice: ADR-011.
+**Hard constraint (owner decision, 2026-09-30): no AWS services or AWS resources are used to host, deploy or operate the new system** (no EC2/ECS, S3, CloudFront, RDS, SES, Secrets Manager, CloudWatch, Bedrock, …). The owner chose **self-managed Linux VPS servers** (ADR-011). Everything runs as containers or standard Linux services on those VPSs; the only external pieces are commodity services with drop-in alternatives (S3-*API*-compatible object storage, an email provider, error tracking, uptime monitoring), so the platform can move between VPS providers without code changes.
 
 ```
-                        ┌──────────── Cloudflare (DNS, WAF, TLS, CDN) ─────────────┐
- Browser ──HTTPS──────▶ │ app.resilisense.org     → Cloudflare Pages (web SPA)      │
- Respondents ─HTTPS───▶ │ survey.resilisense.org  → Cloudflare Pages (public app)   │
-                        │ api.resilisense.org     → proxied to the API origin ─────┐│
-                        └──────────────────────────────────────────────────────────┼┘
-                                                                                   ▼
-        ┌──────────────── DigitalOcean region (EU: FRA1/AMS3 · India: BLR1) ─────────────────┐
-        │  App Platform                                                                       │
-        │   ├─ api     (NestJS container, ≥ 2 instances, health-checked, rolling deploys) ──┐  │
-        │   ├─ worker  (same image, `node dist/worker.js`)                                  │  │
-        │   │    ├─ email (Postmark / SMTP adapter)        ├─ imports (CSV/XLSX)            │  │
-        │   │    ├─ report rendering (Playwright/Chromium) ├─ scheduled jobs                │  │
-        │   │    └─ AI jobs (Claude API, direct)           └─ retention                     │  │
-        │   └─ clamav  (clamd, malware scanning for uploads)                                │  │
-        │  Managed PostgreSQL 16 (PITR) ◀───────────────────────────────────────────────────┤  │
-        │  Managed Valkey (Redis-compatible: BullMQ queues, rate limits, cache) ◀───────────┤  │
-        │  Spaces (S3-API-compatible object storage: evidence, reports; private) ◀──────────┘  │
-        └─────────────────────────────────────────────────────────────────────────────────────┘
-   External SaaS: Postmark (email) · Sentry (errors) · Grafana Cloud or Better Stack (logs/metrics/uptime) · Anthropic API (M17)
+                     ┌──────── Cloudflare (DNS, proxy/WAF, TLS, DDoS, static-asset cache) ────────┐
+ Browser ──HTTPS───▶ │ app.resilisense.org · survey.resilisense.org · api.resilisense.org         │
+ Respondents ──────▶ └──────────────────────────────┬─────────────────────────────────────────────┘
+                                                    │ 443 only, origin firewall allows Cloudflare IPs
+  ┌──────────────────────────── Production stack (one per data region: EU · India) ─────────────────────────┐
+  │ VPS "app-1" (Ubuntu 24.04 LTS, Docker)            │  VPS "data-1" (Ubuntu 24.04 LTS)                    │
+  │  kamal-proxy (TLS origin cert, zero-downtime)     │   PostgreSQL 16 (+ WAL archiving via pgBackRest)    │
+  │   ├─ web      (Caddy: SPA + public survey app)    │   Valkey (Redis-compatible, AOF on) — BullMQ        │
+  │   ├─ api ×2   (NestJS)  ─────── private network ──┼──▶ port 5432 / 6379 on private interface only      │
+  │   ├─ worker   (BullMQ: email, reports/Chromium,   │                                                     │
+  │   │            imports, schedules, AI, retention) │  VPS "data-2" (optional, Phase 3): streaming        │
+  │   └─ clamav   (clamd)                             │   replica for fail-over + read-only reporting       │
+  └───────────────────────────┬───────────────────────┴───────────────────────┬───────────────────────────┘
+                              ▼                                               ▼
+            S3-API-compatible object storage (VPS provider's            Off-site backups (different provider/
+            object storage, or MinIO on a storage VPS):                 region): pgBackRest repo, nightly
+            evidence, reports, imports — private bucket                 rclone copy of objects, config backups
+  External services (none on AWS): Postmark or SMTP provider (email) · Sentry (errors) · Better Stack / Uptime Kuma (uptime)
+                                   · Grafana Cloud or self-hosted Grafana+Loki+Prometheus (logs/metrics) · Anthropic API (M17)
 ```
 
 ## 3. Architecture Decision Records
@@ -70,7 +70,7 @@ Why change now that we start from scratch:
 - *Why not GraphQL (legacy choice)?* Per-operation authorisation, rate limiting, caching, file transfer and a public API are all simpler with REST; the legacy GraphQL layer is where most authorisation holes were. Dashboard read-models get dedicated endpoints (`GET /v1/projects/:id/dashboard`).
 
 ### ADR-005 Authentication — **short-lived access token + rotating refresh cookie**
-- `POST /v1/auth/login` → access JWT (15 min, EdDSA signing key from the platform's encrypted env, `aud`, `iss`, `exp`; kept **in memory** by the SPA) + refresh token (30 days, opaque, `HttpOnly; Secure; SameSite=Lax; Path=/v1/auth`), stored hashed with rotation and family-reuse detection.
+- `POST /v1/auth/login` → access JWT (15 min, EdDSA signing key injected as a secret at deploy time, `aud`, `iss`, `exp`; kept **in memory** by the SPA) + refresh token (30 days, opaque, `HttpOnly; Secure; SameSite=Lax; Path=/v1/auth`), stored hashed with rotation and family-reuse detection.
 - API on `api.resilisense.org`, SPA on `app.resilisense.org` → same site, first-party cookie.
 - Passwords `argon2id`; legacy bcrypt hashes are imported and upgraded at first login.
 - TOTP MFA; OIDC SSO (Entra ID, Google) in Phase 3. Details in **M01**.
@@ -83,6 +83,7 @@ Why change now that we start from scratch:
 Queues: `email`, `report-render`, `import`, `survey`, `ai`, `scheduled`, `retention`. Retries with backoff, dead-letter queue, Bull Board for platform owners only. Scheduled jobs via BullMQ repeatable jobs (replaces the broken, never-run `Cronjob/cronjobs.js`).
 
 ### ADR-008 Frontend stack
+
 | Concern | Choice |
 |---|---|
 | Build | **Vite 6** + React 19 + TypeScript strict |
@@ -106,35 +107,55 @@ Queues: `email`, `report-render`, `import`, `survey`, `ai`, `scheduled`, `retent
 - *Alternative:* pnpm + Turborepo monorepo (`apps/api`, `apps/web`, `packages/contracts`) — simpler contract sharing; consider it if the same people work on both sides.
 
 ### ADR-010 Cross-cutting services
+
 | Concern | Choice |
 |---|---|
-| Config | `@nestjs/config` + Zod env schema; boot fails on missing/invalid env; secrets injected as encrypted environment variables by the hosting platform (App Platform encrypted env / GitHub Environments secrets; optional Doppler or Infisical as secret manager); `.env.example` only in git |
+| Config | `@nestjs/config` + Zod env schema; boot fails on missing/invalid env; secrets injected at deploy time by Kamal (`.kamal/secrets`, pulled from GitHub Environments secrets or a secret manager such as Bitwarden Secrets Manager, 1Password or Doppler) into container env; never stored in the repo or in images; `.env.example` only in git |
 | Logging | `pino` (nestjs-pino) JSON; request id, user id, workspace id; redaction of `authorization`, `cookie`, `password`, `token`, `otp` |
 | Security headers | `helmet`, strict CORS allow-list from env, CSP on the SPA (no inline scripts), HSTS |
 | Rate limiting | `@nestjs/throttler` with Redis store; stricter on auth, public survey and upload endpoints |
-| Files | `StorageAdapter` interface over any S3-API-compatible store (default DigitalOcean Spaces; Cloudflare R2, MinIO, Backblaze B2 work unchanged) using the vendor-neutral `minio` JS client; private bucket, presigned **PUT** URLs (5 min) with signed content-type/length, server-side size + magic-byte verification, ClamAV scan before a file becomes available, `files` table (M14) |
+| Files | `StorageAdapter` interface over any S3-API-compatible store (default: the VPS provider's S3-compatible object storage in the same region; MinIO on a storage VPS, Backblaze B2 or Cloudflare R2 work unchanged) using the vendor-neutral `minio` JS client; private bucket, presigned **PUT** URLs (5 min) with signed content-type/length, server-side size + magic-byte verification, ClamAV scan before a file becomes available, `files` table (M14) |
 | Email | `EmailAdapter` interface via the `email` queue; default Postmark (HTTP API + signed webhooks); SMTP adapter (Nodemailer) for any other provider — choose an EU-hosted provider (e.g. Brevo, Mailjet) if EU residency of email data is required; React Email templates, localised, plain-text part; per-workspace branding |
-| Observability | OpenTelemetry traces + metrics exported to Grafana Cloud or Better Stack; App Platform log forwarding; Sentry for errors (FE + BE); uptime checks; `/health/live`, `/health/ready` (DB + Redis) |
+| Observability | OpenTelemetry traces + metrics exported to Grafana Cloud (or self-hosted Grafana + Prometheus + Loki); container logs shipped by Grafana Alloy/Vector; node_exporter + cAdvisor host metrics; Sentry for errors (FE + BE); external uptime checks (Better Stack or Uptime Kuma on a separate host); `/health/live`, `/health/ready` (DB + Redis) |
 | Audit | append-only `audit_events` table (M12) |
 | Feature flags | simple `feature_flags` table + per-workspace overrides (no external service needed initially) |
 
-### ADR-011 Hosting & deployment — **no AWS; DigitalOcean + Cloudflare by default** — Proposed
-Constraint from the owner: nothing is deployed on AWS. Requirements: managed PostgreSQL with PITR, Redis-protocol store, S3-API object storage, container hosting with health checks and rolling deploys, EU **and** India regions, simple operations for a small team.
+### ADR-011 Hosting & deployment — **self-managed VPS, no AWS** — Accepted (owner, 2026-09-30)
+Constraints from the owner: nothing on AWS; run on **VPS servers**. Requirements that shape the design: EU **and** India data residency, zero-downtime deploys, point-in-time database recovery, simple operations for a small team, everything reproducible from the repo.
 
-| Layer | Default | Why |
+**Provider.** Any KVM VPS provider with (a) a region in the EU and one in India, (b) private networking between VPSs, (c) snapshots, and ideally (d) S3-compatible object storage in the same region. Examples (check current region lists before ordering): OVHcloud (EU + Mumbai), Hetzner (EU only — no India region), Hostinger VPS, Contabo, DigitalOcean Droplets (EU + Bangalore). Choose per region; the setup below is provider-independent. The provider is recorded in `infra/README.md`.
+
+**Topology per region (production).**
+
+| Host | Size (start) | Runs |
 |---|---|---|
-| API + worker + ClamAV containers | **DigitalOcean App Platform** (one app per environment and region) | Managed containers, health checks, rolling deploys, encrypted env vars, autoscaling; no servers to patch |
-| Database | **DigitalOcean Managed PostgreSQL 16** (primary + standby node in production) | Standard Postgres (RLS, `citext`, `pgcrypto`), PITR, automated failover |
-| Queues/cache | **DigitalOcean Managed Valkey** (Redis-compatible) | BullMQ-compatible |
-| Object storage | **DigitalOcean Spaces** (S3-API-compatible) behind `StorageAdapter` | Same region as data; portable to R2/B2/MinIO |
-| Web SPA + public survey app | **Cloudflare Pages** | Global CDN, per-PR previews, free TLS |
-| DNS, WAF, DDoS, rate limiting at edge | **Cloudflare** | In front of both SPA and API |
-| Email | **Postmark** via `EmailAdapter` (SMTP adapter for alternatives) | Deliverability, bounce webhooks |
-| Errors / logs / uptime | **Sentry**, **Grafana Cloud** or **Better Stack** | Vendor-neutral OpenTelemetry |
-| Container registry | DigitalOcean Container Registry (or GHCR) | Close to App Platform |
-| AI | **Anthropic API directly** (never via Amazon Bedrock) | M17 |
+| `app-1` | 4 vCPU · 8–16 GB RAM · 160 GB NVMe | `kamal-proxy`, `web` (Caddy serving the built SPA and public survey app), `api` ×2 containers, `worker` (incl. Chromium for PDFs), `clamav` |
+| `data-1` | 4 vCPU · 16 GB RAM · 320 GB NVMe (+ volume) | PostgreSQL 16 (Docker or distro package, tuned), pgBackRest, Valkey (AOF persistence) |
+| `data-2` *(Phase 3, for 99.9 %)* | same as `data-1` | PostgreSQL streaming replica (hot standby) with documented fail-over (Patroni optional later) |
+| `app-2` *(when load requires)* | same as `app-1` | second app node behind Cloudflare load balancing |
+| `staging` | 4 vCPU · 8 GB | the whole stack on one VPS (Kamal destination `staging`) |
 
-Alternatives, if the owner prefers: **Microsoft Azure** (Container Apps, Azure Database for PostgreSQL Flexible Server, Azure Cache for Redis, Blob Storage via a Blob `StorageAdapter`, Key Vault, Static Web Apps; Central India + West Europe regions; fits Microsoft 365 / Entra SSO customers) or **Hetzner/OVH VPS + Coolify/Docker Compose** (lowest cost, but you operate PostgreSQL backups, patching and failover yourself). Because every integration sits behind an adapter and ships as a container, switching provider is a deployment change, not a code change.
+Object storage: the provider's S3-compatible bucket in the same region (private); if the provider has none, a MinIO container on a separate storage VPS with its own volume and nightly off-site replication.
+
+**Deployment — Kamal 2** (config in the repo: `config/deploy.yml`, `config/deploy.staging.yml`, `.kamal/secrets`):
+- CI builds one Docker image per commit → pushes to **GitHub Container Registry (GHCR)** → `kamal deploy -d staging` automatically on `main`; production via release tag + manual approval (GitHub Environments) promoting the same image digest.
+- `kamal-proxy` does zero-downtime rolling deploys gated on `/health/ready`; `kamal rollback <version>` in seconds; Prisma migrations run as a pre-deploy hook (`kamal app exec --primary "npx prisma migrate deploy"`) and must be backward-compatible (expand → migrate → contract).
+- Database and Valkey are Kamal **accessories** on `data-1` (or native packages managed by Ansible — pick one and document it).
+- No `git pull`, `npm install` or pm2 on servers — servers only ever run immutable images.
+
+**Provisioning & hardening — Ansible** (`infra/ansible/`), idempotent, run from CI or a maintainer laptop:
+Ubuntu 24.04 LTS; non-root deploy user; SSH keys only, password and root login disabled, SSH reachable only via a VPN/mesh (Tailscale/WireGuard) or an IP allow-list; `ufw` (80/443 only from Cloudflare IP ranges on `app-*`, 5432/6379 only on the private network); `unattended-upgrades` with a maintenance window; `fail2ban`; Docker with log rotation; time sync; disk-usage alerts; provider-level disk encryption where available; CIS-inspired sysctl baseline.
+
+**Backups & recovery.**
+- PostgreSQL: pgBackRest → off-site S3-compatible repository at a **different provider/region** (e.g. Backblaze B2 or Cloudflare R2): full weekly, differential daily, continuous WAL archiving → **PITR** 14 days, retention 35 days, encrypted (repo cipher).
+- Object storage: nightly `rclone sync` to the off-site provider (with `--backup-dir` versioning for 30 days).
+- Valkey: AOF + daily RDB copy (queues are recoverable; data of record lives in PostgreSQL).
+- Hosts: weekly provider snapshots of `app-*` and `data-*`; everything else is rebuildable from Ansible + Kamal.
+- **Restore drill quarterly** (restore to a scratch VPS, run the ETL/consistency checks), result logged in `infra/README.md`.
+
+**Other services (not on AWS).** Email via Postmark or any SMTP provider (don't self-host a mail server — deliverability); Cloudflare free/pro plan for DNS, TLS, WAF, rate limiting and DDoS protection in front of all hosts; Sentry; Better Stack or Uptime Kuma for uptime; Grafana Cloud (or self-hosted Grafana stack) for logs/metrics; Anthropic API directly for M17.
+
+**Operational ownership.** With VPSs the team owns patching, backups, capacity and incident response: on-call rota, runbooks in `infra/runbooks/` (deploy, rollback, DB restore, fail-over, disk full, certificate issues, compromised key), and alerts for CPU/RAM/disk, replication lag, backup age, queue depth, 5xx rate.
 
 **Legacy note:** the legacy system currently runs on AWS (EC2, S3, CloudFront). It stays there only until cut-over; the ETL reads legacy evidence files out of the legacy bucket once (read-only credentials), then all AWS resources are decommissioned (`04-data-migration.md` §6).
 
@@ -176,7 +197,8 @@ CSR_BE/
 ├─ test/                       # e2e (supertest + Testcontainers Postgres/Redis), golden fixtures
 ├─ openapi.json                # generated, committed
 ├─ docker-compose.yml          # postgres, valkey/redis, minio (S3-API), clamav, mailpit
-├─ .do/app.yaml               # DigitalOcean App Platform spec (api, worker, clamav) per environment
+├─ config/deploy.yml          # Kamal 2 deploy config (+ deploy.staging.yml); .kamal/secrets reads secrets at deploy time
+├─ infra/                      # ansible/ (VPS provisioning & hardening), runbooks/, README.md (provider, hosts, restore drills)
 └─ Dockerfile
 ```
 Each module: `*.module.ts`, `*.controller.ts`, `*.service.ts`, `*.repository.ts` (Prisma access only here), `dto/*.ts` (Zod), `engine/*.ts` (pure, no I/O), `events.ts`, `__tests__/`.
@@ -195,7 +217,9 @@ Resilisense-FE/
 │  └─ test/                    # MSW handlers, test utils
 ├─ e2e/                        # Playwright
 ├─ .storybook/
-└─ public/
+├─ public/
+├─ Dockerfile + Caddyfile     # `web` image: static SPA + public survey app, security headers (CSP, HSTS), immutable asset caching
+└─ config/deploy.yml          # Kamal 2 config for the `web` app (shares kamal-proxy on app hosts with the API)
 ```
 
 ## 6. Delivery strategy (greenfield)
@@ -206,24 +230,26 @@ Resilisense-FE/
 5. **Cut-over**: announce, freeze legacy writes, final ETL, switch DNS, keep legacy read-only for 90 days, then decommission (keep an encrypted archive of the Mongo dump per retention policy).
 
 ## 7. Environments & CI/CD
+
 | Env | Purpose | Data |
 |---|---|---|
 | local | `docker compose up` (postgres, valkey, minio, clamav, mailpit) + `npm run dev` | seed: reference data + demo workspaces |
 | preview | per-PR FE preview against staging API | staging |
-| staging | full stack, prod-like | anonymised ETL output, refreshed monthly |
-| production | | |
+| staging | full stack on one VPS (Kamal destination `staging`), prod-like config | anonymised ETL output, refreshed monthly |
+| production | per region: `app-1` + `data-1` VPS (+ `data-2` standby from Phase 3) | |
 
 CI (GitHub Actions) on every PR in both repos: `npm ci` (never `--force`) → `lint` → `typecheck` → `unit tests + coverage` → `build` → BE: `e2e (Testcontainers)` + `openapi diff`; FE: `Playwright smoke + axe` against preview → `npm audit --omit=dev`, gitleaks, CodeQL.
-CD (no AWS): merge to `main` → build the BE Docker image → push to DigitalOcean Container Registry (or GHCR) → `doctl apps create-deployment` for the **staging** app (App Platform rolling deploy with health checks and automatic rollback on failed checks); FE → Cloudflare Pages (preview deployment per PR, staging on `main`). Production via release tag + manual approval (GitHub Environments) promoting the same image digest. No SSH deploys, no `git pull` on servers, no pm2.
+CD (VPS, no AWS): each repo has its own pipeline and Kamal config; both apps share `kamal-proxy` on the app hosts (routing by host name). `CSR_BE`: merge to `main` → build `api` image (also runs as `worker`) → push to GHCR → `kamal deploy -d staging`. `Resilisense-FE`: merge to `main` → build `web` image (static SPA + survey app served by Caddy) → push to GHCR → `kamal deploy -d staging`. Zero-downtime via kamal-proxy health checks; `kamal rollback` on failure. Production via release tag + manual approval (GitHub Environments) deploying the same image digests; FE releases must target an API version whose `openapi.json` they were generated from. Per-PR FE previews: `web` image on the staging VPS under `pr-<n>.staging.resilisense.org`. No `git pull`/`npm install` on servers, no pm2.
 
 ## 8. Non-functional requirements
+
 | Area | Target |
 |---|---|
 | Performance | p95 API < 300 ms (lists/detail), < 800 ms (dashboards); SPA initial JS < 250 kB gz; LCP < 2 s on 4G |
-| Availability | 99.9 % monthly; zero-downtime deploys |
+| Availability | 99.5 % monthly at launch (single DB host, provider SLA), 99.9 % once the standby replica and second app node are in place (Phase 3); zero-downtime deploys; RPO ≤ 5 min (WAL archiving), RTO ≤ 2 h |
 | Scale (3-year) | 2,000 workspaces, 50k users, 5M survey answers, 2 TB evidence |
 | Security | OWASP ASVS L2; annual pen-test; critical dependency alerts fixed < 48 h |
-| Privacy | GDPR/DPDP: export & erasure per workspace and per survey respondent; data residency by deploying one stack per region (EU: Frankfurt/Amsterdam, India: Bangalore); sub-processor list (hosting, email, Sentry, logs, Anthropic) published |
+| Privacy | GDPR/DPDP: export & erasure per workspace and per survey respondent; data residency by deploying one VPS stack per region (EU VPS for EU customers, India VPS for Indian customers; backups stay in the same jurisdiction); sub-processor list (hosting, email, Sentry, logs, Anthropic) published |
 | Accessibility | WCAG 2.2 AA |
 | Browsers | last 2 versions of Chrome, Edge, Firefox, Safari; iOS 16+, Android 10+ (public survey) |
-| Backups | Managed PostgreSQL daily backups + PITR 7 days, plus nightly logical dump (`pg_dump`, encrypted) to a second provider (e.g. Backblaze B2 or Cloudflare R2); object storage replicated nightly with `rclone` to the second provider; app-level file versioning (M14); quarterly restore drill |
+| Backups | pgBackRest (weekly full, daily diff, continuous WAL → PITR 14 days, retention 35 days) to an off-site S3-compatible repository at another provider; nightly `rclone` copy of object storage; weekly VPS snapshots; quarterly restore drill |

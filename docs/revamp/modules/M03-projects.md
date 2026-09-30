@@ -7,6 +7,7 @@
 A **project** is one assessment/reporting cycle of one company for one reporting year (e.g. "Acme Ltd — 2026"). It bundles the workstreams the company is entitled to — gap analysis, documentation assessment, materiality, actions & KPIs, framework coverage, (later) carbon — and shows the team where they are and what to do next.
 
 ## 2. Users & permissions
+
 | Role | Can |
 |---|---|
 | workspace_admin / owner, partner_admin | Create, configure, archive, delete projects; assign members |
@@ -70,6 +71,7 @@ not_started → in_progress → submitted_r1 → in_review_r1 → reviewed_r1 �
                    ↑              │(withdraw, before review starts)            │
                    └──────────────┘                                            └→ (reopen by platform_owner only, audited)
 ```
+
 | Transition | Who | Guard |
 |---|---|---|
 | `not_started → in_progress` | automatic on first answer | — |
@@ -78,6 +80,7 @@ not_started → in_progress → submitted_r1 → in_review_r1 → reviewed_r1 �
 | `in_review_r1 → reviewed_r1` | assessor | every linked file assessed (M05) |
 | `reviewed_r1 → submitted_r2` | admin/lead | company may update answers/evidence between rounds (legacy: editable in `FirstAssessmentCompleted`) |
 | `in_review_r2 → completed` | assessor | all files assessed; final scores frozen |
+
 `platform_review_1_round` skips r2; `self_assessed` goes `in_progress → completed` with a sign-off by an admin.
 
 Edit rules: answers editable only in `in_progress` and `reviewed_r1`; evidence uploads allowed in `in_progress`, `submitted_r1` (before claim), `reviewed_r1`; everything read-only in `completed` (legacy intent "final assessment is unalterable" — now enforced).
@@ -91,6 +94,7 @@ Edit rules: answers editable only in `in_progress` and `reviewed_r1`; evidence u
 Legacy status → new mapping (for migration): `New`→gap `in_progress`; `FirstAssessmentRequest`→`submitted_r1`; `FirstAssessmentCompleted`→`reviewed_r1`; `SecondAssessmentRequest`→`submitted_r2`; `Completed`→gap `completed`; `MaterialitySendSurvey`→gap `completed` + materiality `surveys_open`; `MaterialityCompleted`→ + materiality `results_ready`; `Finished`→ + actions `closed`, project `completed`.
 
 ## 8. API contract (REST `/v1`)
+
 | Route | Permission |
 |---|---|
 | `GET /projects?filter[companyId]=&filter[year]=&filter[status]=&sort=&cursor=` | `project:read` |

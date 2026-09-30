@@ -9,6 +9,7 @@ Let a **buyer** company assess and rank its suppliers' CSR performance: invite s
 Terminology fix: legacy uses "Partners" for *customers who listed you as their supplier* and "Suppliers" for the reverse, with badges cross-wired. New terms: **My suppliers** (I am the buyer) and **My customers** (I am the supplier).
 
 ## 2. Users & permissions
+
 | Role | Can |
 |---|---|
 | Buyer workspace_admin / procurement lead | Manage supplier list, invites, requests, questionnaires, risk & ranking (`supplier:manage`, `supplier:rank` needs entitlement `ranking`) |
@@ -67,6 +68,7 @@ cap_findings     { id, workspace_id, supplier_id, title, severity, action_id →
 - Visibility: a buyer never sees supplier data without a `granted` access row for that year; revocation hides historical detail but keeps the buyer's own records (name, notes).
 
 ## 8. API contract (REST `/v1`)
+
 | Route | Permission |
 |---|---|
 | `GET/POST /companies/:cid/suppliers` · `GET/PATCH/DELETE /suppliers/:id` · `POST /suppliers:import` | `supplier:manage` |

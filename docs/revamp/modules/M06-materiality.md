@@ -7,6 +7,7 @@
 Identify which sustainability topics matter most, combining the views of internal stakeholders (employees) and external stakeholders (customers, suppliers, community, investors…, weighted by influence class). The result prioritises issues for action planning (M09) and, in the revamp, supports **ESRS double materiality** (impact + financial) for CSRD reporting.
 
 ## 2. Users & permissions
+
 | Role | Can |
 |---|---|
 | workspace_admin / project lead | Configure assessment, set stakeholder classes, run/validate results, override with justification (`materiality:rate`) |
@@ -92,6 +93,7 @@ All inputs on 1–5 scales with labelled anchors.
 - Matrix position of a topic = (max financial score, max impact score) of its IROs.
 
 ## 8. API contract (REST `/v1`)
+
 | Route | Permission |
 |---|---|
 | `GET/PATCH /projects/:id/materiality` (config, state) | `project:read` / `materiality:rate` |
