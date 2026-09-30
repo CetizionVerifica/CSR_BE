@@ -16,6 +16,7 @@ This folder is the **single source of truth** for rebuilding ResiliSense from sc
 | 02 | [Design system](02-design-system.md) | Brand tokens, components, layouts, charts, accessibility |
 | 03 | [Roadmap & new features](03-roadmap-and-new-features.md) | Phases, prioritised feature backlog, success metrics, risks |
 | 04 | [Data migration & cut-over](04-data-migration.md) | Mongo → Postgres ETL, validation, runbook |
+| 05 | [Claude Code playbook](05-claude-code-playbook.md) | How to run the rebuild with Claude Code: setup, step order, copy-paste prompts, parallel sessions, review loop |
 
 ## Module specs (`modules/`)
 

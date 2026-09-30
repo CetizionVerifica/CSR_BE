@@ -14,14 +14,16 @@ Work on the `legacy` branch, keep changes minimal, and follow `docs/revamp/00-cu
 
 ## Target stack (see `docs/revamp/01-target-architecture.md`)
 
-Node 22 LTS · NestJS 11 · TypeScript strict · PostgreSQL 16 + Prisma (RLS for tenant isolation) · REST + OpenAPI 3.1 (Zod via `nestjs-zod`) · BullMQ + Redis-compatible Valkey · S3-API-compatible object storage via `StorageAdapter` (presigned PUT, ClamAV scan) · `EmailAdapter` (Postmark/SMTP) · pino · Vitest/Jest + supertest + Testcontainers · Docker images deployed with **Kamal 2** to self-managed **VPS** servers (provisioned with Ansible in `infra/ansible/`); Cloudflare in front.
+Node 24 LTS · NestJS 12 · TypeScript strict · PostgreSQL (16+) + Prisma 7 · Zod 4 (RLS for tenant isolation) · REST + OpenAPI 3.1 (Zod via `nestjs-zod`) · BullMQ + Redis-compatible Valkey · S3-API-compatible object storage via `StorageAdapter` (presigned PUT, ClamAV scan) · `EmailAdapter` (Postmark/SMTP) · pino · Vitest/Jest + supertest + Testcontainers · Docker images deployed with **Kamal 2** to self-managed **VPS** servers (provisioned with Ansible in `infra/ansible/`); Cloudflare in front.
 
 **No AWS — self-managed VPS.** The owner has ruled out AWS and chose VPS hosting (ADR-011): do not add AWS services, AWS-specific SDK features, IAM/CloudFormation/CDK/Terraform-for-AWS, Bedrock, SES, S3-hosted assets or GitHub Actions that deploy to AWS. Keep integrations behind adapters (`StorageAdapter`, `EmailAdapter`) so the provider stays swappable. The only AWS interaction allowed is the one-off, read-only copy of legacy evidence files during migration (`docs/revamp/04-data-migration.md`).
 
 ## Commands (available after the scaffold PR)
 
 ```bash
-docker compose up -d          # postgres, valkey, minio (S3-API), clamav, mailpit
+docker compose up -d          # postgres, valkey, minio (S3-API), clamav, mailpit (local machine)
+                              # Claude Code cloud sessions have no Docker daemon: the SessionStart hook starts
+                              # the native PostgreSQL 16 + Redis instead; use STORAGE_DRIVER=local, EMAIL_DRIVER=log
 npm ci
 npm run db:migrate            # prisma migrate dev (+ RLS policies in prisma/rls)
 npm run db:seed               # reference data: ISO 26000 taxonomy (609 KCs), templates, sectors, units
@@ -29,7 +31,7 @@ npm run dev                   # API on :4000 (watch)
 npm run worker:dev            # BullMQ workers
 npm run lint && npm run typecheck
 npm test                      # unit (engines, services)
-npm run test:e2e              # API e2e with Testcontainers
+npm run test:e2e              # API e2e: uses TEST_DATABASE_URL if set (cloud sessions), else Testcontainers (CI/local)
 npm run openapi               # regenerate openapi.json — commit it; FE generates its client from it
 npm run seed:owner -- --email you@example.com   # first platform owner (prints one-time reset link)
 kamal deploy -d staging       # deploy (CI does this on main); kamal rollback <version> to roll back

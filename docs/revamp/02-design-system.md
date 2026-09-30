@@ -21,10 +21,10 @@ Design goals, in priority order:
 | Primitives | Radix UI via **shadcn/ui** (copied into `src/components/ui`, owned by us) | Accessible primitives, we control the markup and look |
 | Icons | `lucide-react` (1.5px stroke, 16/20/24px) | One consistent set; replaces antd icons + image icons |
 | Tables | TanStack Table v8 + our `DataTable` wrapper | Sorting, filtering, column visibility, virtualisation, saved views |
-| Charts | Apache ECharts 5 (tree-shaken) + `ResiliChart` wrapper with a theme generated from tokens | Already used; best-in-class matrix/heatmap/radar; SVG renderer for crisp export |
+| Charts | Apache ECharts 6 (tree-shaken) + `ResiliChart` wrapper with a theme generated from tokens | Already used; best-in-class matrix/heatmap/radar; SVG renderer for crisp export |
 | Forms | React Hook Form + Zod + our `Form*` field components | Replaces redux-form |
 | Motion | CSS transitions; `framer-motion` only for drawers/lists | Respect `prefers-reduced-motion` |
-| Docs | Storybook 8 with a11y + RTL + dark-mode toolbar | Every `ui/` component has a story |
+| Docs | Storybook 10 with a11y + RTL + dark-mode toolbar | Every `ui/` component has a story |
 
 No other component library (antd, materialize, precise-ui, MUI) may be introduced in the new app.
 
