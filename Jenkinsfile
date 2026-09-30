@@ -19,7 +19,7 @@ pipeline {
                                     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
                                     nvm use ${NODE_VERSION} && \
                                     cd /var/www/CSR_BE && \
-                                    git pull origin main && \
+                                    git pull origin legacy && \
                                     npm install -f && \
                                     pm2 delete CSR_BE || true && \
                                     pm2 start npm --name CSR_BE -- start
