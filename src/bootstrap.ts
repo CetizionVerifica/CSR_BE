@@ -12,9 +12,19 @@ export function configureApp(app: INestApplication): INestApplication {
   app.useLogger(app.get(Logger));
   app.setGlobalPrefix(API_PREFIX);
   app.use(helmet());
+  const express = app.getHttpAdapter().getInstance() as { set(key: string, value: unknown): void };
+  express.set('trust proxy', parseTrustProxy(config.get('TRUST_PROXY')));
   app.enableCors({ origin: config.get('CORS_ORIGINS'), credentials: true });
   app.enableShutdownHooks();
   return app;
+}
+
+/** Express "trust proxy": `true`/`false`, a hop count, or a comma-separated list of subnets/keywords. */
+export function parseTrustProxy(value: string): boolean | number | string {
+  const v = value.trim();
+  if (v === 'true' || v === 'false') return v === 'true';
+  if (/^\d+$/.test(v)) return Number(v);
+  return v;
 }
 
 export function buildOpenApi(app: INestApplication): OpenAPIObject {

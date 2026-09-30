@@ -27,6 +27,17 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
     });
   }
 
+  /**
+   * Explicit platform scope for audited cross-tenant reads (policies using app_platform_scope()).
+   * Only repository methods whose callers record an audit event may use it (CLAUDE.md tenancy).
+   */
+  async withPlatformScope<T>(fn: (tx: TenantTx) => Promise<T>): Promise<T> {
+    return this.$transaction(async (tx) => {
+      await tx.$executeRaw`SELECT set_config('app.platform_scope', 'on', true)`;
+      return fn(tx);
+    });
+  }
+
   async ping(): Promise<void> {
     await this.$queryRaw`SELECT 1`;
   }

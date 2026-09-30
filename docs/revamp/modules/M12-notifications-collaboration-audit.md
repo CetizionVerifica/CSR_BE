@@ -24,7 +24,7 @@ Keep multi-person, multi-week assessments moving (notifications, reminders, assi
 - **Activity feed** per project/company built from audit events (human-readable, filterable).
 
 ### 2.4 Audit trail
-- Append-only `audit_events` (DB role has INSERT only; no UPDATE/DELETE), hash-chained per workspace (`prev_hash`) to detect tampering; retained ≥ 7 years (configurable per contract).
+- Append-only `audit_events` (DB role has INSERT only; no UPDATE/DELETE). The table is created by the first M01 PR in minimal form (columns of §3, RLS: insert always, select only within the current workspace or an explicit platform scope, no update/delete policy); M12 adds the hash chain, monthly partitioning and the read API, hash-chained per workspace (`prev_hash`) to detect tampering; retained ≥ 7 years (configurable per contract).
 - Captures: actor (user/impersonator/system/API token), action, entity type/id, workspace, before/after diff for data changes (PII-redacted), IP hash, user agent, request id.
 - Coverage: all auth/security events (M01), membership & entitlement changes, every answer/score/value change, state transitions, review decisions, overrides, exports/downloads/shares, deletions/restores, AI suggestion decisions, platform cross-tenant access.
 - Auditor UI: searchable log with filters and CSV export; per-entity "History" tab.

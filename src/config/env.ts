@@ -15,6 +15,17 @@ const csv = z
       .filter(Boolean),
   );
 
+const csvWithDefault = (fallback: string) =>
+  z
+    .string()
+    .default(fallback)
+    .transform((v) =>
+      v
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean),
+    );
+
 /**
  * Environment contract. The process refuses to boot when this does not parse,
  * so misconfiguration fails fast instead of at the first request.
@@ -42,6 +53,21 @@ export const envSchema = z
     EMAIL_FROM: z.string().default('ResiliSense <notifications@resilisense.org>'),
     SMTP_URL: z.string().optional(),
     POSTMARK_SERVER_TOKEN: z.string().optional(),
+
+    // Express "trust proxy" (Cloudflare → kamal-proxy → api): decides which client IP rate limits see.
+    TRUST_PROXY: z.string().default('loopback, uniquelocal'),
+
+    // M01 identity. Keys are required in production; development/tests generate ephemeral ones.
+    JWT_PRIVATE_KEY: z.string().optional(), // Ed25519 PKCS#8 PEM (or base64 of the PEM)
+    JWT_KEY_ID: z.string().min(1).default('k1'),
+    JWT_PREVIOUS_PUBLIC_KEYS: z.string().optional(), // JSON [{ "kid": "...", "publicKey": "<SPKI PEM>" }]
+    JWT_ISSUER: z.string().min(1).default('https://api.resilisense.org'),
+    JWT_AUDIENCE: z.string().min(1).default('resilisense-app'),
+    MFA_ENCRYPTION_KEY: z.string().optional(), // base64, 32 bytes (AES-256-GCM)
+    IP_HASH_KEY: z.string().optional(), // HMAC key for ip_hash in audit events
+    BREACHED_PASSWORD_CHECK: z.enum(['hibp', 'off']).default('hibp'),
+    TERMS_VERSION: z.string().min(1).default('2026-09'),
+    TRIAL_MODULES: csvWithDefault('gap'),
   })
   .superRefine((env, ctx) => {
     if (env.STORAGE_DRIVER === 's3') {
@@ -71,6 +97,14 @@ export const envSchema = z
         path: ['EMAIL_DRIVER'],
         message: 'log driver is not allowed in production',
       });
+    }
+    if (env.NODE_ENV === 'production') {
+      for (const key of ['JWT_PRIVATE_KEY', 'MFA_ENCRYPTION_KEY', 'IP_HASH_KEY'] as const) {
+        if (!env[key]) ctx.addIssue({ code: 'custom', path: [key], message: 'required in production' });
+      }
+    }
+    if (env.MFA_ENCRYPTION_KEY && Buffer.from(env.MFA_ENCRYPTION_KEY, 'base64').length !== 32) {
+      ctx.addIssue({ code: 'custom', path: ['MFA_ENCRYPTION_KEY'], message: 'must be 32 bytes, base64' });
     }
     if (env.NODE_ENV === 'production' && env.STORAGE_DRIVER === 'local') {
       ctx.addIssue({

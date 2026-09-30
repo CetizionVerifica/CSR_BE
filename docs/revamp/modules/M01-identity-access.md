@@ -1,6 +1,6 @@
 # M01 — Identity & Access (auth, users, roles, tenancy)
 
-> Status: Ready · Phase: 1 (legacy hotfixes are Phase 0 — see `00-current-state-review.md` §2) · Depends on: — · Blocks: every other module
+> Status: In progress · Phase: 1 (legacy hotfixes are Phase 0 — see `00-current-state-review.md` §2) · Depends on: — · Blocks: every other module
 > Legacy code: `CSR_BE/server/services/passport.js`, `checkAuth.js`, `controllers/authentication.js`, `controllers/userController.js`, `routes/userRoutes.js`, `router.js`, `schema/mutations/user/*`, `schema/queries/user/*`, `index.js` (GraphQL JWT fallback) · `Resilisense-FE/src/components/auth/*`, `user/*`, `actions/AuthActions.js`, `ApolloClient.js`
 
 ## 1. Purpose
@@ -44,7 +44,21 @@ Legacy role strings: `Client` (default), `Admin`, `Reseller`, `superadmin`, `use
 | `audit:read` | ✔ | ✔ | — | — | ✔ | — | — | ✔ |
 | `platform:*` | — | — | — | — | — | — | — | ✔ |
 
-\* on workspaces covered by a `PartnerGrant` only.
+\* on workspaces covered by a `PartnerGrant` only. A user acts as `partner_admin` in a client workspace when they are `workspace_owner` or `workspace_admin` of a workspace that holds an active (non-revoked) `partner_grant` to it; `partner_admin` is not a membership role. For role-ceiling rules (§7) it ranks as `workspace_admin`.
+
+`platform_support` (not a matrix column above): `project:read`, `report:export`, `audit:read` — read-only, in any workspace, every cross-tenant access audited. `platform_assessor` holds `project:read`, `gap:review`, `report:export`; the "in review" restriction and its cross-tenant reads are enforced by M05.
+
+**Permission → entitlement module** (decided 2026-09-30; one module list, M02's: `gap`, `materiality`, `actions`, `surveys`, `supply_chain`, `ranking`, `frameworks`, `ai`, `carbon`). A permission not listed needs no module. A role that has the permission but a workspace without the module gets `403 entitlement_required` with the missing `module`.
+
+| Permission | Module |
+|---|---|
+| `gap:answer`, `gap:submit-for-review`, `gap:review`, `evidence:upload` | `gap` |
+| `materiality:rate`, `stakeholder:manage` | `materiality` |
+| `survey:send` | `surveys` |
+| `kpi:enter`, `kpi:manage` | `actions` |
+| `supplier:manage` | `supply_chain` |
+| `supplier:rank` | `ranking` |
+| `ai:use`, `ai:configure` | `ai` |
 
 ## 3. Current state (legacy) — must-fix list
 All verified in code; details and line refs in `00-current-state-review.md`.
@@ -68,7 +82,7 @@ All verified in code; details and line refs in `00-current-state-review.md`.
 - User management UI for admins: invite (email, role, company/project scope), resend invite, change role, deactivate, remove; bulk invite via CSV.
 - Terms & licence acceptance with version + timestamp (legacy `termsAndConditions` flag + `user-license-agreeement*.pdf`).
 - Authorisation framework: `@Can()` guard, tenancy context + PostgreSQL RLS, `GET /v1/me` returns permissions for the FE.
-- Account lockout after 10 failed logins / 15 min; login notifications for new device (optional).
+- Account lockout after 10 failed logins / 15 min (the account is then locked for 15 min; the response stays the generic invalid-credentials error); login notifications for new device (optional).
 ### 4.2 New
 - TOTP MFA (mandatory for platform roles; optional/enforceable per workspace).
 - SSO via OIDC (Microsoft Entra ID, Google Workspace) with JIT provisioning into a workspace by email domain (Phase 3).
@@ -99,10 +113,13 @@ memberships      { id, user_id → users, workspace_id → workspaces, role: 'wo
                    expires_at?, invited_by, created_at }                        unique(user_id, workspace_id)
 partner_grants   { id, partner_workspace_id, client_workspace_id, granted_by, created_at, revoked_at? }
 invitations      { id, workspace_id, email, role, company_ids?, project_ids?, token_hash, expires_at, accepted_at?, invited_by }
-refresh_tokens   { id, user_id, family_id, token_hash unique, user_agent, ip inet, created_at, expires_at, revoked_at?, replaced_by? }
+refresh_tokens   { id, user_id, family_id, token_hash unique, user_agent, ip inet, current_workspace_id?, impersonator_id?,
+                   created_at, expires_at, revoked_at?, replaced_by? }             -- family_id = session id
 password_resets  { id, user_id, token_hash unique, expires_at, used_at? }
+email_verifications { id, user_id, email, purpose: 'signup'|'email_change', payload jsonb?, token_hash unique, expires_at, used_at? }
 mfa_recovery_codes { id, user_id, code_hash, used_at? }
 ```
+Additions decided 2026-09-30: `users.theme ('system'|'light'|'dark')`; `memberships.deactivated_at?` (deactivate without removing; a deactivated membership grants nothing); `refresh_tokens.current_workspace_id` (the session's workspace, kept across refresh); `email_verifications` (signup verification and email change, 24 h tokens). `avatar_file_id` is a plain uuid without FK until M14 lands. `invitations` is tenant-owned (RLS by `workspace_id`); the invitation token embeds the workspace id so the public accept route can open the right tenant context.
 Scheduled cleanup job deletes expired tokens/resets daily. `users` and `memberships` are **not** RLS-scoped by workspace (a user spans workspaces); access goes through the identity service only.
 
 ## 7. Business rules
@@ -110,6 +127,23 @@ Scheduled cleanup job deletes expired tokens/resets daily. `users` and `membersh
 - `platformRole` can only be set by `platform_owner` via admin UI/CLI, never by an API taking user input.
 - Seeding: `npm run seed:owner -- --email … ` creates the first platform owner with a one-time reset link; no credentials in config; nothing seeded on boot.
 - Legacy bcrypt hashes are accepted and re-hashed to argon2id at next successful login. Plaintext passwords found in migration (users updated via `updateUser`, `Company.password`) are **not** migrated — those users get a forced reset email.
+
+### 7.1 Decisions (owner-approved 2026-09-30)
+- **Authenticated-only routes** (`/me*`, `POST /auth/logout`, MFA management, workspace switch) carry `@Authenticated()` — the third allowed route marker next to `@Can()` and `@Public()`. `POST /auth/refresh` is `@Public()` and validates the refresh cookie itself.
+- **Access token**: EdDSA (Ed25519) JWT, 15 min, claims `sub`, `wid` (current workspace or null), `sid` (session = refresh-token family), `imp` (impersonator, if any), `aud`, `iss`, `exp`, header `kid`. Keys from env `JWT_PRIVATE_KEY` + `JWT_KEY_ID`; previous public keys in `JWT_PREVIOUS_PUBLIC_KEYS` for rotation. Membership, grant, entitlements and session revocation are re-checked on every request, so removing a member or revoking a session takes effect immediately.
+- **MFA flow**: when MFA is enabled, `POST /auth/login` returns `{ mfaRequired: true, mfaToken }` (5-minute, single-purpose token) and `POST /auth/mfa/verify { mfaToken, code | recoveryCode }` issues the session. Setup is two steps: `POST /auth/mfa/setup` returns the secret + `otpauth://` URI; `POST /auth/mfa/confirm { code }` enables MFA and returns 10 one-time recovery codes. A platform user without MFA gets `{ mfaEnrollmentRequired: true, mfaToken }` whose token only works on setup/confirm; confirm then issues the session. Platform users cannot disable MFA. TOTP secrets are encrypted with AES-256-GCM (`MFA_ENCRYPTION_KEY`). Codes: RFC 6238, SHA-1, 6 digits, 30 s, ±1 step, a code cannot be reused. Per-workspace MFA enforcement arrives with M02 workspace settings.
+- **Breached passwords**: Have I Been Pwned range API (k-anonymity, padded) behind a `BreachedPasswordChecker` adapter (`BREACHED_PASSWORD_CHECK=hibp|off`); if the service is unreachable the check passes and a warning is logged. HIBP is listed as a sub-processor.
+- **Self-signup**: `POST /auth/signup { name, email, password, workspaceName }` (public, rate-limited, always the same `202` response; an existing address receives a "you already have an account" email). On `POST /auth/verify-email` the user is verified and a `trial` workspace + `workspace_owner` membership + trial entitlements (`TRIAL_MODULES`, default `gap`; limits companies 1, users 5, projectsPerYear 1 — provisional until M02 plans exist) are created.
+- **Email change**: `POST /me/email { newEmail, password }` sends a 24 h verification link to the new address; the change applies on verification and the old address is notified.
+- **Current workspace**: `wid` claim + `refresh_tokens.current_workspace_id`; membership (or grant / platform role) re-validated on every request. At login the workspace is `workspaceId` from the body if accessible, else the session's last workspace, else the oldest membership.
+- **Contributor scope**: M01 stores and exposes `company_ids`/`project_ids` on the principal; project/question-level "assigned" resolution is done by M03/M04 against that scope.
+- **Impersonation**: `platform_owner` only, at most 60 minutes, never of a `platform_owner` or of oneself, access token only (no refresh), `imp` claim, `impersonation.started|ended` audited, `GET /me` returns `impersonatedBy` for the banner.
+- **Cross-tenant access** by `platform_owner`/`platform_support` in a workspace where they have no membership is audited per request (`platform.cross_tenant_access`).
+- **Accepting an invitation as an existing user** needs no password, unless the account's email was never verified (or it is a migrated `invited` user): then the password is set anew and existing sessions are revoked, so an unverified sign-up made with someone else's address cannot capture the membership.
+- **Bulk invite CSV**: header `email,role,company_ids,project_ids`; id lists separated by `;`; max 200 rows.
+- **Terms**: `POST /me/terms { version }` records acceptance; `GET /me` returns `termsAcceptanceRequired` when the accepted version differs from `TERMS_VERSION`.
+- **Audit**: M01 creates the minimal append-only `audit_events` table defined in M12 §3 (insert/select only under RLS; hash chain and partitioning added by M12).
+- Out of scope for the first M01 PR: SSO (Phase 3), personal access tokens (Phase 4), new-device login email (optional).
 
 ## 8. API contract (REST, `/v1`)
 
@@ -119,15 +153,20 @@ Scheduled cleanup job deletes expired tokens/resets daily. `users` and `membersh
 | `POST /auth/refresh` | refresh cookie | rotates refresh token |
 | `POST /auth/logout` | authenticated | `?all=true` revokes all sessions |
 | `POST /auth/password/forgot` · `POST /auth/password/reset` | public (rate-limited) | generic response |
-| `POST /auth/verify-email` · `POST /auth/mfa/setup` · `POST /auth/mfa/verify` · `DELETE /auth/mfa` | public / authenticated | |
+| `POST /auth/signup` · `POST /auth/verify-email` · `POST /auth/verify-email/resend` | public (rate-limited) | generic responses (§7.1) |
+| `POST /auth/mfa/verify` | public, `mfaToken`-gated (rate-limited) | |
+| `POST /auth/mfa/setup` · `POST /auth/mfa/confirm` | authenticated (or enrolment `mfaToken`) | |
+| `DELETE /auth/mfa` | authenticated | body `{ password, code }`; not for platform roles |
+| `POST /auth/impersonation/end` | authenticated (impersonation token) | |
 | `GET /auth/sso/:provider/start` · `GET /auth/sso/:provider/callback` | public | Phase 3 |
 | `GET /me` | authenticated | `{ user, currentWorkspace, memberships[], permissions[], entitlements }` |
-| `PATCH /me` · `POST /me/password` · `GET /me/sessions` · `DELETE /me/sessions/:id` | authenticated | |
+| `PATCH /me` · `POST /me/password` · `POST /me/email` · `POST /me/terms` · `GET /me/sessions` · `DELETE /me/sessions/:id` | authenticated | |
 | `POST /me/workspace` `{ workspaceId }` | member of target | switch workspace (re-issues access token with `wid` claim) |
-| `GET /workspaces/:wid/members` · `PATCH /workspaces/:wid/members/:id` · `DELETE …` | `org:manage-users` | cursor pagination, filter by role/status |
-| `POST /workspaces/:wid/invitations` (bulk) · `GET …` · `POST …/:id/resend` · `DELETE …/:id` | `org:manage-users` | |
+| `GET /workspaces/:wid/members` · `PATCH /workspaces/:wid/members/:id` · `DELETE …` | `org:manage-users` | cursor pagination, filter by role/status; `:wid` must be the current workspace, otherwise `404` |
+| `POST /workspaces/:wid/invitations` (bulk) · `POST …/invitations/csv` · `GET …` · `POST …/:id/resend` · `DELETE …/:id` | `org:manage-users` | `Idempotency-Key` supported on the POSTs |
 | `POST /invitations/accept` | public, token-gated | sets password if new user |
 | `GET /platform/users` · `PATCH /platform/users/:id` · `POST /platform/users/:id/impersonate` | `platform:*` | audited |
+| `GET /platform/users/:id/sessions` · `DELETE /platform/users/:id/sessions/:sid` | `platform:*` | US-01-5, audited |
 
 ## 9. UI
 - `/sign-in`, `/forgot-password`, `/reset-password/:token`, `/accept-invite/:token`, `/verify-email/:token`, `/sign-up` (trial) — minimal shell, brand panel on the start side with product value props, form on the end side; SSO buttons when enabled.

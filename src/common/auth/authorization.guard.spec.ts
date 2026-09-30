@@ -1,40 +1,61 @@
 import { type ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ProblemError } from '../errors/problem';
-import { type AuthenticatedPrincipal, AuthorizationGuard } from './authorization.guard';
-import { Can, type Permission, Public } from './decorators';
+import { AuthorizationGuard } from './authorization.guard';
+import { AllowMfaEnrollment, Authenticated, Can, type Permission, Public } from './decorators';
+import { type AuthenticatedPrincipal, type ModuleName } from './principal';
 
 class Controller {
   @Public() open() {}
   @Can('project:read') read() {}
+  @Can('gap:answer') answer() {}
+  @Authenticated() me() {}
+  @Authenticated() @AllowMfaEnrollment() enrol() {}
   undecorated() {}
 }
 
-function ctx(handler: keyof Controller, principal?: AuthenticatedPrincipal): ExecutionContext {
+function ctx(
+  handler: keyof Controller,
+  principal?: AuthenticatedPrincipal,
+  params: Record<string, string> = {},
+): ExecutionContext {
   const proto = Controller.prototype as unknown as Record<string, () => void>;
   return {
     getHandler: () => proto[handler],
     getClass: () => Controller,
-    switchToHttp: () => ({ getRequest: () => ({ principal }) }),
+    switchToHttp: () => ({ getRequest: () => ({ principal, params }) }),
   } as unknown as ExecutionContext;
 }
 
-const principal = (...permissions: Permission[]): AuthenticatedPrincipal => ({
+const principal = (
+  permissions: Permission[],
+  opts: { modules?: ModuleName[]; workspaceId?: string | null; mfaEnrollment?: boolean } = {},
+): AuthenticatedPrincipal => ({
   userId: 'u1',
-  workspaceId: 'w1',
+  sessionId: 's1',
+  workspaceId: opts.workspaceId === undefined ? 'w1' : opts.workspaceId,
+  platformRole: null,
+  role: null,
   permissions: new Set(permissions),
+  modules: new Set(opts.modules ?? []),
+  scope: { companyIds: [], projectIds: [] },
+  impersonatorId: null,
+  crossTenant: false,
+  tokenId: 't1',
+  ...(opts.mfaEnrollment ? { mfaEnrollment: true } : {}),
 });
 
 describe('AuthorizationGuard', () => {
   const guard = new AuthorizationGuard(new Reflector());
 
-  const expectProblem = (fn: () => unknown, type: string) => {
+  const expectProblem = (fn: () => unknown, type: string, extra?: Record<string, unknown>) => {
     try {
       fn();
       throw new Error('expected ProblemError');
     } catch (e) {
       expect(e).toBeInstanceOf(ProblemError);
       expect((e as ProblemError).type).toBe(type);
+      if (extra) expect((e as ProblemError).extensions).toMatchObject(extra);
     }
   };
 
@@ -43,19 +64,46 @@ describe('AuthorizationGuard', () => {
   });
 
   it('fails closed on routes without a decorator', () => {
-    expectProblem(() => guard.canActivate(ctx('undecorated', principal('platform:*'))), 'forbidden');
+    expectProblem(() => guard.canActivate(ctx('undecorated', principal(['platform:*']))), 'forbidden');
   });
 
-  it('requires authentication on @Can routes', () => {
+  it('requires authentication on @Can and @Authenticated routes', () => {
     expectProblem(() => guard.canActivate(ctx('read')), 'unauthenticated');
+    expectProblem(() => guard.canActivate(ctx('me')), 'unauthenticated');
+  });
+
+  it('@Authenticated needs no permission', () => {
+    expect(guard.canActivate(ctx('me', principal([])))).toBe(true);
   });
 
   it('rejects a principal without the permission', () => {
-    expectProblem(() => guard.canActivate(ctx('read', principal('gap:answer'))), 'forbidden');
+    expectProblem(() => guard.canActivate(ctx('read', principal(['gap:answer']))), 'forbidden');
   });
 
   it('accepts the permission or platform:*', () => {
-    expect(guard.canActivate(ctx('read', principal('project:read')))).toBe(true);
-    expect(guard.canActivate(ctx('read', principal('platform:*')))).toBe(true);
+    expect(guard.canActivate(ctx('read', principal(['project:read'])))).toBe(true);
+    expect(guard.canActivate(ctx('read', principal(['platform:*'])))).toBe(true);
+  });
+
+  it('checks the entitlement after the role (403 entitlement_required with the module)', () => {
+    expectProblem(() => guard.canActivate(ctx('answer', principal(['gap:answer']))), 'entitlement_required', {
+      module: 'gap',
+    });
+    expect(guard.canActivate(ctx('answer', principal(['gap:answer'], { modules: ['gap'] })))).toBe(true);
+  });
+
+  it('returns 404 when :wid is not the current workspace (before the permission check)', () => {
+    expectProblem(
+      () => guard.canActivate(ctx('read', principal(['project:read']), { wid: 'w2' })),
+      'not_found',
+    );
+    expectProblem(() => guard.canActivate(ctx('read', principal([]), { wid: 'w2' })), 'not_found');
+    expect(guard.canActivate(ctx('read', principal(['project:read']), { wid: 'w1' }))).toBe(true);
+  });
+
+  it('accepts the MFA-enrolment principal only where allowed', () => {
+    const enrol = principal([], { mfaEnrollment: true });
+    expect(guard.canActivate(ctx('enrol', enrol))).toBe(true);
+    expectProblem(() => guard.canActivate(ctx('me', enrol)), 'unauthenticated');
   });
 });

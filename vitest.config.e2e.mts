@@ -21,6 +21,7 @@ export default defineConfig({
       REDIS_URL: process.env.REDIS_URL ?? 'redis://localhost:6379',
       STORAGE_DRIVER: 'local',
       EMAIL_DRIVER: 'log',
+      BREACHED_PASSWORD_CHECK: 'off',
     },
   },
 });

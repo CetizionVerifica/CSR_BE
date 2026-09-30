@@ -48,7 +48,7 @@ Run lint, typecheck and the relevant tests before every commit. Never use `npm i
 - **Engines are pure** — scoring and calculation logic (gap weights, verified scores, materiality, ranking, GHG) lives in `engine/` as pure functions with no I/O, fully unit-tested, including golden-master fixtures from legacy data (`test/fixtures/golden/`). Never re-implement a formula outside its engine, and never accept a computed score from the client.
 - **Database access only in repositories** via Prisma. Tables: snake_case, `id uuid` (UUIDv7), `workspace_id` on every tenant-owned table, `created_at/updated_at`, `numeric` for scores/KPIs/emissions (never floats for audited values).
 - **Tenancy** — tenant-table queries run inside `prisma.withTenant(workspaceId, tx => …)`, which sets `app.workspace_id` for that transaction only. Every tenant table gets `ENABLE` + `FORCE ROW LEVEL SECURITY` and a policy using `app_current_workspace()` in a migration (pattern: `prisma/migrations/*_rls_tenant_tables`) plus isolation tests like `test/tenancy-rls.e2e-spec.ts`. Cross-tenant reads (platform assessors, supplier sharing) go through explicit, audited repository methods, never by disabling RLS.
-- **Authorisation** — every controller method has `@Can('<resource>:<action>')` or `@Public()`; a test fails the build otherwise. Check role and entitlement (module bought) and scope. Role matrix: `docs/revamp/modules/M01-identity-access.md`.
+- **Authorisation** — every controller method has `@Can('<resource>:<action>')`, `@Authenticated()` (own resources such as `/me`, no permission) or `@Public()`; a test fails the build otherwise. Routes with a `:wid` segment answer `404` unless it is the caller's current workspace (checked by the guard). Check role and entitlement (module bought) and scope. Role matrix: `docs/revamp/modules/M01-identity-access.md`.
 - **State machines** — project/workstream transitions only through the transition service (M03 §7), which validates the transition, writes `state_transitions`, emits events and enforces edit locks.
 - **API** — REST under `/v1`, Zod schemas validated with `ZodValidationPipe` and documented with `@ApiZodBody`/`@ApiZodOk`, cursor pagination, errors as RFC 9457 problem+json with stable `type` codes, `Idempotency-Key` on POSTs that send email or start jobs. Every change to the API must regenerate and commit `openapi.json`.
 - **Side effects** — email, report rendering, imports, AI calls and reminders run in BullMQ workers, never in the request path. Emit domain events; write `audit_events` for data changes and security events (M12).
@@ -57,7 +57,7 @@ Run lint, typecheck and the relevant tests before every commit. Never use `npm i
 
 ## Security checklist (every PR)
 
-Auth/permission decorator present · tenant scoping tested (another workspace gets 404) · input validated with Zod · no raw user input in regexes or dynamic field names · no secrets/PII in logs · file uploads via presigned PUT with signed type/size, post-upload size + magic-byte check and ClamAV scan · rate limits on public endpoints.
+Auth/permission decorator present (`@Can`/`@Authenticated`/`@Public`) · tenant scoping tested (another workspace gets 404) · input validated with Zod · no raw user input in regexes or dynamic field names · no secrets/PII in logs · file uploads via presigned PUT with signed type/size, post-upload size + magic-byte check and ClamAV scan · rate limits on public endpoints.
 
 ## Testing expectations
 

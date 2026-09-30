@@ -25,6 +25,7 @@ export class ProblemDetailsFilter implements ExceptionFilter {
     const body = this.toProblem(exception);
     body.instance = req.originalUrl;
     if (req.id) body.requestId = String(req.id);
+    if (typeof body.retryAfter === 'number') res.setHeader('Retry-After', String(body.retryAfter));
     if (body.status >= 500)
       this.logger.error({ err: exception, requestId: body.requestId }, 'Unhandled error');
     res.status(body.status).type('application/problem+json').json(body);
