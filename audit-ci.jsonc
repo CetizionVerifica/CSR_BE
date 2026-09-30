@@ -1,0 +1,14 @@
+{
+  // Production dependency audit gate (CI). Fails on any HIGH/CRITICAL advisory except those
+  // allowlisted below with a reviewed justification. Re-review on every Prisma/minio upgrade.
+  "$schema": "https://github.com/IBM/audit-ci/raw/main/docs/schema.json",
+  "high": true,
+  "skip-dev": true,
+  "allowlist": [
+    // deepmerge-ts stack exhaustion on recursive object graphs — only used by @prisma/config when
+    // loading prisma.config.ts at CLI time with our own static config; not reachable from requests.
+    "GHSA-ggr8-5vv4-36mx",
+    // mysql2 auth-plugin downgrade — bundled by the Prisma CLI for MySQL; we only use PostgreSQL.
+    "GHSA-3f6p-5ww8-9rcr",
+  ],
+}

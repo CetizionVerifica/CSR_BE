@@ -1,6 +1,6 @@
 # M01 — Identity & Access (auth, users, roles, tenancy)
 
-> Status: Draft · Phase: 1 (legacy hotfixes are Phase 0 — see `00-current-state-review.md` §2) · Depends on: — · Blocks: every other module
+> Status: Ready · Phase: 1 (legacy hotfixes are Phase 0 — see `00-current-state-review.md` §2) · Depends on: — · Blocks: every other module
 > Legacy code: `CSR_BE/server/services/passport.js`, `checkAuth.js`, `controllers/authentication.js`, `controllers/userController.js`, `routes/userRoutes.js`, `router.js`, `schema/mutations/user/*`, `schema/queries/user/*`, `index.js` (GraphQL JWT fallback) · `Resilisense-FE/src/components/auth/*`, `user/*`, `actions/AuthActions.js`, `ApolloClient.js`
 
 ## 1. Purpose

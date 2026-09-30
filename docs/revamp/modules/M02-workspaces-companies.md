@@ -1,6 +1,6 @@
 # M02 — Workspaces, Companies, Entitlements & Partners
 
-> Status: Draft · Phase: 1 · Depends on: M01 · Blocks: M03–M18
+> Status: Ready · Phase: 1 · Depends on: M01 · Blocks: M03–M18
 > Legacy code: BE `server/models/agency.js`, `company.js`, `schema/mutations/agency/*`, `company/add.js`, `company/update.js`, `company/updateSurveyEmailTemplates.js`, `queries/company/*`, `queries/agency/*`, `controllers/logs.js` (activity log) · FE `company/*`, `agencies/*`, `user/AgencyDashBoard.js`, `user/NewAgency.js`, `topBar/TopBarAgency.js`
 
 ## 1. Purpose

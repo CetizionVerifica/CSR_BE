@@ -1,0 +1,8 @@
+dist
+coverage
+src/generated
+Docs
+docs
+openapi.json
+package-lock.json
+prisma/migrations

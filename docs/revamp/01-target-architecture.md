@@ -39,6 +39,8 @@
 
 ## 3. Architecture Decision Records
 
+> **Scaffold notes (2026-09-30, CSR_BE):** NestJS 12 ships ESM-only; the API stays CommonJS and loads Nest via Node's `require(esm)`. Tests use **Vitest** (Jest cannot load ESM Nest on Node 22). **TypeScript 6** because typescript-eslint and @nestjs/swagger don't support 7 yet. `nestjs-zod` doesn't support Nest 12, so Zod validation/OpenAPI helpers live in `src/common/validation/zod.ts`. Prisma pinned to 7.10.0 (npm `latest` points to an 8.0 RC).
+>
 > **Versions** below are the current stable majors as of 2026-09 (checked on npm: Node 24 LTS, NestJS 12, Prisma 7, Zod 4, BullMQ 6, Vite 8, React 19, React Router 8, TanStack Query 5 / Table 9, Tailwind 4, ECharts 6, Storybook 10, ESLint 10, Vitest 5, TypeScript 7). At scaffold time, use the latest stable major of each and record the exact versions in `package.json` + `.nvmrc`; if a tool in the chain doesn't support TypeScript 7 yet, use the latest 6.x for that repo and note it here.
 
 ### ADR-001 Rebuild from scratch in the existing repositories — **Proposed**
@@ -65,7 +67,7 @@ Why change now that we start from scratch:
 
 ### ADR-004 API style: **REST + OpenAPI 3.1**, versioned under `/v1`
 - Resource-oriented REST, JSON, cursor pagination (`?cursor=&limit=`), filtering `?filter[status]=…`, sorting `?sort=-updatedAt`, sparse includes where needed.
-- Request/response schemas defined once with **Zod** (`nestjs-zod`), exported to `openapi.json` at build; the FE generates its typed client and TanStack Query hooks with **orval**. `openapi.json` is committed and diffed in CI (breaking-change check with `oasdiff`).
+- Request/response schemas defined once with **Zod** (own validation pipe + OpenAPI decorators via Zod 4 `toJSONSchema`), exported to `openapi.json` at build; the FE generates its typed client and TanStack Query hooks with **orval**. `openapi.json` is committed and diffed in CI (breaking-change check with `oasdiff`).
 - Errors: RFC 9457 `application/problem+json` with stable `type` codes (`forbidden`, `not_found`, `validation_failed`, `conflict`, `invalid_state_transition`, …).
 - Idempotency keys (`Idempotency-Key` header) on POSTs that send email or create billable work.
 - The same API later becomes the **public API** (feature #17) with personal access tokens/OAuth scopes.
@@ -196,7 +198,7 @@ CSR_BE/
 │  ├─ rls/                     # SQL for RLS policies (applied by migration)
 │  └─ seed/                    # reference data: taxonomy, question library, templates (from legacy files)
 ├─ etl/                        # one-off Mongo → Postgres migration (04-data-migration.md)
-├─ test/                       # e2e (supertest + Testcontainers Postgres/Redis), golden fixtures
+├─ test/                       # e2e (Vitest + supertest against real Postgres/Redis), golden fixtures
 ├─ openapi.json                # generated, committed
 ├─ docker-compose.yml          # postgres, valkey/redis, minio (S3-API), clamav, mailpit
 ├─ config/deploy.yml          # Kamal 2 deploy config (+ deploy.staging.yml); .kamal/secrets reads secrets at deploy time
@@ -241,7 +243,7 @@ Resilisense-FE/
 | staging | full stack on one VPS (Kamal destination `staging`), prod-like config | anonymised ETL output, refreshed monthly |
 | production | per region: `app-1` + `data-1` VPS (+ `data-2` standby from Phase 3) | |
 
-CI (GitHub Actions) on every PR in both repos: `npm ci` (never `--force`) → `lint` → `typecheck` → `unit tests + coverage` → `build` → BE: `e2e (Testcontainers)` + `openapi diff`; FE: `Playwright smoke + axe` against preview → `npm audit --omit=dev`, gitleaks, CodeQL.
+CI (GitHub Actions) on every PR in both repos: `npm ci` (never `--force`) → `lint` → `typecheck` → `unit tests + coverage` → `build` → BE: `e2e (Postgres + Valkey service containers)` + `openapi diff`; FE: `Playwright smoke + axe` against preview → `npm run audit` (audit-ci with reviewed allowlist), gitleaks, CodeQL.
 CD (VPS, no AWS): each repo has its own pipeline and Kamal config; both apps share `kamal-proxy` on the app hosts (routing by host name). `CSR_BE`: merge to `main` → build `api` image (also runs as `worker`) → push to GHCR → `kamal deploy -d staging`. `Resilisense-FE`: merge to `main` → build `web` image (static SPA + survey app served by Caddy) → push to GHCR → `kamal deploy -d staging`. Zero-downtime via kamal-proxy health checks; `kamal rollback` on failure. Production via release tag + manual approval (GitHub Environments) deploying the same image digests; FE releases must target an API version whose `openapi.json` they were generated from. Per-PR FE previews: `web` image on the staging VPS under `pr-<n>.staging.resilisense.org`. No `git pull`/`npm install` on servers, no pm2.
 
 ## 8. Non-functional requirements

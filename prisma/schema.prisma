@@ -1,0 +1,146 @@
+// ResiliSense 2.0 — database schema (PostgreSQL 16+).
+// Conventions (docs/revamp/01-target-architecture.md ADR-003):
+// - snake_case tables/columns via @@map/@map, UUIDv7 ids generated in the app
+// - every tenant-owned table has workspace_id and an RLS policy (prisma/migrations/*_rls)
+// - numeric (Decimal) for audited values, never floats
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat        = "cjs"
+  importFileExtension = ""
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Reference data (global, not tenant-scoped) — M04 §6 / M13 ────────────────
+
+enum TaxonomyStatus {
+  draft
+  published
+  retired
+
+  @@map("taxonomy_status")
+}
+
+enum AnswerType {
+  header
+  yes_no
+  legal_3
+  yes_count
+  ratio_band
+  gender_pay_gap
+
+  @@map("answer_type")
+}
+
+model TaxonomyVersion {
+  id           String         @id @db.Uuid
+  code         String         @unique
+  status       TaxonomyStatus @default(draft)
+  publishedAt  DateTime?      @map("published_at") @db.Timestamptz(6)
+  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  coreSubjects CoreSubject[]
+  issues       Issue[]
+  keyConsiderations KeyConsideration[]
+
+  @@map("taxonomy_versions")
+}
+
+model CoreSubject {
+  id        String          @id @db.Uuid
+  versionId String          @map("version_id") @db.Uuid
+  version   TaxonomyVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  key       String // legacy key, e.g. organizationalGovernance
+  code      String // "1".."7"
+  sortOrder Int             @map("sort_order")
+  label     String // English source label; translations live in M15 tables
+  issues    Issue[]
+
+  @@unique([versionId, key])
+  @@unique([versionId, code])
+  @@map("core_subjects")
+}
+
+model Issue {
+  id                String             @id @db.Uuid
+  versionId         String             @map("version_id") @db.Uuid
+  version           TaxonomyVersion    @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  coreSubjectId     String             @map("core_subject_id") @db.Uuid
+  coreSubject       CoreSubject        @relation(fields: [coreSubjectId], references: [id], onDelete: Cascade)
+  key               String // legacy key incl. historical typos, e.g. avoindanceOfComplicity
+  code              String // e.g. "1_1"
+  sortOrder         Int                @map("sort_order")
+  label             String
+  keyConsiderations KeyConsideration[]
+
+  @@unique([versionId, key])
+  @@unique([versionId, code])
+  @@index([coreSubjectId])
+  @@map("issues")
+}
+
+model KeyConsideration {
+  id               String          @id @db.Uuid
+  versionId        String          @map("version_id") @db.Uuid
+  version          TaxonomyVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  issueId          String          @map("issue_id") @db.Uuid
+  issue            Issue           @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  code             String // e.g. "1_1_1"
+  legacyKey        String          @map("legacy_key") // e.g. v_1_1_1_1
+  sortOrder        Int             @map("sort_order")
+  groupIndex       Int             @map("group_index")
+  label            String
+  evidenceHint     String?         @map("evidence_hint")
+  answerType       AnswerType      @map("answer_type")
+  answerOptions    Json            @map("answer_options")
+  scoringRule      Json            @map("scoring_rule")
+  evidenceRequired Boolean         @default(true) @map("evidence_required")
+  isHeader         Boolean         @default(false) @map("is_header")
+
+  @@unique([versionId, code])
+  @@unique([versionId, legacyKey])
+  @@index([issueId])
+  @@map("key_considerations")
+}
+
+// ─── Tenancy — M02 (minimal for the scaffold; full model lands with M01/M02) ──
+
+enum WorkspaceStatus {
+  trial
+  active
+  suspended
+  closed
+
+  @@map("workspace_status")
+}
+
+model Workspace {
+  id        String          @id @db.Uuid
+  name      String
+  slug      String          @unique
+  status    WorkspaceStatus @default(active)
+  createdAt DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime        @updatedAt @map("updated_at") @db.Timestamptz(6)
+  companies Company[]
+
+  @@map("workspaces")
+}
+
+// First tenant-owned table: RLS policy in migration 0002_rls.
+model Company {
+  id          String    @id @db.Uuid
+  workspaceId String    @map("workspace_id") @db.Uuid
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  legalName   String    @map("legal_name")
+  displayName String    @map("display_name")
+  country     String?   @db.Char(2)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([workspaceId])
+  @@map("companies")
+}
