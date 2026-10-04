@@ -73,6 +73,8 @@
     "@types/pg": "^8.15.5",
     "@types/supertest": "^6.0.3",
     "@vitest/coverage-v8": "^5.0.2",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "audit-ci": "^7.1.0",
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",

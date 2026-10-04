@@ -1,0 +1,65 @@
+name: API contract
+
+# Fails a PR that makes a breaking change to openapi.json (removed endpoint/field, narrowed type,
+# new required input, removed enum value…) compared with its base branch, because the FE
+# client is generated from it. When the break is intended, add the `api-breaking` label and follow up
+# with an `npm run api:sync` PR in Resilisense-FE. See docs/revamp/05-claude-code-playbook.md §5.
+#
+# .github/oasdiff-levels.txt downgrades a new value in a response enum (a permission, a status) to a
+# warning: it only matters to the FE once it syncs the contract, and its typecheck then catches it.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: api-contract-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  breaking-changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      OASDIFF_VERSION: v1.33.0
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Contract of the base branch
+        id: base
+        run: |
+          git show "${{ github.event.pull_request.base.sha }}:openapi.json" > "$RUNNER_TEMP/base.json"
+          if cmp -s "$RUNNER_TEMP/base.json" openapi.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "openapi.json is unchanged." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-go@v6
+        if: steps.base.outputs.changed == 'true'
+        with:
+          go-version: stable
+          cache: false
+      - name: Install oasdiff
+        if: steps.base.outputs.changed == 'true'
+        run: go install "github.com/oasdiff/oasdiff@${OASDIFF_VERSION}"
+      - name: API changelog (job summary)
+        if: steps.base.outputs.changed == 'true'
+        run: |
+          echo "## API changes in this PR" >> "$GITHUB_STEP_SUMMARY"
+          "$(go env GOPATH)/bin/oasdiff" changelog "$RUNNER_TEMP/base.json" openapi.json --format markdown >> "$GITHUB_STEP_SUMMARY"
+      - name: No breaking changes (unless labelled api-breaking)
+        if: steps.base.outputs.changed == 'true'
+        env:
+          ALLOWED: ${{ contains(github.event.pull_request.labels.*.name, 'api-breaking') }}
+        run: |
+          if [ "$ALLOWED" = "true" ]; then
+            "$(go env GOPATH)/bin/oasdiff" breaking "$RUNNER_TEMP/base.json" openapi.json --severity-levels .github/oasdiff-levels.txt --format githubactions
+            echo "::notice::Breaking API changes allowed by the api-breaking label: open the matching api:sync PR in Resilisense-FE."
+          else
+            "$(go env GOPATH)/bin/oasdiff" breaking "$RUNNER_TEMP/base.json" openapi.json --severity-levels .github/oasdiff-levels.txt --format githubactions --fail-on ERR
+          fi
