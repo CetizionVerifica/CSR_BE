@@ -57,7 +57,22 @@ export class AuthorizationGuard implements CanActivate {
       principal.modules,
       !!principal.workspaceId,
     );
-    if (decision.allowed) return true;
+    if (decision.allowed) {
+      // Suspended/closed workspaces are read-only for everyone but platform owners (M02 US-02-5).
+      const method = (req as { method?: string }).method ?? 'GET';
+      if (
+        (principal.workspaceStatus === 'suspended' || principal.workspaceStatus === 'closed') &&
+        !['GET', 'HEAD', 'OPTIONS'].includes(method) &&
+        principal.platformRole !== 'platform_owner'
+      ) {
+        throw new ProblemError(
+          'workspace_suspended',
+          'This workspace is suspended',
+          'The workspace is read-only',
+        );
+      }
+      return true;
+    }
     if (decision.reason === 'entitlement_required') {
       throw new ProblemError(
         'entitlement_required',

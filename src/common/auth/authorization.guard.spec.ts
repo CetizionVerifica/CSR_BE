@@ -18,23 +18,31 @@ function ctx(
   handler: keyof Controller,
   principal?: AuthenticatedPrincipal,
   params: Record<string, string> = {},
+  method = 'GET',
 ): ExecutionContext {
   const proto = Controller.prototype as unknown as Record<string, () => void>;
   return {
     getHandler: () => proto[handler],
     getClass: () => Controller,
-    switchToHttp: () => ({ getRequest: () => ({ principal, params }) }),
+    switchToHttp: () => ({ getRequest: () => ({ principal, params, method }) }),
   } as unknown as ExecutionContext;
 }
 
 const principal = (
   permissions: Permission[],
-  opts: { modules?: ModuleName[]; workspaceId?: string | null; mfaEnrollment?: boolean } = {},
+  opts: {
+    modules?: ModuleName[];
+    workspaceId?: string | null;
+    mfaEnrollment?: boolean;
+    workspaceStatus?: AuthenticatedPrincipal['workspaceStatus'];
+    platformRole?: AuthenticatedPrincipal['platformRole'];
+  } = {},
 ): AuthenticatedPrincipal => ({
   userId: 'u1',
   sessionId: 's1',
   workspaceId: opts.workspaceId === undefined ? 'w1' : opts.workspaceId,
-  platformRole: null,
+  workspaceStatus: opts.workspaceStatus ?? 'active',
+  platformRole: opts.platformRole ?? null,
   role: null,
   permissions: new Set(permissions),
   modules: new Set(opts.modules ?? []),
@@ -105,5 +113,18 @@ describe('AuthorizationGuard', () => {
     const enrol = principal([], { mfaEnrollment: true });
     expect(guard.canActivate(ctx('enrol', enrol))).toBe(true);
     expectProblem(() => guard.canActivate(ctx('me', enrol)), 'unauthenticated');
+  });
+
+  it('makes suspended and closed workspaces read-only, except for platform owners (US-02-5)', () => {
+    const suspended = principal(['project:read'], { workspaceStatus: 'suspended' });
+    expect(guard.canActivate(ctx('read', suspended))).toBe(true);
+    expectProblem(() => guard.canActivate(ctx('read', suspended, {}, 'POST')), 'workspace_suspended');
+    const closed = principal(['project:read'], { workspaceStatus: 'closed' });
+    expectProblem(() => guard.canActivate(ctx('read', closed, {}, 'PATCH')), 'workspace_suspended');
+    const owner = principal(['platform:*'], { workspaceStatus: 'suspended', platformRole: 'platform_owner' });
+    expect(guard.canActivate(ctx('read', owner, {}, 'POST'))).toBe(true);
+    expect(guard.canActivate(ctx('me', principal([], { workspaceStatus: 'suspended' }), {}, 'POST'))).toBe(
+      true,
+    );
   });
 });

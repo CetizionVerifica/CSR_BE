@@ -16,6 +16,9 @@ export type WorkspaceRole = MembershipRoleName | 'partner_admin';
 export const PLATFORM_ROLES = ['platform_owner', 'platform_assessor', 'platform_support'] as const;
 export type PlatformRoleName = (typeof PLATFORM_ROLES)[number];
 
+export const WORKSPACE_STATUSES = ['trial', 'active', 'suspended', 'closed'] as const;
+export type WorkspaceStatusName = (typeof WORKSPACE_STATUSES)[number];
+
 /** Entitlement modules (M02 §2, M01 §2). */
 export const MODULES = [
   'gap',
@@ -36,6 +39,8 @@ export interface AuthenticatedPrincipal {
   /** Session id = refresh-token family; null for impersonation tokens. */
   sessionId: string | null;
   workspaceId: string | null;
+  /** Status of the current workspace; suspended/closed workspaces are read-only (M02 US-02-5). */
+  workspaceStatus: WorkspaceStatusName | null;
   platformRole: PlatformRoleName | null;
   role: WorkspaceRole | null;
   /** Permissions granted by role(s), before the entitlement check. */

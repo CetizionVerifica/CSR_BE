@@ -44,6 +44,7 @@ describe('M01 §2 permission matrix', () => {
     ['supplier:rank', true, true, false, false, false, true, false, true],
     ['report:export', true, true, true, true, true, true, true, true],
     ['audit:read', true, true, false, false, true, false, false, true],
+    ['partner:manage', true, true, false, false, false, false, false, true],
     ['platform:*', false, false, false, false, false, false, false, true],
   ];
   const columns: Array<{

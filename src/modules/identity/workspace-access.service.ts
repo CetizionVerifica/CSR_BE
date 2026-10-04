@@ -87,6 +87,7 @@ export class WorkspaceAccessService {
     access: WorkspaceAccess | null,
     token: { sessionId: string | null; impersonatorId: string | null; tokenId: string | null },
   ): Promise<AuthenticatedPrincipal> {
+    const workspace = access ? await this.access.getWorkspace(access.workspaceId) : null;
     const permissions: Set<Permission> = resolvePermissions({
       platformRole: user.platformRole,
       workspaceRole: access?.role ?? null,
@@ -95,6 +96,7 @@ export class WorkspaceAccessService {
       userId: user.id,
       sessionId: token.sessionId,
       workspaceId: access?.workspaceId ?? null,
+      workspaceStatus: workspace?.status ?? null,
       platformRole: user.platformRole,
       role: access?.role ?? null,
       permissions,

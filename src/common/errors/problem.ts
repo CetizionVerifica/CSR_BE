@@ -8,6 +8,7 @@ export const PROBLEM_TYPES = {
   forbidden: 403,
   entitlement_required: 403,
   limit_exceeded: 403,
+  workspace_suspended: 403,
   email_not_verified: 403,
   invalid_token: 400,
   not_found: 404,

@@ -12,10 +12,14 @@ import { PrismaModule } from './infra/prisma/prisma.module';
 import { bullRoot, type EmailJob, QUEUES, registerQueues } from './infra/queue/queues';
 import { StorageModule } from './infra/storage/storage.module';
 import {
-  IdentityCleanupProcessor,
-  IdentityCleanupScheduler,
-} from './modules/identity/identity-cleanup.processor';
+  SCHEDULED_TASKS,
+  ScheduledJobsProcessor,
+  ScheduledJobsScheduler,
+} from './infra/queue/scheduled-jobs';
+import { IdentityCleanupTask } from './modules/identity/identity-cleanup.task';
 import { SessionsRepository } from './modules/identity/sessions.repository';
+import { CompaniesPurgeTask } from './modules/workspaces/companies-purge.task';
+import { CompaniesRepository } from './modules/workspaces/companies.repository';
 
 /** Sends queued emails. Retries/backoff come from the queue defaults (ADR-007). */
 @Processor(QUEUES.email)
@@ -41,7 +45,20 @@ export class EmailProcessor extends WorkerHost {
     bullRoot(),
     registerQueues(QUEUES.email, QUEUES.scheduled),
   ],
-  providers: [EmailProcessor, SessionsRepository, IdentityCleanupProcessor, IdentityCleanupScheduler],
+  providers: [
+    EmailProcessor,
+    SessionsRepository,
+    CompaniesRepository,
+    IdentityCleanupTask,
+    CompaniesPurgeTask,
+    {
+      provide: SCHEDULED_TASKS,
+      inject: [IdentityCleanupTask, CompaniesPurgeTask],
+      useFactory: (...tasks: unknown[]) => tasks,
+    },
+    ScheduledJobsProcessor,
+    ScheduledJobsScheduler,
+  ],
 })
 export class WorkerModule {}
 

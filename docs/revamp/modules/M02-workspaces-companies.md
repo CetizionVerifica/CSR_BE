@@ -93,6 +93,15 @@ RLS on `companies`, `entitlements` by `workspace_id`. `workspaces` readable only
 - Partner console `/partner/clients`: table of client workspaces with status, active project, last activity, quick "open workspace".
 - Locked-module pattern (lock icon + upsell panel) for non-entitled modules.
 
+Implementation notes (2026-10-04, first M02 PR):
+- **Partner workspace**: a workspace acts as a partner when its plan has `limits.clientWorkspaces` > 0. The partner console needs the new permission `partner:manage` (owner and admin of the partner workspace, platform owner; see M01 §2); `/partner/clients` answers `403` in a workspace that is not a partner. Revoking a grant, listing grants: `GET /workspaces/current/partner-grants` (added for the settings page) and `DELETE …/:id`, both `workspace:manage`.
+- **Partner-onboarded clients** are created `active` with `created_via = partner`, the partner's module list (a partner cannot grant more than it has) and starting limits `{ companies: 1, users: 5, projectsPerYear: 1 }` until the platform owner sets a plan. The owner invitation is a normal M01 invitation (role `workspace_owner`); everything is created in one transaction.
+- **Workspace profile**: `PATCH /workspaces/current` follows the §8 table (`workspace:manage`, owner only); `data_region` is read-only. `GET /workspaces/current/entitlements` also returns `usage` (`companies`, `users` = active members + pending invitations, `clientWorkspaces`).
+- **Suspension** (US-02-5): in a `suspended` or `closed` workspace every `@Can` route except `GET` answers `403 workspace_suspended` (platform owners excepted); `/me` routes keep working. Survey links follow with M08.
+- **Companies**: size bands `micro | small | medium | large` (EU SME bands). `sector_code` and `size_band` are nullable in the database for migrated legacy rows but required by `POST /companies`. Sectors are the legacy two-level list (4 groups, 43 types) with the legacy values as codes; ISIC/NACE codes are not assigned yet. Contributors limited to companies only see those. `DELETE /companies/:id?confirmName=` always needs the typed name (display or legal name) because projects do not exist yet; deleting a parent only clears its sub-companies' link. A daily job hard-deletes companies 30 days after deletion; restoring also respects the company limit.
+- **Activity**: `GET /companies/:id/activity` lists the company's audit events (action, actor, changed field names; never values). A workspace-wide feed comes with M12.
+- **Deferred**: logos (M14), survey email templates (M08), notification defaults (M12), AI opt-in (M17), data-retention preference, workspace deletion and platform-created workspaces (not in the §8 table), and the Projects/Stakeholders/Suppliers company tabs (M03/M07/M10). Platform workspace screens belong to M13.
+
 ## 10. Events & audit
 `workspace.created|updated|suspended|deleted`, `company.created|updated|deleted|restored`, `entitlements.changed`, `partner_grant.created|revoked`.
 
