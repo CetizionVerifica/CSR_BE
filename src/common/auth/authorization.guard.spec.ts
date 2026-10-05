@@ -93,7 +93,7 @@ describe('AuthorizationGuard', () => {
     expect(guard.canActivate(ctx('read', principal(['platform:*'])))).toBe(true);
   });
 
-  it('checks the entitlement after the role (403 entitlement_required with the module)', () => {
+  it('US-02-3: checks the entitlement after the role (403 entitlement_required with the module)', () => {
     expectProblem(() => guard.canActivate(ctx('answer', principal(['gap:answer']))), 'entitlement_required', {
       module: 'gap',
     });
