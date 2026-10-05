@@ -49,8 +49,12 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm run typecheck
-      - run: npm test
-      - run: npm run test:e2e
+      - name: Spec user stories have tests (or a waiver in spec-coverage.json)
+        run: npm run spec:coverage
+      - name: Unit tests + engine coverage floor (vitest.config.mts)
+        run: npm test -- --coverage
+      - name: E2E (contract-checked) + coverage floors (vitest.config.e2e.mts)
+        run: npm run test:e2e -- --coverage
       - run: npm run build
       - name: openapi.json is up to date
         run: npm run openapi:check

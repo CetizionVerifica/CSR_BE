@@ -1,0 +1,51 @@
+name: Mutation testing (engines)
+
+# CI test plan B5. Stryker mutates the pure engines (src/modules/*/engine) and reruns their unit
+# tests; a surviving mutant is a condition, boundary or constant no test pins down. Nightly and on
+# demand only (it reruns the engine suite once per mutant). Fails below the `break` score in
+# stryker.config.mjs; the HTML report is uploaded as an artifact.
+
+on:
+  schedule:
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mutation
+  cancel-in-progress: true
+
+jobs:
+  stryker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run test:mutation
+      - name: Mutation score in the job summary
+        if: always()
+        run: |
+          [ -f reports/mutation/mutation.json ] || exit 0
+          node -e '
+            const r = require("./reports/mutation/mutation.json");
+            const rows = Object.entries(r.files).map(([file, f]) => {
+              const s = f.mutants.reduce((a, m) => ((a[m.status] = (a[m.status] ?? 0) + 1), a), {});
+              const killed = (s.Killed ?? 0) + (s.Timeout ?? 0);
+              const valid = killed + (s.Survived ?? 0) + (s.NoCoverage ?? 0);
+              return `| ${file} | ${valid ? ((100 * killed) / valid).toFixed(1) : "n/a"} | ${s.Survived ?? 0} |`;
+            });
+            console.log(["## Mutation score (engines)", "", "| File | Score % | Survived |", "| --- | --- | --- |", ...rows].join("\n"));
+          ' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mutation-report
+          path: reports/mutation
+          retention-days: 14
