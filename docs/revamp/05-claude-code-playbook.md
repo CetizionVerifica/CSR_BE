@@ -94,6 +94,11 @@ You run the dry runs (DR1–DR3) against snapshots on your infrastructure; Claud
 - Specs first: if a PR changes behaviour, the PR must update the spec in **both** repos (CLAUDE.md enforces this).
 - Small PRs (< ~800 changed lines excluding generated files); ask Claude to split otherwise.
 - Every PR: lint, typecheck, tests, `openapi.json` regenerated (BE), axe clean (FE).
+- **API contract checks** (CI test plan, Phase A):
+  - CSR_BE e2e: every response is validated against the OpenAPI document built from the app (`test/support/contract.ts`); an undocumented status, a body that doesn't match its schema, or an error that isn't problem+json with a known `type` fails the test that caused it. Document every success status with `@ApiZodOk`/`@ApiZodResponse`.
+  - CSR_BE PRs: the **API contract** workflow fails on breaking changes to `openapi.json` versus the base branch (oasdiff). If the break is intended, label the PR `api-breaking` and follow up with an `npm run api:sync` PR in Resilisense-FE.
+  - Resilisense-FE tests: every MSW-mocked response and JSON request body is validated against `api/openapi.json` (`src/test/contract.ts`), so mocks can't drift from the real API. Error mocks use `problem()` from `src/mocks/handlers.ts`; only tests of the HTTP plumbing itself may call `ignoreContract()`.
+  - Resilisense-FE **API drift** workflow (nightly + PRs touching `api/`): reports what CSR_BE `main` changed since the pinned contract, fails nightly on unsynced breaking changes, and checks `api/openapi.json` was never hand-edited. Needs the `CSR_BE_READ_TOKEN` secret (read-only Contents on CSR_BE).
 - Keep `CLAUDE.md` current: when you correct Claude on a convention twice, add it to `CLAUDE.md`.
 - Ask for a **weekly status report**: *"Summarise merged PRs this week against the roadmap phases in docs/revamp/03, list open spec questions, and propose next week's sessions."*
 
