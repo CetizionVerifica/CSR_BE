@@ -106,7 +106,7 @@ model KeyConsideration {
   @@map("key_considerations")
 }
 
-// ─── Tenancy — M02 (minimal for the scaffold; full model lands with M01/M02) ──
+// ─── Tenancy — M02 (workspaces, companies, entitlements, reference data) ──────
 
 enum WorkspaceStatus {
   trial
@@ -117,19 +117,57 @@ enum WorkspaceStatus {
   @@map("workspace_status")
 }
 
+enum DataRegion {
+  eu
+  in
+  us
+
+  @@map("data_region")
+}
+
+enum WorkspaceCreatedVia {
+  platform
+  partner
+  self_service
+
+  @@map("workspace_created_via")
+}
+
+enum CompanySizeBand {
+  micro
+  small
+  medium
+  large
+
+  @@map("company_size_band")
+}
+
+// Not RLS-scoped: readable only through membership/grant checks in the repositories (M02 §6).
 model Workspace {
-  id                    String          @id @db.Uuid
+  id                    String              @id @db.Uuid
   name                  String
-  slug                  String          @unique
-  status                WorkspaceStatus @default(active)
-  createdAt             DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt             DateTime        @updatedAt @map("updated_at") @db.Timestamptz(6)
+  slug                  String              @unique
+  status                WorkspaceStatus     @default(active)
+  logoFileId            String?             @map("logo_file_id") @db.Uuid
+  country               String?             @db.Char(2)
+  defaultLocale         String              @default("en") @map("default_locale")
+  timezone              String              @default("UTC")
+  dataRegion            DataRegion          @default(eu) @map("data_region")
+  trialEndsAt           DateTime?           @map("trial_ends_at") @db.Timestamptz(6)
+  createdVia            WorkspaceCreatedVia @default(platform) @map("created_via")
+  partnerWorkspaceId    String?             @map("partner_workspace_id") @db.Uuid
+  branding              Json                @default("{}")
+  settings              Json                @default("{}")
+  legacyAgencyId        String?             @map("legacy_agency_id")
+  createdAt             DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt             DateTime?           @map("deleted_at") @db.Timestamptz(6)
   companies             Company[]
   memberships           Membership[]
   invitations           Invitation[]
   entitlement           Entitlement?
-  partnerGrantsGiven    PartnerGrant[]  @relation("PartnerGrantPartner")
-  partnerGrantsReceived PartnerGrant[]  @relation("PartnerGrantClient")
+  partnerGrantsGiven    PartnerGrant[]      @relation("PartnerGrantPartner")
+  partnerGrantsReceived PartnerGrant[]      @relation("PartnerGrantClient")
 
   @@map("workspaces")
 }
@@ -147,20 +185,63 @@ model Entitlement {
   @@map("entitlements")
 }
 
-// First tenant-owned table: RLS policy in migration 0002_rls.
+// Tenant-owned (RLS by workspace_id). sector_code and size_band are nullable in the database so
+// legacy companies without them can be migrated; the API requires them on create (M02 §4.1).
 model Company {
-  id          String    @id @db.Uuid
-  workspaceId String    @map("workspace_id") @db.Uuid
-  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  legalName   String    @map("legal_name")
-  displayName String    @map("display_name")
-  country     String?   @db.Char(2)
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
-  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(6)
+  id                   String           @id @db.Uuid
+  workspaceId          String           @map("workspace_id") @db.Uuid
+  workspace            Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  parentCompanyId      String?          @map("parent_company_id") @db.Uuid
+  parentCompany        Company?         @relation("CompanyHierarchy", fields: [parentCompanyId], references: [id], onDelete: SetNull)
+  children             Company[]        @relation("CompanyHierarchy")
+  legalName            String           @map("legal_name")
+  displayName          String           @map("display_name")
+  registrationNo       String?          @map("registration_no")
+  sectorCode           String?          @map("sector_code")
+  sector               Sector?          @relation(fields: [sectorCode], references: [code])
+  sizeBand             CompanySizeBand? @map("size_band")
+  employeeCount        Int?             @map("employee_count")
+  country              String?          @db.Char(2)
+  region               String?
+  website              String?
+  description          String?
+  address              Json?
+  logoFileId           String?          @map("logo_file_id") @db.Uuid
+  fiscalYearStartMonth Int              @default(1) @map("fiscal_year_start_month") @db.SmallInt
+  currency             String           @db.Char(3)
+  contactUserId        String?          @map("contact_user_id") @db.Uuid
+  legacyCompanyId      String?          @map("legacy_company_id")
+  createdAt            DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt            DateTime?        @map("deleted_at") @db.Timestamptz(6)
 
   @@index([workspaceId])
+  @@index([workspaceId, deletedAt])
   @@map("companies")
+}
+
+// Global reference data (M02 §6); seeded by prisma/seed.
+model Sector {
+  code       String    @id
+  parentCode String?   @map("parent_code")
+  parent     Sector?   @relation("SectorTree", fields: [parentCode], references: [code])
+  children   Sector[]  @relation("SectorTree")
+  labelKey   String    @map("label_key")
+  label      String
+  sortOrder  Int       @default(0) @map("sort_order")
+  isicCode   String?   @map("isic_code")
+  naceCode   String?   @map("nace_code")
+  companies  Company[]
+
+  @@map("sectors")
+}
+
+model Country {
+  code     String @id @db.Char(2)
+  region   String
+  labelKey String @map("label_key")
+
+  @@map("countries")
 }
 
 // ─── Identity & access — M01 ─────────────────────────────────────────────────

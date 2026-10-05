@@ -149,7 +149,13 @@ export class AccessRepository {
     return this.prisma.withTenant(workspaceId, async (tx) => {
       await first(tx);
       await tx.workspace.create({
-        data: { id: workspaceId, name: input.name, slug: input.slug, status: 'trial' },
+        data: {
+          id: workspaceId,
+          name: input.name,
+          slug: input.slug,
+          status: 'trial',
+          createdVia: 'self_service',
+        },
       });
       await tx.entitlement.create({
         data: {

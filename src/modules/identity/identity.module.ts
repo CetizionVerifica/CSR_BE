@@ -57,6 +57,13 @@ import { WorkspaceAccessService } from './workspace-access.service';
     UsersRepository,
     WorkspaceAccessService,
   ],
-  exports: [AuthenticationGuard, TokenService, WorkspaceAccessService, SessionsRepository],
+  exports: [
+    AuthenticationGuard,
+    TokenService,
+    WorkspaceAccessService,
+    SessionsRepository,
+    IdentityMailer,
+    UsersRepository,
+  ],
 })
 export class IdentityModule {}

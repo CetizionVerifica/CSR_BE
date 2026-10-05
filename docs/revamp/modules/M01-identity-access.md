@@ -42,6 +42,7 @@ Legacy role strings: `Client` (default), `Admin`, `Reseller`, `superadmin`, `use
 | `supplier:manage`, `supplier:rank` | ✔ | ✔ | — | — | — | ✔ | — | ✔ |
 | `report:export` | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `audit:read` | ✔ | ✔ | — | — | ✔ | — | — | ✔ |
+| `partner:manage` (M02 partner console) | ✔ | ✔ | — | — | — | — | — | ✔ |
 | `platform:*` | — | — | — | — | — | — | — | ✔ |
 
 \* on workspaces covered by a `PartnerGrant` only. A user acts as `partner_admin` in a client workspace when they are `workspace_owner` or `workspace_admin` of a workspace that holds an active (non-revoked) `partner_grant` to it; `partner_admin` is not a membership role. For role-ceiling rules (§7) it ranks as `workspace_admin`.

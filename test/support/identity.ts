@@ -108,7 +108,9 @@ export class IdentityFixtures {
 
   company(workspaceId: string) {
     return this.prisma.withTenant(workspaceId, (tx) =>
-      tx.company.create({ data: { id: uuidv7(), workspaceId, legalName: 'Acme Ltd', displayName: 'Acme' } }),
+      tx.company.create({
+        data: { id: uuidv7(), workspaceId, legalName: 'Acme Ltd', displayName: 'Acme', currency: 'EUR' },
+      }),
     );
   }
 

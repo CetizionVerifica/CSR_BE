@@ -7,7 +7,7 @@ import { type EmailJob } from '../../infra/queue/queues';
 const esc = (s: string): string =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
-function email(
+export function transactionalEmail(
   to: string,
   subject: string,
   lines: string[],
@@ -23,7 +23,7 @@ function email(
 
 export const identityEmails = {
   invitation: (to: string, p: { workspaceName: string; inviterName: string; url: string }) =>
-    email(
+    transactionalEmail(
       to,
       `You're invited to ${p.workspaceName} on ResiliSense`,
       [
@@ -33,7 +33,7 @@ export const identityEmails = {
       { url: p.url, label: 'Accept invitation' },
     ),
   passwordReset: (to: string, p: { url: string }) =>
-    email(
+    transactionalEmail(
       to,
       'Reset your ResiliSense password',
       [
@@ -43,12 +43,12 @@ export const identityEmails = {
       { url: p.url, label: 'Reset password' },
     ),
   passwordChanged: (to: string) =>
-    email(to, 'Your ResiliSense password was changed', [
+    transactionalEmail(to, 'Your ResiliSense password was changed', [
       'Your password was changed and your other sessions were signed out.',
       'If this was not you, reset your password immediately and contact support.',
     ]),
   verifyEmail: (to: string, p: { url: string }) =>
-    email(
+    transactionalEmail(
       to,
       'Confirm your email address',
       ['Confirm your email address to finish setting up ResiliSense. The link is valid for 24 hours.'],
@@ -58,7 +58,7 @@ export const identityEmails = {
       },
     ),
   accountExists: (to: string, p: { signInUrl: string; resetUrl: string }) =>
-    email(
+    transactionalEmail(
       to,
       'You already have a ResiliSense account',
       [
@@ -68,11 +68,11 @@ export const identityEmails = {
       { url: p.signInUrl, label: 'Sign in' },
     ),
   emailChanged: (to: string) =>
-    email(to, 'Your ResiliSense email address was changed', [
+    transactionalEmail(to, 'Your ResiliSense email address was changed', [
       'The email address of your ResiliSense account was changed. If this was not you, contact support immediately.',
     ]),
   mfaChanged: (to: string, enabled: boolean) =>
-    email(to, `Two-factor authentication ${enabled ? 'enabled' : 'disabled'}`, [
+    transactionalEmail(to, `Two-factor authentication ${enabled ? 'enabled' : 'disabled'}`, [
       `Two-factor authentication was ${enabled ? 'enabled' : 'disabled'} on your ResiliSense account.`,
       'If this was not you, reset your password immediately and contact support.',
     ]),

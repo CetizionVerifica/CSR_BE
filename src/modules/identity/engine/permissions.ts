@@ -26,6 +26,7 @@ const OWNER: Permission[] = [
   'supplier:rank',
   'report:export',
   'audit:read',
+  'partner:manage',
 ];
 
 const without = (list: Permission[], ...drop: Permission[]) => list.filter((p) => !drop.includes(p));
@@ -36,7 +37,7 @@ export const WORKSPACE_ROLE_PERMISSIONS: Record<WorkspaceRole, readonly Permissi
   contributor: ['project:read', 'gap:answer', 'evidence:upload', 'kpi:enter', 'report:export'],
   viewer: ['project:read', 'report:export'],
   auditor: ['project:read', 'report:export', 'audit:read'],
-  partner_admin: without(OWNER, 'workspace:manage', 'billing:manage', 'audit:read'),
+  partner_admin: without(OWNER, 'workspace:manage', 'billing:manage', 'audit:read', 'partner:manage'),
 };
 
 export const PLATFORM_ROLE_PERMISSIONS: Record<PlatformRoleName, readonly Permission[]> = {

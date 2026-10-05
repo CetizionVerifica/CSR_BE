@@ -21,12 +21,24 @@ describe('tenancy — row-level security (e2e)', () => {
     });
     await prisma.withTenant(wsA, (tx) =>
       tx.company.create({
-        data: { id: uuidv7(), workspaceId: wsA, legalName: 'Acme A Ltd', displayName: 'Acme A' },
+        data: {
+          id: uuidv7(),
+          workspaceId: wsA,
+          legalName: 'Acme A Ltd',
+          displayName: 'Acme A',
+          currency: 'EUR',
+        },
       }),
     );
     await prisma.withTenant(wsB, (tx) =>
       tx.company.create({
-        data: { id: uuidv7(), workspaceId: wsB, legalName: 'Bravo B Ltd', displayName: 'Bravo B' },
+        data: {
+          id: uuidv7(),
+          workspaceId: wsB,
+          legalName: 'Bravo B Ltd',
+          displayName: 'Bravo B',
+          currency: 'EUR',
+        },
       }),
     );
   });
@@ -51,7 +63,13 @@ describe('tenancy — row-level security (e2e)', () => {
     await expect(
       prisma.withTenant(wsA, (tx) =>
         tx.company.create({
-          data: { id: uuidv7(), workspaceId: wsB, legalName: 'Sneaky', displayName: 'Sneaky' },
+          data: {
+            id: uuidv7(),
+            workspaceId: wsB,
+            legalName: 'Sneaky',
+            displayName: 'Sneaky',
+            currency: 'EUR',
+          },
         }),
       ),
     ).rejects.toThrow();

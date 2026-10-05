@@ -5,6 +5,7 @@
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../../src/generated/prisma/client';
+import { COUNTRIES, SECTORS } from './reference';
 import { buildTaxonomy, TAXONOMY_CODE } from './taxonomy';
 import { readWorkbookRows } from './workbook';
 
@@ -62,6 +63,22 @@ async function main(): Promise<void> {
       },
       { timeout: 120_000 },
     );
+    await prisma.$transaction(async (tx) => {
+      for (const s of SECTORS) {
+        const data = {
+          parentCode: s.parentCode,
+          label: s.label,
+          labelKey: `sector.${s.code}`,
+          sortOrder: s.sortOrder,
+        };
+        await tx.sector.upsert({ where: { code: s.code }, create: { code: s.code, ...data }, update: data });
+      }
+      for (const c of COUNTRIES) {
+        const data = { region: c.region, labelKey: `country.${c.code}` };
+        await tx.country.upsert({ where: { code: c.code }, create: { code: c.code, ...data }, update: data });
+      }
+    });
+    console.log(`Seeded reference data: ${SECTORS.length} sectors, ${COUNTRIES.length} countries`);
     console.log(
       `Seeded ${TAXONOMY_CODE}: ${t.coreSubjects.length} core subjects, ${t.issues.length} issues, ${t.keyConsiderations.length} key considerations`,
     );

@@ -14,6 +14,7 @@ import { AuditModule } from './modules/audit/audit.module';
 import { HealthModule } from './modules/health/health.module';
 import { AuthenticationGuard } from './modules/identity/authentication.guard';
 import { IdentityModule } from './modules/identity/identity.module';
+import { WorkspacesModule } from './modules/workspaces/workspaces.module';
 
 /**
  * HTTP application. Feature modules (docs/revamp/modules/Mxx) are added under src/modules/
@@ -33,6 +34,7 @@ import { IdentityModule } from './modules/identity/identity.module';
     AuditModule,
     HealthModule,
     IdentityModule,
+    WorkspacesModule,
   ],
   providers: [
     // Order matters: authenticate (principal from bearer token) → authorise (@Public/@Authenticated/@Can).

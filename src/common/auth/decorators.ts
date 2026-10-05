@@ -32,6 +32,7 @@ export const PERMISSIONS = [
   'report:export',
   'report:publish',
   'audit:read',
+  'partner:manage',
   'ai:use',
   'ai:configure',
   'platform:*',

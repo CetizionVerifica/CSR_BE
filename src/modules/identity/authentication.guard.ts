@@ -99,6 +99,7 @@ export class AuthenticationGuard implements CanActivate {
       userId: user.id,
       sessionId: null,
       workspaceId: claims.wid,
+      workspaceStatus: null,
       platformRole: null,
       role: null,
       permissions: new Set(),
