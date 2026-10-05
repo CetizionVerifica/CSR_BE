@@ -64,6 +64,7 @@ Auth/permission decorator present (`@Can`/`@Authenticated`/`@Public`) · tenant 
 - Engines: table-driven unit tests covering the edge cases listed in the spec (band boundaries, empty denominators, missing classes…).
 - Services/controllers: e2e tests for happy path, forbidden role, other-workspace access, invalid state transition.
 - Bug fixes start with a failing test.
+- Every e2e response is checked against the OpenAPI contract (`test/support/contract.ts`): document every status a route returns, and keep errors as problem+json with a type from `PROBLEM_TYPES`. Breaking `openapi.json` changes fail the **API contract** workflow unless the PR is labelled `api-breaking` (playbook §5).
 
 ## Conventions
 
