@@ -11,3 +11,12 @@ src/generated
 .idea
 .vscode
 *.tsbuildinfo
+
+# API fuzzing (test/fuzz, .github/workflows/api-fuzz.yml)
+fuzz-token.txt
+fuzz-report/
+fuzz-server.log
+# Mutation testing
+reports/mutation/
+.stryker-tmp/
+.schemathesis/

@@ -9,6 +9,7 @@ const STATUS_TO_TYPE: Record<number, ProblemType> = {
   403: 'forbidden',
   404: 'not_found',
   409: 'conflict',
+  413: 'payload_too_large',
   429: 'rate_limited',
   503: 'service_unavailable',
 };
@@ -49,6 +50,11 @@ export class ProblemDetailsFilter implements ExceptionFilter {
         errors: exception.issues.map((i) => ({ path: i.path.join('.'), message: i.message })),
       };
     }
+    if (isClientHttpError(exception)) {
+      // body-parser / http-errors (e.g. 413 request entity too large) raised before Nest's pipeline.
+      const type = STATUS_TO_TYPE[exception.status] ?? 'validation_failed';
+      return { type: problemTypeUri(type), title: exception.message, status: PROBLEM_TYPES[type] };
+    }
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
       const type = STATUS_TO_TYPE[status] ?? (status >= 500 ? 'internal_error' : 'validation_failed');
@@ -60,4 +66,11 @@ export class ProblemDetailsFilter implements ExceptionFilter {
       status: PROBLEM_TYPES.internal_error,
     };
   }
+}
+
+/** An http-errors style client error (`expose: true`, 4xx status) whose message is safe to show. */
+function isClientHttpError(e: unknown): e is { status: number; message: string } {
+  if (!(e instanceof Error) || (e as { expose?: unknown }).expose !== true) return false;
+  const status = (e as { status?: unknown }).status;
+  return typeof status === 'number' && status >= 400 && status < 500;
 }

@@ -1,0 +1,105 @@
+name: API fuzz
+
+# Property-based API testing from openapi.json with Schemathesis (CI test plan B4). It generates
+# edge-case inputs for every operation (boundaries, unicode, NUL, oversized bodies, missing fields)
+# and fails on any 5xx or on a documented response whose body breaks its schema. The target is the
+# real app on the test database with a workspace owner holding every module (test/fuzz/serve.ts).
+#
+# Every PR (required before merge): deterministic inputs (reproducible). Nightly on main: random inputs, more
+# examples, plus a report-only pass of `negative_data_rejection` (invalid input that was accepted).
+# Reproduce a failure locally with the curl line from the log, or `st replay <id>`.
+
+on:
+  pull_request: # every PR, so it can be a required check (a path filter would leave it pending)
+  schedule:
+    - cron: '43 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: api-fuzz-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  schemathesis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: valkey/valkey:8
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "valkey-cli ping" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      NODE_ENV: test
+      LOG_LEVEL: error
+      DATABASE_URL: postgresql://resilisense:resilisense@localhost:5432/resilisense_test
+      REDIS_URL: redis://localhost:6379
+      STORAGE_DRIVER: local
+      EMAIL_DRIVER: log
+      BREACHED_PASSWORD_CHECK: 'off'
+      FUZZ_PORT: '4010'
+      FUZZ_TOKEN_FILE: ${{ github.workspace }}/fuzz-token.txt
+      SCHEMATHESIS_VERSION: 4.29.2
+      # Routes that end the fuzzing session itself (logout, password change, session revocation).
+      EXCLUDE: '/auth/(logout|impersonation/end)|/me/(password|sessions)|/auth/mfa$'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Create non-superuser test role (RLS applies to it)
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -h localhost -U postgres -c "CREATE ROLE resilisense LOGIN CREATEDB PASSWORD 'resilisense'"
+          psql -h localhost -U postgres -c "CREATE DATABASE resilisense_test OWNER resilisense"
+      - run: npm ci
+      - name: Migrate and seed
+        run: |
+          npx prisma migrate deploy
+          npm run -s db:seed
+      - run: python -m pip install "schemathesis==${SCHEMATHESIS_VERSION}"
+      - name: Start the fuzz target
+        run: |
+          npm run -s fuzz:serve > fuzz-server.log 2>&1 &
+          for i in $(seq 1 60); do [ -s "$FUZZ_TOKEN_FILE" ] && exit 0; sleep 1; done
+          cat fuzz-server.log; exit 1
+      - name: Fuzz (fails on 5xx and response schema mismatches)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then MODE="--generation-deterministic -n 50"; else MODE="-n 200"; fi
+          st run openapi.json --url "http://localhost:${FUZZ_PORT}" \
+            -H "Authorization: Bearer $(cat "$FUZZ_TOKEN_FILE")" \
+            --checks not_a_server_error,response_schema_conformance \
+            --exclude-path-regex "$EXCLUDE" $MODE \
+            --report junit --report-dir fuzz-report
+      - name: Invalid input accepted (report only)
+        if: github.event_name != 'pull_request'
+        continue-on-error: true
+        run: |
+          st run openapi.json --url "http://localhost:${FUZZ_PORT}" \
+            -H "Authorization: Bearer $(cat "$FUZZ_TOKEN_FILE")" \
+            --checks negative_data_rejection --exclude-path-regex "$EXCLUDE" -n 50
+      - name: Server log on failure
+        if: failure()
+        run: tail -n 200 fuzz-server.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-fuzz-report
+          path: fuzz-report
+          retention-days: 7

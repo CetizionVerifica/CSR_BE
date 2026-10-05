@@ -65,6 +65,9 @@ Auth/permission decorator present (`@Can`/`@Authenticated`/`@Public`) · tenant 
 - Services/controllers: e2e tests for happy path, forbidden role, other-workspace access, invalid state transition.
 - Bug fixes start with a failing test.
 - Every e2e response is checked against the OpenAPI contract (`test/support/contract.ts`): document every status a route returns, and keep errors as problem+json with a type from `PROBLEM_TYPES`. Breaking `openapi.json` changes fail the **API contract** workflow unless the PR is labelled `api-breaking` (playbook §5).
+- Tag tests with the spec story they prove (`'US-02-3: …'`); `npm run spec:coverage` fails on an untested or unknown story (waivers with a reason in `spec-coverage.json`). Add the module there when you implement it.
+- Every engine gets property-based tests in `engine/*.property.spec.ts` (fast-check) besides table-driven ones. Coverage floors in `vitest.config*.mts` only go up.
+- The **API fuzz** workflow (Schemathesis) fails on any 5xx: oversized bodies answer 413 `payload_too_large`, NUL characters in input answer 400 `validation_failed`. **Mutation testing** (Stryker; on every PR for the engine files it changes, nightly for all) fails when engine tests miss too many planted bugs. All CI checks are required before merge (playbook §5).
 
 ## Conventions
 

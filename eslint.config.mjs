@@ -5,7 +5,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist/**', 'coverage/**', 'src/generated/**', 'Docs/**'] },
+  { ignores: ['dist/**', 'coverage/**', 'src/generated/**', 'Docs/**', 'reports/**', '.stryker-tmp/**'] },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   prettier,
@@ -50,5 +50,10 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
     },
+  },
+  {
+    // Plain JS tooling (identical copy of scripts/spec-coverage*.mjs in Resilisense-FE): no types to check.
+    files: ['scripts/*.mjs', 'stryker.config.mjs'],
+    ...tseslint.configs.disableTypeChecked,
   },
 );

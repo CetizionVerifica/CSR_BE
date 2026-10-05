@@ -1,0 +1,75 @@
+name: Mutation testing (engines)
+
+# CI test plan B5. Stryker mutates the pure engines (src/modules/*/engine) and reruns their unit
+# tests; a surviving mutant is a condition, boundary or constant no test pins down. Fails below the
+# `break` score in stryker.config.mjs; the HTML report is uploaded as an artifact.
+#
+# Every PR (required before merge): only the engine files the PR changes are mutated, so a PR that
+# touches no engine passes in seconds. Nightly and on demand: every engine.
+
+on:
+  pull_request:
+  schedule:
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mutation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  stryker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Engine files to mutate
+        id: scope
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ -z "$BASE" ]; then echo "mutate=" >> "$GITHUB_OUTPUT"; exit 0; fi
+          FILES=$(git diff --name-only --diff-filter=AMR "$BASE"...HEAD -- 'src/modules/*/engine/*.ts' \
+            | grep -v '\.spec\.ts$' | paste -sd, - || true)
+          if [ -z "$FILES" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "No engine file changed: nothing to mutate." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "mutate=$FILES" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@v5
+        if: steps.scope.outputs.skip != 'true'
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+        if: steps.scope.outputs.skip != 'true'
+      - name: Stryker
+        if: steps.scope.outputs.skip != 'true'
+        env:
+          MUTATE: ${{ steps.scope.outputs.mutate }}
+        run: npm run test:mutation -- ${MUTATE:+--mutate "$MUTATE"}
+      - name: Mutation score in the job summary
+        if: always()
+        run: |
+          [ -f reports/mutation/mutation.json ] || exit 0
+          node -e '
+            const r = require("./reports/mutation/mutation.json");
+            const rows = Object.entries(r.files).map(([file, f]) => {
+              const s = f.mutants.reduce((a, m) => ((a[m.status] = (a[m.status] ?? 0) + 1), a), {});
+              const killed = (s.Killed ?? 0) + (s.Timeout ?? 0);
+              const valid = killed + (s.Survived ?? 0) + (s.NoCoverage ?? 0);
+              return `| ${file} | ${valid ? ((100 * killed) / valid).toFixed(1) : "n/a"} | ${s.Survived ?? 0} |`;
+            });
+            console.log(["## Mutation score (engines)", "", "| File | Score % | Survived |", "| --- | --- | --- |", ...rows].join("\n"));
+          ' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mutation-report
+          path: reports/mutation
+          retention-days: 14

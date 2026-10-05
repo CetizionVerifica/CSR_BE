@@ -45,4 +45,17 @@ describe('bulk invite CSV (M01 §7.1)', () => {
     const body = Array.from({ length: 201 }, (_, i) => `u${i}@example.com,viewer,,`).join('\n');
     expect(parseInviteCsv(header + body).issues[0]!.message).toContain('at most 200');
   });
+
+  it('rejects an empty file as a missing header', () => {
+    expect(parseInviteCsv('').issues).toEqual([
+      { line: 1, message: expect.stringContaining('header must be') },
+    ]);
+  });
+
+  it('treats missing trailing cells as empty: no ids, and a row without a role is invalid', () => {
+    expect(parseInviteCsv(header + 'a@example.com,viewer').rows).toEqual([
+      { email: 'a@example.com', role: 'viewer', companyIds: [], projectIds: [] },
+    ]);
+    expect(parseInviteCsv(header + 'a@example.com').issues).toEqual([{ line: 2, message: 'role: invalid' }]);
+  });
 });
