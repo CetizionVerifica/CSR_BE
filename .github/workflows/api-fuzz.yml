@@ -5,13 +5,12 @@ name: API fuzz
 # and fails on any 5xx or on a documented response whose body breaks its schema. The target is the
 # real app on the test database with a workspace owner holding every module (test/fuzz/serve.ts).
 #
-# PRs touching the API: deterministic inputs (reproducible). Nightly on main: random inputs, more
+# Every PR (required before merge): deterministic inputs (reproducible). Nightly on main: random inputs, more
 # examples, plus a report-only pass of `negative_data_rejection` (invalid input that was accepted).
 # Reproduce a failure locally with the curl line from the log, or `st replay <id>`.
 
 on:
-  pull_request:
-    paths: ['src/**', 'prisma/**', 'openapi.json', 'test/fuzz/**', '.github/workflows/api-fuzz.yml']
+  pull_request: # every PR, so it can be a required check (a path filter would leave it pending)
   schedule:
     - cron: '43 3 * * *'
   workflow_dispatch:
