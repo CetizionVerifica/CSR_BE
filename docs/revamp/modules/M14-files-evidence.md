@@ -76,6 +76,8 @@ Implementation notes (2026-10-07, first M14 PR):
 ## 9. UI
 `FileDropzone` (multiple, progress, retry, type/size hints), evidence list items (icon by type, name, size, scan badge, version, linked-to chips), preview drawer, `/projects/:pid/evidence` register page (DataTable + bulk actions).
 
+Implementation notes (2026-10-07, first M14 PR): `FileDropzone` (`src/components/ui/`) and the upload flow (`src/features/files/`: declare → send the file straight to the store with XHR for progress → complete → poll `GET /files/:id` until `ready` or `quarantined`) ship with the **logo** fields on the workspace settings and company settings pages; the company logo also shows in the company header and storage use on the plan page. Each failure has its own message (too large, type not allowed, content mismatch or unsafe SVG, flagged by the scan, transfer failed with retry, storage full). Logos are shown through the short-lived download link, refreshed every 4 minutes. The store must allow the app origin in CORS (Cloudinary does for its upload API; an S3-API bucket needs a CORS rule for `PUT` with `Content-Type`). The evidence list, preview drawer and register page arrive with M03 projects.
+
 ## 10. Events & audit
 `file.upload_started`, `file.version_added`, `file.ready`, `file.rejected`, `file.quarantined`, `file.downloaded` (evidence only), `file.deleted`, `file.purged`.
 
