@@ -32,7 +32,7 @@ export class WorkspacesRepository {
     return this.prisma.workspace.findUnique({ where: { id } });
   }
 
-  update(id: string, data: Prisma.WorkspaceUpdateInput): Promise<Workspace> {
+  update(id: string, data: Prisma.WorkspaceUncheckedUpdateInput): Promise<Workspace> {
     return this.prisma.workspace.update({ where: { id }, data });
   }
 

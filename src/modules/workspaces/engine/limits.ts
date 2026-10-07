@@ -12,6 +12,7 @@ export const limitsSchema = z.strictObject({
   projectsPerYear: limit,
   clientWorkspaces: limit,
   aiMonthlyUsd: limit,
+  storageMb: limit,
 });
 export type Limits = z.infer<typeof limitsSchema>;
 export type LimitName = keyof Limits;

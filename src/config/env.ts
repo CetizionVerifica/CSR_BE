@@ -43,11 +43,18 @@ export const envSchema = z
 
     STORAGE_DRIVER: z.enum(['local', 's3']).default('local'),
     STORAGE_LOCAL_DIR: z.string().default('.data/storage'),
+    // Where browsers reach the local driver's signed URLs (the API's own /v1/_local-storage route).
+    STORAGE_LOCAL_PUBLIC_URL: z.url().default('http://localhost:4000/v1/_local-storage'),
     STORAGE_S3_ENDPOINT: z.string().optional(),
     STORAGE_S3_REGION: z.string().optional(),
     STORAGE_S3_BUCKET: z.string().optional(),
     STORAGE_S3_ACCESS_KEY: z.string().optional(),
     STORAGE_S3_SECRET_KEY: z.string().optional(),
+
+    // Malware scanning of uploads (M14 §2): clamav = clamd over TCP (INSTREAM); off = development only.
+    MALWARE_SCANNER: z.enum(['clamav', 'off']).default('off'),
+    CLAMAV_HOST: z.string().default('localhost'),
+    CLAMAV_PORT: z.coerce.number().int().positive().default(3310),
 
     EMAIL_DRIVER: z.enum(['log', 'smtp', 'postmark']).default('log'),
     EMAIL_FROM: z.string().default('ResiliSense <notifications@resilisense.org>'),
@@ -105,6 +112,13 @@ export const envSchema = z
     }
     if (env.MFA_ENCRYPTION_KEY && Buffer.from(env.MFA_ENCRYPTION_KEY, 'base64').length !== 32) {
       ctx.addIssue({ code: 'custom', path: ['MFA_ENCRYPTION_KEY'], message: 'must be 32 bytes, base64' });
+    }
+    if (env.NODE_ENV === 'production' && env.MALWARE_SCANNER === 'off') {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['MALWARE_SCANNER'],
+        message: 'uploads must be scanned in production',
+      });
     }
     if (env.NODE_ENV === 'production' && env.STORAGE_DRIVER === 'local') {
       ctx.addIssue({

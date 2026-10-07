@@ -29,10 +29,59 @@ describe('LocalStorageAdapter', () => {
     },
   );
 
-  it('presigns short-lived upload URLs bound to the key', async () => {
-    const up = await storage.presignUpload('ws1/evidence/f1/v1', 'application/pdf', 300);
+  it('reads byte ranges', async () => {
+    await storage.put('ws1/evidence/f1/v1', Buffer.from('0123456789'), 'text/plain');
+    expect((await storage.readRange('ws1/evidence/f1/v1', 2, 3)).toString()).toBe('234');
+    expect((await storage.readRange('ws1/evidence/f1/v1', 8, 10)).toString()).toBe('89');
+  });
+
+  const query = (url: string) => Object.fromEntries(new URL(url).searchParams);
+
+  it('signs upload URLs bound to key, type and length, and verifies them', async () => {
+    const up = await storage.presignUpload('ws1/evidence/f1/v1', {
+      contentType: 'application/pdf',
+      contentLength: 13,
+      expiresInSeconds: 300,
+    });
     expect(up.method).toBe('PUT');
-    expect(up.url).toContain('/ws1/evidence/f1/v1?exp=');
+    expect(up.headers).toEqual({ 'content-type': 'application/pdf' });
+    expect(up.url).toMatch(/^http:\/\/localhost:4000\/v1\/_local-storage\/ws1\/evidence\/f1\/v1\?exp=/);
     expect(up.expiresAt.getTime() - Date.now()).toBeLessThanOrEqual(300_000);
+    const q = query(up.url);
+    expect(storage.verify('PUT', 'ws1/evidence/f1/v1', q)).toEqual({
+      method: 'PUT',
+      key: 'ws1/evidence/f1/v1',
+      contentType: 'application/pdf',
+      contentLength: 13,
+    });
+    expect(storage.verify('PUT', 'ws1/evidence/f1/v2', q)).toBeNull();
+    expect(storage.verify('GET', 'ws1/evidence/f1/v1', q)).toBeNull();
+    expect(storage.verify('PUT', 'ws1/evidence/f1/v1', { ...q, len: '14' })).toBeNull();
+    expect(storage.verify('PUT', 'ws1/evidence/f1/v1', { ...q, type: 'text/html' })).toBeNull();
+    expect(storage.verify('PUT', 'ws1/evidence/f1/v1', { ...q, len: 'x' })).toBeNull();
+    expect(storage.verify('PUT', 'ws1/evidence/f1/v1', { ...q, sig: 'short' })).toBeNull();
+    expect(storage.verify('PUT', 'ws1/evidence/f1/v1', q, Date.now() + 301_000)).toBeNull();
+    expect(storage.verify('PUT', '../x', q)).toBeNull();
+    expect(storage.verify('DELETE', 'ws1/evidence/f1/v1', q)).toBeNull();
+    expect(storage.verify('PUT', 'ws1/evidence/f1/v1', {})).toBeNull();
+  });
+
+  it('signs download URLs with their disposition', async () => {
+    const url = await storage.presignDownload('ws1/logo/f1/v1', {
+      contentType: 'image/png',
+      contentDisposition: 'inline; filename="a.png"',
+    });
+    const q = query(url);
+    expect(storage.verify('GET', 'ws1/logo/f1/v1', q)).toMatchObject({
+      contentType: 'image/png',
+      contentDisposition: 'inline; filename="a.png"',
+    });
+    expect(storage.verify('GET', 'ws1/logo/f1/v1', { ...q, disp: 'attachment' })).toBeNull();
+    expect(storage.verify('GET', 'ws1/logo/f1/v1', { ...q, disp: undefined })).toBeNull();
+    const plain = query(await storage.presignDownload('ws1/logo/f1/v1'));
+    expect(storage.verify('GET', 'ws1/logo/f1/v1', plain)).toMatchObject({
+      contentType: 'application/octet-stream',
+      contentDisposition: 'attachment',
+    });
   });
 });

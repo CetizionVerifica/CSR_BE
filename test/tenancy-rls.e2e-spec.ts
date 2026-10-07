@@ -164,3 +164,76 @@ describe('tenancy — identity tables (e2e)', () => {
     expect(deleted.count).toBe(0);
   });
 });
+
+/** M14 tenant tables: files, file_versions and file_links are RLS-isolated. */
+describe('tenancy — files tables (e2e)', () => {
+  let app: INestApplication;
+  let prisma: PrismaService;
+  const wsA = uuidv7();
+  const wsB = uuidv7();
+
+  beforeAll(async () => {
+    app = await createTestApp();
+    prisma = app.get(PrismaService);
+    for (const ws of [wsA, wsB]) {
+      await prisma.withTenant(ws, async (tx) => {
+        await tx.workspace.create({ data: { id: ws, name: ws, slug: `f-${ws}` } });
+        const fileId = uuidv7();
+        const common = { name: 'a.pdf', mimeType: 'application/pdf', sizeBytes: 10n, uploadedBy: ws };
+        await tx.file.create({ data: { id: fileId, workspaceId: ws, purpose: 'evidence', ...common } });
+        await tx.fileVersion.create({
+          data: { id: uuidv7(), workspaceId: ws, fileId, s3Key: `${ws}/evidence/${fileId}/v`, ...common },
+        });
+        await tx.fileLink.create({
+          data: {
+            id: uuidv7(),
+            workspaceId: ws,
+            fileId,
+            entityType: 'gap_answer',
+            entityId: ws,
+            createdBy: ws,
+          },
+        });
+      });
+    }
+  });
+
+  afterAll(async () => {
+    await prisma.workspace.deleteMany({ where: { id: { in: [wsA, wsB] } } });
+    await app.close();
+  });
+
+  it('files, versions and links are visible only inside their workspace', async () => {
+    for (const [ws, other] of [
+      [wsA, wsB],
+      [wsB, wsA],
+    ] as const) {
+      const seen = await prisma.withTenant(ws, async (tx) => ({
+        files: await tx.file.findMany(),
+        versions: await tx.fileVersion.findMany(),
+        links: await tx.fileLink.findMany(),
+      }));
+      expect(seen.files.map((f) => f.workspaceId)).toEqual([ws]);
+      expect(seen.versions.map((v) => v.workspaceId)).toEqual([ws]);
+      expect(seen.links.map((l) => l.workspaceId)).toEqual([ws]);
+      await expect(
+        prisma.withTenant(ws, (tx) =>
+          tx.file.create({
+            data: {
+              id: uuidv7(),
+              workspaceId: other,
+              purpose: 'logo',
+              name: 'x.png',
+              mimeType: 'image/png',
+              sizeBytes: 1n,
+              uploadedBy: ws,
+            },
+          }),
+        ),
+      ).rejects.toThrow();
+    }
+    expect(await prisma.file.count()).toBe(0);
+    expect(await prisma.fileVersion.count()).toBe(0);
+    expect(await prisma.fileLink.count()).toBe(0);
+  });
+});

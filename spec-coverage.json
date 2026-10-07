@@ -1,6 +1,6 @@
 {
   "$comment": "CI test plan B1 (scripts/spec-coverage.mjs): modules implemented in this repo; every §5 user story of their specs needs a test that names it, or a waiver with the reason it has no backend test.",
-  "modules": ["M01", "M02"],
+  "modules": ["M01", "M02", "M14"],
   "testDirs": ["test", "src", "prisma", "scripts"],
   "testFiles": "\\.(e2e-spec|spec)\\.ts$",
   "waivers": {}

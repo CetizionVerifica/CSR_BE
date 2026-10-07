@@ -3,6 +3,8 @@ import { type AuthenticatedPrincipal, MODULES, type ModuleName } from '../../com
 import { type RequestMeta } from '../../common/http/request-meta';
 import { type Prisma, type Workspace } from '../../generated/prisma/client';
 import { AuditService } from '../audit/audit.service';
+import { usedMegabytes } from '../files/engine/file-rules';
+import { FilesService } from '../files/files.service';
 import { IdentityMailer } from '../identity/identity-mailer';
 import { actorOf, currentWorkspace, invalid, notFound } from './access';
 import { CompaniesRepository } from './companies.repository';
@@ -44,6 +46,7 @@ export class WorkspacesService {
     private readonly reference: ReferenceRepository,
     private readonly audit: AuditService,
     private readonly mailer: IdentityMailer,
+    private readonly files: FilesService,
   ) {}
 
   private async mustGet(p: AuthenticatedPrincipal): Promise<Workspace> {
@@ -60,7 +63,8 @@ export class WorkspacesService {
     const w = await this.mustGet(p);
     if (input.country && !(await this.reference.countryExists(input.country)))
       throw invalid('country', 'Unknown country');
-    const data: Prisma.WorkspaceUpdateInput = {};
+    if (input.logoFileId) await this.files.assertLogo(w.id, input.logoFileId);
+    const data: Prisma.WorkspaceUncheckedUpdateInput = {};
     if (input.name !== undefined) data.name = input.name;
     if (input.country !== undefined) data.country = input.country;
     if (input.defaultLocale !== undefined) data.defaultLocale = input.defaultLocale;
@@ -80,6 +84,8 @@ export class WorkspacesService {
       },
       meta,
     );
+    if (input.logoFileId !== undefined && w.logoFileId !== input.logoFileId)
+      await this.files.retireLogo(w.id, w.logoFileId, actorOf(p), meta);
     return toWorkspace(updated);
   }
 
@@ -96,6 +102,7 @@ export class WorkspacesService {
         companies: await this.companies.countActive(w.id),
         users: await this.workspaces.seats(w.id, now),
         clientWorkspaces: await this.workspaces.countActiveGrants(w.id),
+        storageMb: usedMegabytes(await this.files.storedBytes(w.id)),
       },
     };
   }

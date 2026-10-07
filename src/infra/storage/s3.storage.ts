@@ -1,9 +1,11 @@
 import { Client } from 'minio';
 import {
   assertSafeKey,
+  type DownloadOptions,
   type PresignedUpload,
   type StorageAdapter,
   type StorageObjectInfo,
+  type UploadOptions,
 } from './storage.adapter';
 
 export interface S3StorageOptions {
@@ -49,6 +51,15 @@ export class S3StorageAdapter implements StorageAdapter {
     return Buffer.concat(chunks);
   }
 
+  async readRange(key: string, offset: number, length: number): Promise<Buffer> {
+    assertSafeKey(key);
+    const stream = await this.client.getPartialObject(this.bucket, key, offset, length);
+    const chunks: Buffer[] = [];
+    for await (const chunk of stream)
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk as Uint8Array));
+    return Buffer.concat(chunks);
+  }
+
   async head(key: string): Promise<StorageObjectInfo | null> {
     assertSafeKey(key);
     try {
@@ -67,23 +78,24 @@ export class S3StorageAdapter implements StorageAdapter {
     await this.client.removeObject(this.bucket, key);
   }
 
-  async presignUpload(key: string, contentType: string, expiresInSeconds = 300): Promise<PresignedUpload> {
+  async presignUpload(key: string, options: UploadOptions): Promise<PresignedUpload> {
     assertSafeKey(key);
+    const expiresInSeconds = options.expiresInSeconds ?? 300;
     const url = await this.client.presignedPutObject(this.bucket, key, expiresInSeconds);
     // Size and type are verified server-side after upload (M14 §2): HEAD + magic bytes + ClamAV.
     return {
       url,
       method: 'PUT',
-      headers: { 'content-type': contentType },
+      headers: { 'content-type': options.contentType },
       expiresAt: new Date(Date.now() + expiresInSeconds * 1000),
     };
   }
 
-  async presignDownload(key: string, expiresInSeconds = 300, downloadName?: string): Promise<string> {
+  async presignDownload(key: string, options: DownloadOptions = {}): Promise<string> {
     assertSafeKey(key);
-    const params = downloadName
-      ? { 'response-content-disposition': `attachment; filename="${downloadName.replace(/["\r\n]/g, '')}"` }
-      : undefined;
-    return this.client.presignedGetObject(this.bucket, key, expiresInSeconds, params);
+    const params: Record<string, string> = {};
+    if (options.contentDisposition) params['response-content-disposition'] = options.contentDisposition;
+    if (options.contentType) params['response-content-type'] = options.contentType;
+    return this.client.presignedGetObject(this.bucket, key, options.expiresInSeconds ?? 300, params);
   }
 }

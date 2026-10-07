@@ -11,6 +11,12 @@ import { LoggingModule } from './infra/logging/logging.module';
 import { PrismaModule } from './infra/prisma/prisma.module';
 import { bullRoot, type EmailJob, QUEUES, registerQueues } from './infra/queue/queues';
 import { StorageModule } from './infra/storage/storage.module';
+import { MalwareModule } from './infra/malware/malware.module';
+import { AuditModule } from './modules/audit/audit.module';
+import { FileScanService } from './modules/files/file-scan.service';
+import { FilesPurgeTask } from './modules/files/files-purge.task';
+import { FilesRepository } from './modules/files/files.repository';
+import { FilesScanProcessor } from './modules/files/files-scan.processor';
 import {
   SCHEDULED_TASKS,
   ScheduledJobsProcessor,
@@ -41,9 +47,11 @@ export class EmailProcessor extends WorkerHost {
     LoggingModule,
     PrismaModule,
     StorageModule,
+    MalwareModule,
     EmailModule,
+    AuditModule,
     bullRoot(),
-    registerQueues(QUEUES.email, QUEUES.scheduled),
+    registerQueues(QUEUES.email, QUEUES.scheduled, QUEUES.files),
   ],
   providers: [
     EmailProcessor,
@@ -51,9 +59,13 @@ export class EmailProcessor extends WorkerHost {
     CompaniesRepository,
     IdentityCleanupTask,
     CompaniesPurgeTask,
+    FilesRepository,
+    FileScanService,
+    FilesScanProcessor,
+    FilesPurgeTask,
     {
       provide: SCHEDULED_TASKS,
-      inject: [IdentityCleanupTask, CompaniesPurgeTask],
+      inject: [IdentityCleanupTask, CompaniesPurgeTask, FilesPurgeTask],
       useFactory: (...tasks: unknown[]) => tasks,
     },
     ScheduledJobsProcessor,

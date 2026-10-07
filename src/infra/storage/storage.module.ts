@@ -19,7 +19,7 @@ import { STORAGE_ADAPTER, type StorageAdapter } from './storage.adapter';
               accessKey: config.get('STORAGE_S3_ACCESS_KEY')!,
               secretKey: config.get('STORAGE_S3_SECRET_KEY')!,
             })
-          : new LocalStorageAdapter(config.get('STORAGE_LOCAL_DIR')),
+          : new LocalStorageAdapter(config.get('STORAGE_LOCAL_DIR'), config.get('STORAGE_LOCAL_PUBLIC_URL')),
     },
   ],
   exports: [STORAGE_ADAPTER],

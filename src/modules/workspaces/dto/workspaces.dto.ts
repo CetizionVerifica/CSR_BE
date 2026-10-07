@@ -53,7 +53,11 @@ export const workspaceFields = {
 };
 
 export const updateWorkspaceBody = z
-  .strictObject({ ...workspaceFields, branding: brandingSchema, logoFileId: z.uuid().nullable() })
+  .strictObject({
+    ...workspaceFields,
+    branding: brandingSchema,
+    logoFileId: z.uuid().nullable().describe('A ready file with purpose logo (POST /files/uploads)'),
+  })
   .partial()
   .refine((b) => Object.keys(b).length > 0, 'Nothing to update');
 export type UpdateWorkspaceInput = z.infer<typeof updateWorkspaceBody>;
@@ -62,6 +66,7 @@ export const usage = z.object({
   companies: z.number().int(),
   users: z.number().int().describe('Active members + pending invitations'),
   clientWorkspaces: z.number().int(),
+  storageMb: z.number().int().describe('Stored files, in MB rounded up (limit: limits.storageMb)'),
 });
 
 export const entitlementsResponse = z.object({
