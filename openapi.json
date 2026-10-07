@@ -6687,16 +6687,23 @@
                       "type": "object",
                       "properties": {
                         "url": {
-                          "type": "string",
-                          "description": "PUT the file body here, with exactly these headers"
+                          "type": "string"
                         },
                         "method": {
                           "type": "string",
                           "enum": [
-                            "PUT"
-                          ]
+                            "PUT",
+                            "POST"
+                          ],
+                          "description": "PUT: send the file as the request body with `headers`. POST: send a multipart form with `fields`, then the file as `file`"
                         },
                         "headers": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "fields": {
                           "type": "object",
                           "additionalProperties": {
                             "type": "string"
@@ -6710,6 +6717,7 @@
                         "url",
                         "method",
                         "headers",
+                        "fields",
                         "expiresAt"
                       ],
                       "additionalProperties": false
@@ -7287,16 +7295,23 @@
                       "type": "object",
                       "properties": {
                         "url": {
-                          "type": "string",
-                          "description": "PUT the file body here, with exactly these headers"
+                          "type": "string"
                         },
                         "method": {
                           "type": "string",
                           "enum": [
-                            "PUT"
-                          ]
+                            "PUT",
+                            "POST"
+                          ],
+                          "description": "PUT: send the file as the request body with `headers`. POST: send a multipart form with `fields`, then the file as `file`"
                         },
                         "headers": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "fields": {
                           "type": "object",
                           "additionalProperties": {
                             "type": "string"
@@ -7310,6 +7325,7 @@
                         "url",
                         "method",
                         "headers",
+                        "fields",
                         "expiresAt"
                       ],
                       "additionalProperties": false

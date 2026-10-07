@@ -87,6 +87,7 @@ export class S3StorageAdapter implements StorageAdapter {
       url,
       method: 'PUT',
       headers: { 'content-type': options.contentType },
+      fields: {},
       expiresAt: new Date(Date.now() + expiresInSeconds * 1000),
     };
   }

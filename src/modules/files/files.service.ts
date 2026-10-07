@@ -150,7 +150,13 @@ export class FilesService {
       contentLength: size,
       expiresInSeconds: URL_TTL_SECONDS,
     });
-    return { url: up.url, method: up.method, headers: up.headers, expiresAt: up.expiresAt.toISOString() };
+    return {
+      url: up.url,
+      method: up.method,
+      headers: up.headers,
+      fields: up.fields,
+      expiresAt: up.expiresAt.toISOString(),
+    };
   }
 
   async list(

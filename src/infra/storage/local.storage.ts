@@ -108,6 +108,7 @@ export class LocalStorageAdapter implements StorageAdapter {
       url,
       method: 'PUT',
       headers: { 'content-type': options.contentType },
+      fields: {},
       expiresAt,
     });
   }

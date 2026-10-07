@@ -41,7 +41,7 @@ export const envSchema = z
     LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
     OPENAPI_UI: bool,
 
-    STORAGE_DRIVER: z.enum(['local', 's3']).default('local'),
+    STORAGE_DRIVER: z.enum(['local', 's3', 'cloudinary']).default('local'),
     STORAGE_LOCAL_DIR: z.string().default('.data/storage'),
     // Where browsers reach the local driver's signed URLs (the API's own /v1/_local-storage route).
     STORAGE_LOCAL_PUBLIC_URL: z.url().default('http://localhost:4000/v1/_local-storage'),
@@ -50,6 +50,9 @@ export const envSchema = z
     STORAGE_S3_BUCKET: z.string().optional(),
     STORAGE_S3_ACCESS_KEY: z.string().optional(),
     STORAGE_S3_SECRET_KEY: z.string().optional(),
+    CLOUDINARY_CLOUD_NAME: z.string().optional(),
+    CLOUDINARY_API_KEY: z.string().optional(),
+    CLOUDINARY_API_SECRET: z.string().optional(),
 
     // Malware scanning of uploads (M14 §2): clamav = clamd over TCP (INSTREAM); off = development only.
     MALWARE_SCANNER: z.enum(['clamav', 'off']).default('off'),
@@ -86,6 +89,12 @@ export const envSchema = z
       ] as const) {
         if (!env[key])
           ctx.addIssue({ code: 'custom', path: [key], message: 'required when STORAGE_DRIVER=s3' });
+      }
+    }
+    if (env.STORAGE_DRIVER === 'cloudinary') {
+      for (const key of ['CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET'] as const) {
+        if (!env[key])
+          ctx.addIssue({ code: 'custom', path: [key], message: 'required when STORAGE_DRIVER=cloudinary' });
       }
     }
     if (env.EMAIL_DRIVER === 'smtp' && !env.SMTP_URL) {

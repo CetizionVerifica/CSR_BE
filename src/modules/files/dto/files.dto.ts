@@ -53,9 +53,14 @@ export const fileDetail = file.extend({
 });
 
 export const presignedUpload = z.object({
-  url: z.string().describe('PUT the file body here, with exactly these headers'),
-  method: z.literal('PUT'),
+  url: z.string(),
+  method: z
+    .enum(['PUT', 'POST'])
+    .describe(
+      'PUT: send the file as the request body with `headers`. POST: send a multipart form with `fields`, then the file as `file`',
+    ),
   headers: z.record(z.string(), z.string()),
+  fields: z.record(z.string(), z.string()),
   expiresAt: z.string(),
 });
 
