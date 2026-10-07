@@ -149,6 +149,7 @@ model Workspace {
   slug                  String              @unique
   status                WorkspaceStatus     @default(active)
   logoFileId            String?             @map("logo_file_id") @db.Uuid
+  logoFile              File?               @relation("WorkspaceLogo", fields: [logoFileId], references: [id], onDelete: SetNull)
   country               String?             @db.Char(2)
   defaultLocale         String              @default("en") @map("default_locale")
   timezone              String              @default("UTC")
@@ -168,6 +169,7 @@ model Workspace {
   entitlement           Entitlement?
   partnerGrantsGiven    PartnerGrant[]      @relation("PartnerGrantPartner")
   partnerGrantsReceived PartnerGrant[]      @relation("PartnerGrantClient")
+  files                 File[]              @relation("WorkspaceFiles")
 
   @@map("workspaces")
 }
@@ -207,6 +209,7 @@ model Company {
   description          String?
   address              Json?
   logoFileId           String?          @map("logo_file_id") @db.Uuid
+  logoFile             File?            @relation("CompanyLogo", fields: [logoFileId], references: [id], onDelete: SetNull)
   fiscalYearStartMonth Int              @default(1) @map("fiscal_year_start_month") @db.SmallInt
   currency             String           @db.Char(3)
   contactUserId        String?          @map("contact_user_id") @db.Uuid
@@ -242,6 +245,114 @@ model Country {
   labelKey String @map("label_key")
 
   @@map("countries")
+}
+
+// ─── Files & evidence — M14 ───────────────────────────────────────────────────
+// All three tables are tenant-owned (RLS by workspace_id). Object keys are server-generated:
+// <workspaceId>/<purpose>/<fileId>/<versionId>; quarantined objects move under quarantine/.
+
+enum FilePurpose {
+  evidence
+  logo
+  import
+  report
+  attachment
+  avatar
+
+  @@map("file_purpose")
+}
+
+enum FileStatus {
+  pending
+  scanning
+  ready
+  quarantined
+  deleted
+
+  @@map("file_status")
+}
+
+enum FileVersionStatus {
+  pending
+  scanning
+  ready
+  quarantined
+  rejected
+
+  @@map("file_version_status")
+}
+
+enum FileLinkEntity {
+  gap_answer
+  kpi_value
+  iro
+  action
+  supplier_document
+  comment
+
+  @@map("file_link_entity")
+}
+
+model File {
+  id               String        @id @db.Uuid
+  workspaceId      String        @map("workspace_id") @db.Uuid
+  workspace        Workspace     @relation("WorkspaceFiles", fields: [workspaceId], references: [id], onDelete: Cascade)
+  purpose          FilePurpose
+  name             String
+  mimeType         String        @map("mime_type")
+  sizeBytes        BigInt        @map("size_bytes")
+  currentVersionId String?       @map("current_version_id") @db.Uuid
+  projectId        String?       @map("project_id") @db.Uuid
+  uploadedBy       String        @map("uploaded_by") @db.Uuid
+  status           FileStatus    @default(pending)
+  createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt        DateTime?     @map("deleted_at") @db.Timestamptz(6)
+  versions         FileVersion[]
+  links            FileLink[]
+  workspaceLogoOf  Workspace[]   @relation("WorkspaceLogo")
+  companyLogoOf    Company[]     @relation("CompanyLogo")
+
+  @@index([workspaceId, purpose, deletedAt])
+  @@index([workspaceId, projectId])
+  @@map("files")
+}
+
+model FileVersion {
+  id           String            @id @db.Uuid
+  workspaceId  String            @map("workspace_id") @db.Uuid
+  fileId       String            @map("file_id") @db.Uuid
+  file         File              @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  s3Key        String            @map("s3_key")
+  name         String
+  mimeType     String            @map("mime_type")
+  sizeBytes    BigInt            @map("size_bytes")
+  sha256       String?
+  mimeDetected String?           @map("mime_detected")
+  status       FileVersionStatus @default(pending)
+  scanResult   Json?             @map("scan_result")
+  uploadedBy   String            @map("uploaded_by") @db.Uuid
+  createdAt    DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([fileId])
+  @@index([workspaceId, status])
+  @@map("file_versions")
+}
+
+model FileLink {
+  id          String         @id @db.Uuid
+  workspaceId String         @map("workspace_id") @db.Uuid
+  fileId      String         @map("file_id") @db.Uuid
+  file        File           @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  entityType  FileLinkEntity @map("entity_type")
+  entityId    String         @map("entity_id") @db.Uuid
+  createdBy   String         @map("created_by") @db.Uuid
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@unique([fileId, entityType, entityId])
+  @@index([workspaceId, entityType, entityId])
+  @@map("file_links")
 }
 
 // ─── Identity & access — M01 ─────────────────────────────────────────────────

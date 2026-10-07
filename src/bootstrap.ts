@@ -3,6 +3,7 @@ import { DocumentBuilder, type OpenAPIObject, SwaggerModule } from '@nestjs/swag
 import helmet from 'helmet';
 import { Logger } from 'nestjs-pino';
 import { AppConfig } from './config/app-config';
+import { mountLocalStorage } from './infra/storage/local-storage.route';
 
 export const API_PREFIX = 'v1';
 
@@ -15,6 +16,7 @@ export function configureApp(app: INestApplication): INestApplication {
   const express = app.getHttpAdapter().getInstance() as { set(key: string, value: unknown): void };
   express.set('trust proxy', parseTrustProxy(config.get('TRUST_PROXY')));
   app.enableCors({ origin: config.get('CORS_ORIGINS'), credentials: true });
+  mountLocalStorage(app);
   app.enableShutdownHooks();
   return app;
 }

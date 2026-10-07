@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { FilesModule } from '../files/files.module';
 import { IdentityModule } from '../identity/identity.module';
 import { CompaniesController } from './companies.controller';
 import { CompaniesRepository } from './companies.repository';
@@ -15,7 +16,7 @@ import { WorkspacesService } from './workspaces.service';
 
 /** M02 — Workspaces, companies, entitlements & partners. */
 @Module({
-  imports: [IdentityModule],
+  imports: [IdentityModule, FilesModule],
   controllers: [
     WorkspacesController,
     CompaniesController,

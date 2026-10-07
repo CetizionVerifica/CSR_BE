@@ -43,6 +43,7 @@ const companyFields = {
   fiscalYearStartMonth: z.number().int().min(1).max(12),
   currency: currencyCode,
   parentCompanyId: z.uuid().nullable(),
+  logoFileId: z.uuid().nullable().describe('A ready file with purpose logo (POST /files/uploads)'),
 };
 
 export const createCompanyBody = z.strictObject({
@@ -56,6 +57,7 @@ export const createCompanyBody = z.strictObject({
   address: companyFields.address.optional(),
   fiscalYearStartMonth: companyFields.fiscalYearStartMonth.default(1),
   parentCompanyId: companyFields.parentCompanyId.optional(),
+  logoFileId: companyFields.logoFileId.optional(),
 });
 export type CreateCompanyInput = z.infer<typeof createCompanyBody>;
 

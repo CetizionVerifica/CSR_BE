@@ -6,6 +6,7 @@ import { toPage } from '../../common/pagination';
 import { type Company, Prisma } from '../../generated/prisma/client';
 import { type TenantTx } from '../../infra/prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
+import { FilesService } from '../files/files.service';
 import { UsersRepository } from '../identity/users.repository';
 import { actorOf, currentWorkspace, holds, invalid, limitExceeded, notFound } from './access';
 import { CompaniesRepository } from './companies.repository';
@@ -79,6 +80,7 @@ export class CompaniesService {
     private readonly reference: ReferenceRepository,
     private readonly users: UsersRepository,
     private readonly audit: AuditService,
+    private readonly files: FilesService,
   ) {}
 
   /** Contributors limited to companies only see those (M01 §7.1). */
@@ -138,9 +140,11 @@ export class CompaniesService {
       sectorCode?: string | undefined;
       country?: string | undefined;
       parentCompanyId?: string | null | undefined;
+      logoFileId?: string | null | undefined;
     },
     selfId?: string,
   ): Promise<void> {
+    if (input.logoFileId) await this.files.assertLogo(wid, input.logoFileId);
     if (input.sectorCode !== undefined && !(await this.reference.sectorExists(input.sectorCode)))
       throw invalid('sectorCode', 'Unknown sector');
     if (input.country !== undefined && !(await this.reference.countryExists(input.country)))
@@ -206,6 +210,8 @@ export class CompaniesService {
       },
       meta,
     );
+    if (input.logoFileId !== undefined && existing.logoFileId !== input.logoFileId)
+      await this.files.retireLogo(existing.workspaceId, existing.logoFileId, actorOf(p), meta);
     return toCompany(updated, new Date());
   }
 

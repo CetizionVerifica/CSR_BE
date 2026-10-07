@@ -284,7 +284,7 @@ describe('workspaces & companies (e2e)', () => {
       modules: ['gap'],
       limits: { companies: 3, users: 10 },
       trialEndsAt: null,
-      usage: { companies: 1, users: 2, clientWorkspaces: 0 },
+      usage: { companies: 1, users: 2, clientWorkspaces: 0, storageMb: 0 },
     });
   });
 

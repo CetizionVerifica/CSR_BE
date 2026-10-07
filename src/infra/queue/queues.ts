@@ -5,6 +5,7 @@ import { AppConfig } from '../../config/app-config';
 /** Queue names (ADR-007). Side effects never run in the request path. */
 export const QUEUES = {
   email: 'email',
+  files: 'files',
   reportRender: 'report-render',
   import: 'import',
   survey: 'survey',

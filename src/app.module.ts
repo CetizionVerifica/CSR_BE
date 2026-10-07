@@ -10,7 +10,9 @@ import { bullRoot, QUEUES, registerQueues } from './infra/queue/queues';
 import { RedisModule } from './infra/redis/redis.module';
 import { StorageModule } from './infra/storage/storage.module';
 import { RateLimitModule } from './infra/rate-limit/rate-limit.module';
+import { MalwareModule } from './infra/malware/malware.module';
 import { AuditModule } from './modules/audit/audit.module';
+import { FilesModule } from './modules/files/files.module';
 import { HealthModule } from './modules/health/health.module';
 import { AuthenticationGuard } from './modules/identity/authentication.guard';
 import { IdentityModule } from './modules/identity/identity.module';
@@ -27,6 +29,7 @@ import { WorkspacesModule } from './modules/workspaces/workspaces.module';
     PrismaModule,
     RedisModule,
     StorageModule,
+    MalwareModule,
     EmailModule,
     bullRoot(),
     registerQueues(QUEUES.email),
@@ -35,6 +38,7 @@ import { WorkspacesModule } from './modules/workspaces/workspaces.module';
     HealthModule,
     IdentityModule,
     WorkspacesModule,
+    FilesModule,
   ],
   providers: [
     // Order matters: authenticate (principal from bearer token) → authorise (@Public/@Authenticated/@Can).
