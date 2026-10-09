@@ -19,7 +19,7 @@ The plan is split into loosely coupled modules that are built independently (`do
 
 - A module imports another only from its folder (`'../identity'` → its `index.ts`), never its files; `src/common`, `src/infra` and `src/config` never import modules (lint `resilisense/module-boundaries`).
 - Another module's tables are never read, written or joined; use its exported queries or its events. Foreign keys only to kernel tables.
-- Project skills: `/module-contract` (write a module's contract and card), `/build-module` (build one module), `/check-module` (audit boundaries, contracts, cards, docs mirror).
+- Project skills: `/module-contract` (write a module's contract and card), `/build-module` (build one module), `/check-module` (audit boundaries, contracts, cards, docs mirror); `/run-plan` runs the whole plan hands-free (next step from `npm run plan:status`, PRs driven to green, skills updated from what each run learned).
 
 ## Target stack (see `docs/revamp/01-target-architecture.md`)
 

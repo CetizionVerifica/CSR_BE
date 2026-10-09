@@ -38,4 +38,5 @@ Implements one module end to end in this repo, against the contract written by `
 1. Run everything: `npm run lint && npm run typecheck && npm test`, plus `npm run test:e2e` and `npm run spec:coverage` (and `npm run build`, `npm run i18n:check` on the frontend). Fix until green.
 2. Update the module card: status, public surface table, components and behaviour as built, tests. Update spec status to `In progress` (mirror `docs/revamp` to the sibling repo, or say in the PR that it is needed).
 3. Run `/check-module <folder>` and fix what it reports.
-4. Commit with Conventional Commits (`feat(<folder>): …`), push, open a PR whose body maps changes to spec sections ("Implements M10 §4.1, §8") and, for the frontend, has light, dark and RTL screenshots of the main screens.
+4. Before the final commit, run the **Learn** step of `/run-plan` (§4): fold what this build had to work out by hand into the card, layer `CLAUDE.md` or skill that should have said it.
+5. Commit with Conventional Commits (`feat(<folder>): …`) on branch `claude/module-<folder>`, push, open a PR whose body maps changes to spec sections ("Implements M10 §4.1, §8") and, for the frontend, has light, dark and RTL screenshots of the main screens.

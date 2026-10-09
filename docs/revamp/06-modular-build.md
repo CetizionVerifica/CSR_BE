@@ -153,6 +153,17 @@ Project skills live in `.claude/skills/` in both repos and chain into each other
 | --- | --- | --- |
 | `/module-contract <folder or Mxx>` | Write or refresh a module's spec section 14 (contract) and its module card, from this catalogue and the plan | Spec + `CLAUDE.md` changes in both repos, docs PRs |
 | `/build-module <folder or Mxx>` | Implement one module in the current repo against its contract, with fakes for unbuilt dependencies | Code, tests, updated card, PR |
-| `/check-module [folder]` | Audit boundaries, contract vs `index.ts`, card freshness, spec coverage, docs mirror, Calm Ledger UI rules | A findings table; with `--fix`, the fixes |
+| `/check-module [folder]` | Audit boundaries, contract vs `index.ts`, card freshness, spec coverage, docs and skills mirror, Calm Ledger UI rules | A findings table; with `--fix`, the fixes |
+| `/run-plan [folder] [--parallel N]` | Run the plan hands-free: pick the next step from `plan:status`, run the skills above, drive the PRs, update the skills from what the run learned (§8) | PRs, a short report, playbook updates |
 
 `/implement-module` (`.claude/commands/`) now hands over to `/build-module`.
+
+## 8. Automated runs
+
+The plan runs itself; the owner reviews and merges.
+
+- **State is derived, not tracked.** `docs/revamp/plan.json` is the machine-readable copy of §5 and §6 (folders, spec ids, waves, dependencies). `npm run plan:status` (`scripts/plan-status.mjs`, identical in both repos) reads it with the spec status lines, spec §14 and the module folders of both repos, and prints each module's next step: `contract` → `approve` → `build-be` → `build-fe` → `done` (or `blocked` when a dependency has no contract yet). Work is offered for the lowest unfinished wave and the next one.
+- **`/run-plan`** takes the first step in the queue that has no open `claude/module-*` PR, runs it with the skills in §7, and drives the PR to green. It starts nothing new while two module PRs wait for the owner (back-pressure).
+- **Owner gates.** Two only: merging a contract PR approves the spec (the PR sets `Ready` when §13 has no open question, otherwise it lists the questions with recommended answers), and merging a build PR ships it, backend before frontend. Merges always wait for the owner's explicit "merge".
+- **Self-maintaining skills.** Every run ends with a learn step: whatever it had to work out by hand goes into the module card, the layer `CLAUDE.md` or the owning `SKILL.md`, and a procedure that will recur and fits no skill becomes a new skill (at most six). The changes ride in the same PR under "Playbook updates", mirrored in both repos, so the owner reviews them with the code and never writes skills by hand. A learn step never relaxes a gate.
+- **Schedule.** A Claude Code routine with both repositories in its environment fires `/run-plan` on a schedule (for example each weekday morning) in a fresh session; each run reports what it opened and what waits for the owner.
