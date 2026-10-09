@@ -5,13 +5,18 @@ import { ProblemError } from '../../common/errors/problem';
 import { type RequestMeta } from '../../common/http/request-meta';
 import { uuidv7 } from '../../common/ids';
 import { type Prisma } from '../../generated/prisma/client';
-import { AuditService } from '../audit/audit.service';
-import { identityEmails } from '../identity/emails';
-import { encodeTenantToken, expiresAt, hashToken, TTL } from '../identity/engine/tokens';
-import { AuthEvents } from '../identity/events';
-import { IdentityMailer } from '../identity/identity-mailer';
-import { UsersRepository } from '../identity/users.repository';
-import { slugify } from '../identity/auth.service';
+import { AuditService } from '../audit';
+import {
+  AuthEvents,
+  encodeTenantToken,
+  expiresAt,
+  hashToken,
+  identityEmails,
+  IdentityMailer,
+  slugify,
+  TTL,
+  UsersRepository,
+} from '../identity';
 import { actorOf, currentWorkspace, invalid, limitExceeded } from './access';
 import { CompaniesRepository } from './companies.repository';
 import { type CreateClientInput } from './dto/partner.dto';

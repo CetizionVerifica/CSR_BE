@@ -17,6 +17,7 @@ This folder is the **single source of truth** for rebuilding ResiliSense from sc
 | 03 | [Roadmap & new features](03-roadmap-and-new-features.md) | Phases, prioritised feature backlog, success metrics, risks |
 | 04 | [Data migration & cut-over](04-data-migration.md) | Mongo → Postgres ETL, validation, runbook |
 | 05 | [Claude Code playbook](05-claude-code-playbook.md) | How to run the rebuild with Claude Code: setup, step order, copy-paste prompts, parallel sessions, review loop |
+| 06 | [Modular build](06-modular-build.md) | Layered `CLAUDE.md` files, module contracts and coupling rules, the due diligence module catalogue and build waves, the project skills |
 
 ## Module specs (`modules/`)
 

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { IdentityModule } from '../identity/identity.module';
+import { IdentityModule } from '../identity';
 import { CompaniesController } from './companies.controller';
 import { CompaniesRepository } from './companies.repository';
 import { CompaniesService } from './companies.service';

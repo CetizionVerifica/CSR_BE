@@ -6,7 +6,7 @@ import { type RequestMeta } from '../../common/http/request-meta';
 import { toPage } from '../../common/pagination';
 import { type Invitation, type Prisma, type User } from '../../generated/prisma/client';
 import { RateLimiter } from '../../infra/rate-limit/rate-limiter';
-import { AuditService } from '../audit/audit.service';
+import { AuditService } from '../audit';
 import { AccessRepository, LastOwnerError, type MemberFilter } from './access.repository';
 import { identityEmails } from './emails';
 import { type InviteRow, parseInviteCsv } from './engine/invite-csv';

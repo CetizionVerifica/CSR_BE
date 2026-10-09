@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { WORKSPACE_STATUSES } from '../../../common/auth/principal';
 import { page, paginationQuery } from '../../../common/pagination';
-import { emailField } from '../../identity/dto/auth.dto';
+import { emailField } from '../../identity';
 import { createCompanyBody } from './companies.dto';
 import { DATA_REGIONS, workspaceFields } from './workspaces.dto';
 

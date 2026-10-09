@@ -13,6 +13,14 @@ ResiliSense is a multi-tenant CSR/ESG assessment SaaS (ISO 26000 gap analysis, d
 
 Work on the `legacy` branch, keep changes minimal, and follow `docs/revamp/00-current-state-review.md` §2. Never print, copy or commit secret values; `server/config/dev.js` and `prod.js` contain live credentials that must be rotated and moved to environment variables.
 
+## Modular build — read the CLAUDE.md of the folder you work in
+
+The plan is split into loosely coupled modules that are built independently (`docs/revamp/06-modular-build.md`). Below this file, each layer has its own `CLAUDE.md` (`src/modules/`, `src/common/`, `src/infra/`, `prisma/`, `test/`) and each module has a **module card** (`src/modules/<module>/CLAUDE.md`) with its contract, components and invariants. Lower files add detail and never contradict this one or the specs.
+
+- A module imports another only from its folder (`'../identity'` → its `index.ts`), never its files; `src/common`, `src/infra` and `src/config` never import modules (lint `resilisense/module-boundaries`).
+- Another module's tables are never read, written or joined; use its exported queries or its events. Foreign keys only to kernel tables.
+- Project skills: `/module-contract` (write a module's contract and card), `/build-module` (build one module), `/check-module` (audit boundaries, contracts, cards, docs mirror).
+
 ## Target stack (see `docs/revamp/01-target-architecture.md`)
 
 Node 24 LTS (≥ 22.12 works) · NestJS 12 (ESM-only; our code is CommonJS and loads it via `require(esm)`) · TypeScript 6 strict (TS 7 once typescript-eslint/@nestjs/swagger support it) · PostgreSQL 16+ with RLS · Prisma 7.10 (client generated to `src/generated/prisma`, gitignored) · Zod 4 with our helpers in `src/common/validation/zod.ts` (`nestjs-zod` doesn't support Nest 12) · REST + OpenAPI · BullMQ + Redis-compatible Valkey · S3-API-compatible object storage via `StorageAdapter` (presigned PUT, ClamAV scan) · `EmailAdapter` (Postmark/SMTP/log) · pino · **Vitest** + supertest (Jest can't load ESM Nest on Node 22) · Docker images deployed with **Kamal 2** to self-managed **VPS** servers (Ansible in `infra/ansible/`); Cloudflare in front.

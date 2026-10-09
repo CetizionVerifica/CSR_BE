@@ -3,7 +3,7 @@ import { type AuthenticatedPrincipal } from '../../common/auth/principal';
 import { type RequestMeta } from '../../common/http/request-meta';
 import { toPage } from '../../common/pagination';
 import { type Prisma, type Workspace } from '../../generated/prisma/client';
-import { AuditService } from '../audit/audit.service';
+import { AuditService } from '../audit';
 import { actorOf, notFound } from './access';
 import { type PutEntitlementsInput } from './dto/workspaces.dto';
 import { parseLimits } from './engine/limits';

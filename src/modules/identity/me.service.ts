@@ -5,7 +5,7 @@ import { type RequestMeta } from '../../common/http/request-meta';
 import { AppConfig } from '../../config/app-config';
 import { type Prisma, type User } from '../../generated/prisma/client';
 import { RateLimiter } from '../../infra/rate-limit/rate-limiter';
-import { AuditService } from '../audit/audit.service';
+import { AuditService } from '../audit';
 import { AccessRepository } from './access.repository';
 import { AuthService } from './auth.service';
 import { identityEmails } from './emails';

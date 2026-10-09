@@ -1,7 +1,7 @@
 import { type Permission } from '../../common/auth/decorators';
 import { type AuthenticatedPrincipal } from '../../common/auth/principal';
 import { ProblemError } from '../../common/errors/problem';
-import { decidePermission } from '../identity/engine/permissions';
+import { decidePermission } from '../identity';
 
 export const notFound = () => new ProblemError('not_found', 'Not found');
 

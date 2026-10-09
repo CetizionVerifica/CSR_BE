@@ -7,7 +7,7 @@ import { type AuthenticatedPrincipal, type RequestWithPrincipal } from '../../co
 import { ProblemError } from '../../common/errors/problem';
 import { requestMetaOf } from '../../common/http/request-meta';
 import { REDIS } from '../../infra/redis/redis.module';
-import { AuditService } from '../audit/audit.service';
+import { AuditService } from '../audit';
 import { AuthEvents } from './events';
 import { SessionsService } from './sessions.service';
 import { TokenService } from './token.service';

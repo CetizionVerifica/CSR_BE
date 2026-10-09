@@ -6,7 +6,7 @@ import { type RequestMeta } from '../../common/http/request-meta';
 import { type User } from '../../generated/prisma/client';
 import { RateLimiter } from '../../infra/rate-limit/rate-limiter';
 import { REDIS } from '../../infra/redis/redis.module';
-import { AuditService } from '../audit/audit.service';
+import { AuditService } from '../audit';
 import { hashToken } from './engine/tokens';
 import { base32Encode, otpauthUri, verifyTotp } from './engine/totp';
 import { identityEmails } from './emails';

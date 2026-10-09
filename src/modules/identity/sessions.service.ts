@@ -5,7 +5,7 @@ import { type RequestMeta } from '../../common/http/request-meta';
 import { uuidv7 } from '../../common/ids';
 import { type User } from '../../generated/prisma/client';
 import { RateLimiter } from '../../infra/rate-limit/rate-limiter';
-import { AuditService } from '../audit/audit.service';
+import { AuditService } from '../audit';
 import { expiresAt, hashToken, isTokenUsable, TTL } from './engine/tokens';
 import { AuthEvents } from './events';
 import { LIMITS } from './rate-limits';
