@@ -111,6 +111,12 @@ You run the dry runs (DR1–DR3) against snapshots on your infrastructure; Claud
 - Keep `CLAUDE.md` current: when you correct Claude on a convention twice, add it to `CLAUDE.md`.
 - Ask for a **weekly status report**: *"Summarise merged PRs this week against the roadmap phases in docs/revamp/03, list open spec questions, and propose next week's sessions."*
 
-## 6. Project slash commands
+## 6. Project skills and slash commands
 
-`.claude/commands/implement-module.md` (in both repos) turns the module prompt into `/implement-module <Mxx> [notes]`. Add more commands when a prompt gets reused three times.
+Three project skills in `.claude/skills/` (both repos) run the modular plan in `06-modular-build.md` §7:
+
+- `/module-contract <module>` writes or refreshes a module's contract (spec §14) and its `CLAUDE.md` card in both repos.
+- `/build-module <module>` builds one module in the current repo against that contract, with fakes for dependencies that are not built yet.
+- `/check-module [module]` audits boundaries, contract vs `index.ts`, card freshness, spec coverage, the docs mirror and the Calm Ledger UI rules.
+
+`.claude/commands/implement-module.md` keeps the old `/implement-module <Mxx> [notes]` entry point and hands over to `/build-module`. Add more skills when a prompt gets reused three times.

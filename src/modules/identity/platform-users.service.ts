@@ -4,7 +4,7 @@ import { ProblemError } from '../../common/errors/problem';
 import { type RequestMeta } from '../../common/http/request-meta';
 import { toPage } from '../../common/pagination';
 import { type Prisma, type User } from '../../generated/prisma/client';
-import { AuditService } from '../audit/audit.service';
+import { AuditService } from '../audit';
 import { TTL } from './engine/tokens';
 import { AuthEvents } from './events';
 import { toProfile } from './me.service';

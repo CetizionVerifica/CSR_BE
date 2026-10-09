@@ -1,0 +1,18 @@
+# src/common — shared kernel (layer rules)
+
+Level 1 (`docs/revamp/06-modular-build.md` §2). Small, stable building blocks every module uses. Nothing here knows about a feature module.
+
+| Folder / file             | What it provides                                                                                                     | Rules                                                                                                                                                                                                                                             |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `auth/`                   | `@Can`, `@Authenticated`, `@Public`, the `PERMISSIONS` and `MODULES` lists, `CurrentPrincipal`, `AuthorizationGuard` | New permission strings and entitlement module names are added to `decorators.ts` / `principal.ts` by the module that needs them; the guard reads the pure M01 matrix (`modules/identity/engine/permissions`), the only allowed module import here |
+| `errors/`                 | `ProblemError`, `PROBLEM_TYPES`, the problem+json filter                                                             | Add a new `type` here when a module needs one; types are stable public strings                                                                                                                                                                    |
+| `validation/`             | `ZodValidationPipe`, `@ApiZodBody`, `@ApiZodQuery`, `@ApiZodOk`, `@ApiZodResponse`                                   | Every body, query and response goes through these                                                                                                                                                                                                 |
+| `idempotency/`            | `Idempotency-Key` interceptor                                                                                        | Required on POSTs that send email or start jobs                                                                                                                                                                                                   |
+| `http/`                   | request meta (ip, user agent, request id)                                                                            | Passed to `AuditService.record`                                                                                                                                                                                                                   |
+| `ids.ts`, `pagination.ts` | UUIDv7 ids, cursor pagination helpers                                                                                | Never offset pagination                                                                                                                                                                                                                           |
+
+Rules:
+
+- Lint forbids importing `src/modules/*` from here (except the permission matrix). If a helper needs module knowledge, it belongs in that module.
+- Add to `common` only what at least two modules need and that has no business rule in it. Business rules live in a module's `engine/`.
+- Changes here affect every module: keep them backwards compatible and covered by the unit tests next to each file.

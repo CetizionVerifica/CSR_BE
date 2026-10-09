@@ -261,3 +261,61 @@ Validated with the dataviz palette validator (OKLab ΔE, Machado 2009 CVD simula
 - [ ] Dark mode checked.
 - [ ] All strings via i18n keys; no concatenated sentences; plurals via ICU.
 - [ ] axe (Storybook + Playwright) reports zero violations.
+
+---
+
+## 9. Visual direction: Calm Ledger (owner decision, 2026-10-09)
+
+Three directions were compared for the supplier due diligence screens (UI research artifact, 2026-10-09): **A · Calm Ledger**, B · Signal Room (dark monitoring console) and C · Atlas (editorial, teal). The owner chose **Calm Ledger**: it keeps every token in §2, so the shipped M01/M02 screens need no rework, and it adds one restrained entrance per screen plus two pieces borrowed from the other directions (the signal feed from B, the tier flow chart from C). Everything in §1–§8 still applies; this section adds to it.
+
+### 9.1 Character
+
+- Precise, calm, audit-ready: white working surface on `--bg-canvas`, dark slate sidebar, colour only for meaning.
+- **One entrance per view, then stillness.** Data animates in once when a view first renders; refetches, filters and polling update values in place without replaying the entrance.
+- Every chart has a plain table behind it ("View as table", §6.3) because auditors must be able to read exact values.
+
+### 9.2 Motion tokens
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `--motion-hover` | 120ms ease-out | Row tint, button and card hover (§2.5) |
+| `--motion-enter` | 550ms cubic-bezier(.2,.8,.2,1), 10px rise + fade | Cards and table rows on first render, staggered 45ms, at most 12 items |
+| `--motion-grow` | 900ms cubic-bezier(.2,.8,.2,1), stagger 70ms | Bars, meters and progress fills from the start edge (mirrored in RTL) |
+| `--motion-draw` | 1400ms cubic-bezier(.65,0,.35,1) | Line and Sankey paths drawing in; the end point marker pops in after |
+| `--motion-count` | 900ms ease-out-cubic | KPI numbers counting up from 0, formatted with `Intl.NumberFormat` on every frame |
+
+- `prefers-reduced-motion: reduce` → no entrance at all: final values render immediately (not a shorter animation).
+- Nothing moves continuously. Live data (signal feed) inserts new items with a 180ms fade and never scrolls on its own (WCAG 2.2.2).
+- ECharts uses the same durations through the `ResiliChart` theme (`animationDuration`, `animationEasing`, `animationDelay` per index); `animationDurationUpdate` is 0 for refetches.
+
+### 9.3 Risk scale
+
+Risk is an **ordinal** scale with three bands, always shown as label + number (never colour alone, §2.3) and never with the status colours of §2.3:
+
+| Band | Score | Light | Dark |
+| --- | --- | --- | --- |
+| Low | 0–39 | `#F2B8AE` | `#5C2A26` |
+| Medium | 40–64 | `#E3705F` | `#B5473C` |
+| High | 65–100 | `#A8322A` | `#F08A7C` |
+
+- One warm hue, ordered by lightness, so the order survives colour-vision deficiency and greyscale print. The values are proposed: validate them with the palette validator (§6) in the PR that adds the `--risk-*` tokens and adjust there.
+- Band thresholds come from the risk engine response (risk spec), not from the frontend; the table above shows the defaults only.
+- Heat maps use the same ramp continuously (`color-mix` from `--bg-surface` to `--risk-high`); cell text switches to `--on-primary` above the contrast threshold.
+
+### 9.4 Signature charts and widgets added for due diligence
+
+| Name | Form (ECharts series) | Rules |
+| --- | --- | --- |
+| Risk trend | Line with 12% area fill, emphasised end point with its value (`line`) | 12 months, one series; target band optional |
+| Risk by category | Horizontal bullet bars, band-coloured, value at the end (`bar`) | Fixed category order from reference data, never sorted by value |
+| Risk heat map | Category × region matrix, value printed in every cell (`heatmap`) | Click a cell → supplier register filtered to it; legend "Lower → Higher" |
+| Tier flow (from Atlas) | Tier 1–3 → risk band ribbons (`sankey`) | Ribbons drawn tier by tier with `--motion-draw`; table view lists the flows |
+| Signal feed (from Signal Room) | List: time, severity chip (label + colour), supplier, one-line signal | Newest first, `aria-live="polite"`, pauses insertion while hovered or focused, links to the source record |
+| Risk meter | Inline bar + number in table cells | Width = score, colour = band, number always visible |
+
+### 9.5 Screen patterns
+
+- **Due diligence dashboard** — 4 `StatTile`s (suppliers in scope, high risk with delta, questionnaire completion, open corrective actions) → risk trend + risk by category → tier flow → "Needs attention" list (escalations, expiring evidence, overdue actions).
+- **Supplier register** — list page (§5) with columns supplier, country, tier, category, risk meter, questionnaire %, status pill, change since last period; filter chips for tier, country, risk band, status, category.
+- **Risk view** — heat map with "Top drivers" panel, then the signal feed.
+- Preview of all three: UI research artifact "Supplier DD Design Directions", direction A; the 16-screen UI preview is restyled to match before each screen is built.

@@ -3,6 +3,7 @@ import eslint from '@eslint/js';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import { moduleBoundaries } from './scripts/module-boundaries.mjs';
 
 export default tseslint.config(
   { ignores: ['dist/**', 'coverage/**', 'src/generated/**', 'Docs/**', 'reports/**', '.stryker-tmp/**'] },
@@ -35,6 +36,29 @@ export default tseslint.config(
               group: ['@aws-sdk/*', 'aws-sdk'],
               message: 'No AWS (ADR-011): use StorageAdapter/EmailAdapter.',
             },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Loose coupling (docs/revamp/06-modular-build.md §3): modules meet only through their index.ts;
+    // common/ and infra/ never depend on a module (the pure M01 permission matrix is the one listed exception).
+    files: ['src/**/*.ts'],
+    plugins: { resilisense: { rules: { 'module-boundaries': moduleBoundaries } } },
+    rules: {
+      'resilisense/module-boundaries': [
+        'error',
+        {
+          root: 'src/modules',
+          layers: [
+            {
+              from: 'src/common',
+              forbid: ['src/modules'],
+              except: ['src/modules/identity/engine/permissions'],
+            },
+            { from: 'src/infra', forbid: ['src/modules'] },
+            { from: 'src/config', forbid: ['src/modules'] },
           ],
         },
       ],

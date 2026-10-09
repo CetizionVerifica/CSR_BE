@@ -46,3 +46,14 @@ Script outline, field mappings, golden-master fixtures.
 Unit (engine), integration (API + tenancy), e2e (critical journeys), accessibility.
 
 ## 13. Open questions
+
+## 14. Module contract
+Filled by `/module-contract` (`06-modular-build.md` §2.1, §3). Folder: `src/modules/<folder>/` · `src/features/<folder>/` · Wave: n
+
+| | |
+|---|---|
+| Owns | tables, routes, permissions, i18n namespace |
+| Public surface (`index.ts`) | each export and why another module needs it |
+| Depends on | other modules' public surfaces, and the fake used in tests |
+| Emits | event name → payload |
+| Consumes | event name → reaction |

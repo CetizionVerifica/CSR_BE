@@ -3,6 +3,10 @@ description: Implement one ResiliSense 2.0 module in this repo (backend) from it
 argument-hint: <module id, e.g. M04> [extra notes]
 ---
 
+Follow the project skill **`/build-module`** (`.claude/skills/build-module/SKILL.md`) for module **$ARGUMENTS**: it reads the CLAUDE.md chain (root → layer → module card), checks the spec is `Ready` and has a §14 contract (run `/module-contract` first if not), builds the module against that contract with fakes for unfinished dependencies, runs every check and opens the PR. Finish with `/check-module`.
+
+The steps below are the short version, kept for reference.
+
 Implement module **$ARGUMENTS** in this repository (CSR_BE — the new NestJS API).
 
 1. Read `CLAUDE.md`, `docs/revamp/README.md`, `docs/revamp/01-target-architecture.md` and the module spec `docs/revamp/modules/<id>-*.md` (the id is the first word of the arguments). Read any spec it depends on for the parts you touch.

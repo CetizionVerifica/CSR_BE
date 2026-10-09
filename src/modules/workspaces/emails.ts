@@ -1,4 +1,4 @@
-import { transactionalEmail } from '../identity/emails';
+import { transactionalEmail } from '../identity';
 
 /** M02 emails (§5 US-02-2). Plain templates until M12 brings localised templates. */
 export const workspaceEmails = {

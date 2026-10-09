@@ -9,7 +9,7 @@ import { AppConfig } from '../../config/app-config';
 import { type User } from '../../generated/prisma/client';
 import { RateLimiter } from '../../infra/rate-limit/rate-limiter';
 import { REDIS } from '../../infra/redis/redis.module';
-import { AuditService } from '../audit/audit.service';
+import { AuditService } from '../audit';
 import { AccessRepository } from './access.repository';
 import { identityEmails } from './emails';
 import { isLocked, lockAfterFailure } from './engine/lockout';
