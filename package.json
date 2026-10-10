@@ -21,6 +21,7 @@
     "test:e2e": "vitest run --config vitest.config.e2e.mts",
     "test:mutation": "stryker run",
     "spec:coverage": "node scripts/spec-coverage.mjs",
+    "plan:status": "node scripts/plan-status.mjs",
     "fuzz:serve": "node -r @swc-node/register test/fuzz/serve.ts",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",

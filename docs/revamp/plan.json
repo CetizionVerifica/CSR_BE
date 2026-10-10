@@ -1,0 +1,24 @@
+{
+  "$comment": "Machine-readable build plan read by scripts/plan-status.mjs and the /run-plan skill. Mirrors 06-modular-build.md §5 (catalogue) and §6 (waves); change both together. spec = the spec id once its file exists; proposedSpec/parentSpec until /module-contract writes it. be/fe = folders that hold the module in each repo.",
+  "modules": [
+    { "folder": "identity", "plan": "SD01", "spec": "M01", "wave": 0, "be": ["src/modules/identity"], "fe": ["src/features/auth", "src/features/settings", "src/features/members"], "dependsOn": [] },
+    { "folder": "workspaces", "plan": "SD01", "spec": "M02", "wave": 0, "be": ["src/modules/workspaces"], "fe": ["src/features/workspace", "src/features/companies", "src/features/partner"], "dependsOn": ["identity", "audit"] },
+    { "folder": "audit", "plan": "SD13", "spec": "M12", "wave": 0, "be": ["src/modules/audit"], "fe": [], "dependsOn": [] },
+    { "folder": "files", "plan": "SD05", "spec": "M14", "wave": 1, "be": ["src/modules/files"], "fe": ["src/features/files"], "dependsOn": [] },
+    { "folder": "notifications", "plan": "SD13", "spec": "M12", "wave": 1, "be": ["src/modules/notifications"], "fe": ["src/features/notifications"], "dependsOn": [] },
+    { "folder": "reference-data", "plan": "SD14", "spec": "M13", "wave": 1, "be": ["src/modules/reference-data"], "fe": ["src/features/reference-data"], "dependsOn": [] },
+    { "folder": "localisation", "plan": "SD15", "spec": "M15", "wave": 1, "be": ["src/modules/localisation"], "fe": [], "dependsOn": [] },
+    { "folder": "supplier-register", "plan": "SD02", "spec": null, "proposedSpec": "M19", "parentSpec": "M10", "wave": 2, "be": ["src/modules/supplier-register"], "fe": ["src/features/supplier-register"], "dependsOn": ["workspaces", "reference-data"] },
+    { "folder": "questionnaires", "plan": "SD04", "spec": null, "proposedSpec": "M21", "parentSpec": "M08", "wave": 2, "be": ["src/modules/questionnaires"], "fe": ["src/features/questionnaires"], "dependsOn": ["reference-data", "files", "notifications"] },
+    { "folder": "grievances", "plan": "SD11", "spec": null, "proposedSpec": "M25", "parentSpec": "M10", "wave": 2, "be": ["src/modules/grievances"], "fe": ["src/features/grievances"], "dependsOn": ["supplier-register", "notifications"] },
+    { "folder": "risk", "plan": "SD06", "spec": null, "proposedSpec": "M22", "parentSpec": "M10", "wave": 2, "be": ["src/modules/risk"], "fe": ["src/features/risk"], "dependsOn": ["reference-data", "supplier-register"] },
+    { "folder": "supplier-portal", "plan": "SD03", "spec": null, "proposedSpec": "M20", "parentSpec": "M10", "wave": 3, "be": ["src/modules/supplier-portal"], "fe": ["src/features/supplier-portal"], "dependsOn": ["supplier-register", "identity", "notifications"] },
+    { "folder": "supplier-evidence", "plan": "SD05", "spec": "M14", "wave": 3, "be": ["src/modules/supplier-evidence"], "fe": ["src/features/supplier-evidence"], "dependsOn": ["files", "supplier-register"] },
+    { "folder": "corrective-actions", "plan": "SD09", "spec": "M09", "wave": 3, "be": ["src/modules/corrective-actions"], "fe": ["src/features/corrective-actions"], "dependsOn": [] },
+    { "folder": "screening", "plan": "SD07", "spec": "M10", "wave": 4, "be": ["src/modules/screening"], "fe": ["src/features/screening"], "dependsOn": ["supplier-register", "risk", "supplier-portal"] },
+    { "folder": "dd-audits", "plan": "SD08", "spec": null, "proposedSpec": "M23", "parentSpec": "M10", "wave": 4, "be": ["src/modules/dd-audits"], "fe": ["src/features/dd-audits"], "dependsOn": ["supplier-register", "files"] },
+    { "folder": "monitoring", "plan": "SD10", "spec": null, "proposedSpec": "M24", "parentSpec": "M10", "wave": 4, "be": ["src/modules/monitoring"], "fe": ["src/features/monitoring"], "dependsOn": [] },
+    { "folder": "dd-reporting", "plan": "SD12", "spec": "M11", "wave": 4, "be": ["src/modules/dd-reporting"], "fe": ["src/features/dd-reporting"], "dependsOn": [] },
+    { "folder": "esg-data", "plan": "SD16", "spec": null, "proposedSpec": "M26", "parentSpec": "M10", "wave": 4, "optional": "CSRhub licence check pending", "be": ["src/modules/esg-data"], "fe": ["src/features/esg-data"], "dependsOn": ["supplier-register"] }
+  ]
+}
