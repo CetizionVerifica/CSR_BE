@@ -30,7 +30,7 @@ Turns one plan item into an agreed contract that both repos can build against in
      Create the folder with only the card when the module is not built yet. Status in the card = spec status.
 6. **Mirror.** `docs/revamp/**` must be identical in both repos. If the sibling repo is checked out next to this one (`../CSR_BE`, `../Resilisense-FE`), copy the changed docs there and write its card too; otherwise say in the PR body that the sibling PR is needed.
 7. **Validate.** `diff -r docs/revamp ../<sibling>/docs/revamp` is empty; `npx prettier --check` passes on the cards; every file and symbol a card names exists or is marked "planned".
-8. **Deliver.** Commit `docs(<folder>): contract for <spec id>` on branch `claude/module-<folder>-contract` in each repo and open PRs that link each other. If spec §13 has no open question (everything is answered by the plan, the catalogue or a recorded owner decision), set the status to `Ready` in this PR: the owner merging it is the approval. Otherwise keep `Draft` and list the open questions, each with a recommended answer, at the top of the PR body.
+8. **Deliver.** Commit `docs(<folder>): contract for <spec id>` on branch `claude/module-<folder>-contract` in each repo and open PRs that link each other. If spec §13 has no open question (everything is answered by the plan, the catalogue or a recorded owner decision), set the status to `Ready` in this PR; `/run-plan` merges it once its gates pass (owner decision, 2026-10-10). Otherwise keep `Draft`, list the open questions, each with a recommended answer, at the top of the PR body, and label the PR `needs-owner` so it waits for the owner.
 
 ## Output
 

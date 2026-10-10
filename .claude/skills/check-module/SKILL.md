@@ -24,4 +24,4 @@ Run each check for the module given (or every folder under `src/modules` / `src/
 
 ## Output
 
-A findings table sorted by severity (boundary and contract breaks first), a one-line verdict ("independent and conformant" or what blocks it), and with `--fix` the list of fixes applied. Never weaken a lint rule, coverage floor or test to make a check pass.
+A findings table sorted by severity (boundary and contract breaks first), a one-line verdict ("independent and conformant" or what blocks it), and with `--fix` the list of fixes applied. When the module has an open PR, post (or edit) one PR comment with the table and verdict ending with `<!-- check-module sha=<head sha> verdict=pass|fail -->`; `/run-plan` merges only on a `pass` for the current head and does not run the check again for the same sha. Never weaken a lint rule, coverage floor or test to make a check pass.
