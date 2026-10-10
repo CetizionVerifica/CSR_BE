@@ -118,6 +118,6 @@ Four project skills in `.claude/skills/` (both repos) run the modular plan in `0
 - `/module-contract <module>` writes or refreshes a module's contract (spec §14) and its `CLAUDE.md` card in both repos.
 - `/build-module <module>` builds one module in the current repo against that contract, with fakes for dependencies that are not built yet.
 - `/check-module [module]` audits boundaries, contract vs `index.ts`, card freshness, spec coverage, the docs and skills mirror and the Calm Ledger UI rules.
-- `/run-plan [module]` runs the plan hands-free: it picks the next step from `npm run plan:status`, runs the three skills above, drives the PRs and, in its learn step, updates the skills and `CLAUDE.md` files from what the run had to work out. A routine can fire it on a schedule.
+- `/run-plan [module]` runs the plan hands-free: it picks the next step from `npm run plan:status`, runs the three skills above, drives the PRs, merges them one at a time once `/check-module` and CI pass and, in its learn step, updates the skills and `CLAUDE.md` files from what the run had to work out. A routine can fire it on a schedule.
 
 `.claude/commands/implement-module.md` keeps the old `/implement-module <Mxx> [notes]` entry point and hands over to `/build-module`. Nobody writes skills by hand: `/run-plan` adds or extends them in the PR of the run that needed them (06 §8).
