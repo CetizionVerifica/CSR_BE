@@ -6,7 +6,7 @@
     { "folder": "audit", "plan": "SD13", "spec": "M12", "wave": 0, "be": ["src/modules/audit"], "fe": [], "dependsOn": [] },
     { "folder": "files", "plan": "SD05", "spec": "M14", "wave": 1, "be": ["src/modules/files"], "fe": ["src/features/files"], "dependsOn": [] },
     { "folder": "notifications", "plan": "SD13", "spec": "M12", "wave": 1, "be": ["src/modules/notifications"], "fe": ["src/features/notifications"], "dependsOn": [] },
-    { "folder": "reference-data", "plan": "SD14", "spec": "M13", "wave": 1, "be": ["src/modules/reference-data"], "fe": ["src/features/reference-data"], "dependsOn": [] },
+    { "folder": "reference-data", "plan": "SD14", "spec": "M13", "wave": 1, "be": ["src/modules/reference-data"], "fe": ["src/features/reference-data"], "dependsOn": ["audit"] },
     { "folder": "localisation", "plan": "SD15", "spec": "M15", "wave": 1, "be": ["src/modules/localisation"], "fe": [], "dependsOn": [] },
     { "folder": "supplier-register", "plan": "SD02", "spec": null, "proposedSpec": "M19", "parentSpec": "M10", "wave": 2, "be": ["src/modules/supplier-register"], "fe": ["src/features/supplier-register"], "dependsOn": ["workspaces", "reference-data"] },
     { "folder": "questionnaires", "plan": "SD04", "spec": null, "proposedSpec": "M21", "parentSpec": "M08", "wave": 2, "be": ["src/modules/questionnaires"], "fe": ["src/features/questionnaires"], "dependsOn": ["reference-data", "files", "notifications"] },
