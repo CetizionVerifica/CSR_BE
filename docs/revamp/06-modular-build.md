@@ -123,7 +123,7 @@ Folder names are the same in both repos. Plan IDs refer to the "Supplier Due Dil
 | `grievances` | SD11 | M25 *(new)* | grievance cases, public intake, anonymity | case status | supplier-register, notifications | `grievance.received` |
 | `dd-reporting` | SD12 | M11 + M16 | report definitions, renders, exports | report jobs | public read models of the modules above | `report.ready` |
 | `esg-data` | SD16 | M26 *(new, optional)* | external ratings cache (CSRhub adapter) | rating by supplier and month | supplier-register | `external_rating.updated` |
-| `localisation` | SD15 | M15 | translations of content | — (frontend `src/lib/i18n`) | kernel | — |
+| `localisation` | SD15 | M15 | locales, content translations, server ICU catalogues (frontend `src/lib/i18n`) | `resolveLocale`, `LocalesService`, `TranslationsService.resolve`/`upsertSource`, `MessageCatalogue.format`, `localisedTextSchema` | audit | `translation.updated`, `locale.updated` |
 
 Rules that the catalogue fixes:
 
