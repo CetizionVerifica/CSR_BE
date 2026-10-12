@@ -45,3 +45,7 @@ Write the contract first (`/module-contract`), then `/build-module`. Dependencie
 ## Modules in this repo and planned
 
 Built: `identity` (M01), `workspaces` (M02), `audit` (M12 slice), `health`. Planned folders and their waves: `06-modular-build.md` §5–§6 (supplier-register, supplier-portal, questionnaires, supplier-evidence, risk, screening, dd-audits, corrective-actions, monitoring, grievances, dd-reporting, esg-data, files, notifications, reference-data).
+
+### Planned DD modules
+
+Draft cards exist for every due diligence module (`src/modules/<module>/CLAUDE.md`, specs M09–M11, M14, M19–M26). Events go through `EventBus.publish` / `@OnDomainEvent` exported by `notifications` (M12 §14), and each module calls `NotificationService.notify()` itself for the notices it owns. Permissions use `resource:action` with underscores for multiword resources (`dd_report:export`, `dd_audit:conduct`, `supplier_evidence:verify`); the entitlement is `due_diligence` (`esg_data` for esg-data). Dependencies form a DAG by wave (06 §5); a module never imports one from a later wave.

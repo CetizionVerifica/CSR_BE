@@ -31,6 +31,11 @@ Sign-in, sessions, MFA, invitations, workspace memberships and the role → perm
 
 `audit` (`AuditService`), kernel (`common`, `infra/prisma`, `infra/email`, `infra/redis`, `infra/rate-limit`).
 
+## Events
+
+- Emits (audit actions today, domain events once the `notifications` bus exists): `AuthEvents` — `auth.*`, `user.*`, `invitation.*`, `membership.*`, `workspace.created|switched`, `impersonation.*`, `platform.*` (M01 §10).
+- Consumes: none. `supplier-portal` will consume `invitation.accepted` / `user.signed_up` to link an invited supplier (planned, M20).
+
 ## Components & behaviour
 
 - `auth.service.ts` — login with lockout (`engine/lockout.ts`), breached-password check, refresh-token rotation with reuse detection (revokes the family), sign-up + email verification.

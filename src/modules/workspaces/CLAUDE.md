@@ -25,6 +25,11 @@ Planned exports when the DD modules need them (add with their PR): a company rea
 
 `identity` (users, mailer, token helpers, `decidePermission`), `audit`.
 
+## Events
+
+- Emits (audit actions today, domain events once the `notifications` bus exists): `WorkspaceEvents` — `workspace.created|updated|suspended`, `company.created|updated|deleted|restored`, `entitlements.changed`, `partner_grant.created|revoked` (M02 §10).
+- Consumes: none.
+
 ## Components & behaviour
 
 - `workspaces.service.ts` — current workspace profile, entitlements, partner grants.
