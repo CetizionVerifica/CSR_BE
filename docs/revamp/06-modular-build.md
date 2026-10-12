@@ -109,7 +109,7 @@ Folder names are the same in both repos. Plan IDs refer to the "Supplier Due Dil
 | `workspaces` | SD01 | M02 | workspaces, companies, entitlements, partner grants | `WorkspacesModule` | identity, audit | `workspace.*`, `company.*` |
 | `audit` | SD13 | M12 | audit_events | `AuditService` | kernel | — |
 | `files` | SD05 base | M14 | files, uploads, scans (behind `StorageAdapter`) | upload intent, file read model | kernel | `file.scanned` |
-| `notifications` | SD13 | M12 | notifications, email outbox, event bus | `notify()`, event bus | kernel | — |
+| `notifications` | SD13 | M12 | notifications, preferences, email outbox + suppressions, event bus outbox | `NotificationService` (`notify`, `sendEmail`, `emailStatuses`), `EventBus.publish`, `@OnDomainEvent` | identity, audit | `email.failed` |
 | `reference-data` | SD14 | M13 §3.3 | countries, sectors (from M02), categories, risk index sources + imported values, global questionnaire template library | `ReferenceDataService`: lookups by code, `isSelectable`, index values by source and year, published templates; template definition schema | audit, localisation | `reference.updated` |
 | `supplier-register` | SD02 | M10 §4.1 → M19 *(new)* | suppliers, sites, contacts, tags, imports | `getSupplier`, `listSuppliers`, supplier read model | workspaces, reference-data | `supplier.created`, `supplier.updated`, `supplier.archived` |
 | `supplier-portal` | SD03 | M10 §4.1 → M20 *(new)* | supplier links, access requests, sharing grants | `accessFor(buyer, supplier, year)` | supplier-register, identity, notifications | `supplier.invited`, `supplier.linked`, `supplier_access.*` |
