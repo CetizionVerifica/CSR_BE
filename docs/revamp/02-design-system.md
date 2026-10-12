@@ -136,7 +136,7 @@ Status never reuses amber-500 (accent) so "warning" and "brand highlight" are ne
 └──────────────┴──────────────────────────────────────────────────────────────┘
 ```
 
-- **Sidebar**: grouped (Workspace · Engagement · Supply chain · Insights · Admin), collapsible to icon rail (72px), remembers state per user, becomes a sheet under `lg`. Items are filtered by permission (see M01), not hidden by ad-hoc role checks in components.
+- **Sidebar**: grouped (Workspace · Engagement · Due diligence · Insights · Admin), collapsible to icon rail (72px), remembers state per user, becomes a sheet under `lg`. Items are filtered by permission (see M01), not hidden by ad-hoc role checks in components.
 - **Top bar**: workspace switcher (users and partners who work across several workspaces), company + project/reporting-year switcher, global search + command palette (`⌘K` / `Ctrl K`: navigate, create project, invite user, jump to question code `3_2_4`), notification centre, help, language switch, user menu (profile, theme, density, sign out).
 - **Page header**: breadcrumbs → title + status pill + meta (owner, due date) → primary action on the end side (only one primary button per page).
 - **Public surfaces** (survey respondent, supplier invite, password reset) use a **minimal shell**: logo (optionally the client company's logo), language switch, no sidebar.

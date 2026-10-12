@@ -13,7 +13,7 @@
 
 ## 2. System context
 
-**Hard constraint (owner decision, 2026-09-30): no AWS services or AWS resources are used to host, deploy or operate the new system** (no EC2/ECS, S3, CloudFront, RDS, SES, Secrets Manager, CloudWatch, Bedrock, …). The owner chose **self-managed Linux VPS servers** (ADR-011). Everything runs as containers or standard Linux services on those VPSs; the only external pieces are commodity services with drop-in alternatives (S3-*API*-compatible object storage, an email provider, error tracking, uptime monitoring), so the platform can move between VPS providers without code changes.
+**Hard constraint (owner decision, 2026-09-30): no AWS services or AWS resources are used to host, deploy or operate the new system** (no EC2/ECS, S3, CloudFront, RDS, SES, Secrets Manager, CloudWatch, Bedrock, …). The owner chose **self-managed Linux VPS servers** (ADR-011). Everything runs as containers or standard Linux services on those VPSs; the only external pieces are commodity services with drop-in alternatives (file storage — Cloudinary, owner decision 2026-10-07, behind `StorageAdapter` — an email provider, error tracking, uptime monitoring), so the platform can move between VPS providers without code changes.
 
 ```
                      ┌──────── Cloudflare (DNS, proxy/WAF, TLS, DDoS, static-asset cache) ────────┐
@@ -30,9 +30,9 @@
   │   └─ clamav   (clamd)                             │   replica for fail-over + read-only reporting       │
   └───────────────────────────┬───────────────────────┴───────────────────────┬───────────────────────────┘
                               ▼                                               ▼
-            S3-API-compatible object storage (VPS provider's            Off-site backups (different provider/
-            object storage, or MinIO on a storage VPS):                 region): pgBackRest repo, nightly
-            evidence, reports, imports — private bucket                 rclone copy of objects, config backups
+            Cloudinary file storage (owner decision 2026-10-07,         Off-site backups (different provider/
+            behind StorageAdapter; private, authenticated):             region): pgBackRest repo, nightly
+            evidence, reports, imports                                  copy of file assets, config backups
   External services (none on AWS): Postmark or SMTP provider (email) · Sentry (errors) · Better Stack / Uptime Kuma (uptime)
                                    · Grafana Cloud or self-hosted Grafana+Loki+Prometheus (logs/metrics) · Anthropic API (M17)
 ```
@@ -120,7 +120,7 @@ Queues: `email`, `report-render`, `import`, `survey`, `ai`, `scheduled`, `retent
 | Logging | `pino` (nestjs-pino) JSON; request id, user id, workspace id; redaction of `authorization`, `cookie`, `password`, `token`, `otp` |
 | Security headers | `helmet`, strict CORS allow-list from env, CSP on the SPA (no inline scripts), HSTS |
 | Rate limiting | `@nestjs/throttler` with Redis store; stricter on auth, public survey and upload endpoints |
-| Files | `StorageAdapter` interface over any S3-API-compatible store (default: the VPS provider's S3-compatible object storage in the same region; MinIO on a storage VPS, Backblaze B2 or Cloudflare R2 work unchanged) using the vendor-neutral `minio` JS client (drivers: `s3` for staging/production, `local` filesystem for development, tests and Claude Code cloud sessions); private bucket, presigned **PUT** URLs (5 min) with signed content-type/length, server-side size + magic-byte verification, ClamAV scan before a file becomes available, `files` table (M14) |
+| Files | `StorageAdapter` interface (M14 §7). **Cloudinary** is the storage provider (owner decision, 2026-10-07): driver `cloudinary` for staging/production with signed direct uploads (server-chosen `public_id`, `type=authenticated`, short-lived intent) and 5-minute signed private download URLs; `local` filesystem driver for development, tests and Claude Code cloud sessions; the `s3` driver (vendor-neutral `minio` client) stays as a swappable alternative. Server-side size + magic-byte verification and a ClamAV scan run in a worker before a file becomes available; quarantined files are never served; `files` table (M14). No AWS |
 | Email | `EmailAdapter` interface via the `email` queue (drivers: `postmark`, `smtp`, and `log`/`memory` for development and tests); default Postmark (HTTP API + signed webhooks); SMTP adapter (Nodemailer) for any other provider — choose an EU-hosted provider (e.g. Brevo, Mailjet) if EU residency of email data is required; React Email templates, localised, plain-text part; per-workspace branding |
 | Observability | OpenTelemetry traces + metrics exported to Grafana Cloud (or self-hosted Grafana + Prometheus + Loki); container logs shipped by Grafana Alloy/Vector; node_exporter + cAdvisor host metrics; Sentry for errors (FE + BE); external uptime checks (Better Stack or Uptime Kuma on a separate host); `/health/live`, `/health/ready` (DB + Redis) |
 | Audit | append-only `audit_events` table (M12) |
@@ -141,7 +141,7 @@ Constraints from the owner: nothing on AWS; run on **VPS servers**. Requirements
 | `app-2` *(when load requires)* | same as `app-1` | second app node behind Cloudflare load balancing |
 | `staging` | 4 vCPU · 8 GB | the whole stack on one VPS (Kamal destination `staging`) |
 
-Object storage: the provider's S3-compatible bucket in the same region (private); if the provider has none, a MinIO container on a separate storage VPS with its own volume and nightly off-site replication.
+File storage: Cloudinary (owner decision, 2026-10-07; private, authenticated delivery), reached only through `StorageAdapter`. Fallback if Cloudinary is ever dropped: the provider's S3-compatible bucket or MinIO on a storage VPS through the `s3` driver, with no code change outside the adapter.
 
 **Deployment — Kamal 2** (config in the repo: `config/deploy.yml`, `config/deploy.staging.yml`, `.kamal/secrets`):
 - CI builds one Docker image per commit → pushes to **GitHub Container Registry (GHCR)** → `kamal deploy -d staging` automatically on `main`; production via release tag + manual approval (GitHub Environments) promoting the same image digest.
@@ -154,7 +154,7 @@ Ubuntu 24.04 LTS; non-root deploy user; SSH keys only, password and root login d
 
 **Backups & recovery.**
 - PostgreSQL: pgBackRest → off-site S3-compatible repository at a **different provider/region** (e.g. Backblaze B2 or Cloudflare R2): full weekly, differential daily, continuous WAL archiving → **PITR** 14 days, retention 35 days, encrypted (repo cipher).
-- Object storage: nightly `rclone sync` to the off-site provider (with `--backup-dir` versioning for 30 days).
+- File storage: nightly `files.backup` worker task copies new and changed Cloudinary assets to the off-site repository (30-day versioning), M14.
 - Valkey: AOF + daily RDB copy (queues are recoverable; data of record lives in PostgreSQL).
 - Hosts: weekly provider snapshots of `app-*` and `data-*`; everything else is rebuildable from Ansible + Kamal.
 - **Restore drill quarterly** (restore to a scratch VPS, run the ETL/consistency checks), result logged in `infra/README.md`.
@@ -259,4 +259,4 @@ CD (VPS, no AWS): each repo has its own pipeline and Kamal config; both apps sha
 | Privacy | GDPR/DPDP: export & erasure per workspace and per survey respondent; data residency by deploying one VPS stack per region (EU VPS for EU customers, India VPS for Indian customers; backups stay in the same jurisdiction); sub-processor list (hosting, email, Sentry, logs, Anthropic) published |
 | Accessibility | WCAG 2.2 AA |
 | Browsers | last 2 versions of Chrome, Edge, Firefox, Safari; iOS 16+, Android 10+ (public survey) |
-| Backups | pgBackRest (weekly full, daily diff, continuous WAL → PITR 14 days, retention 35 days) to an off-site S3-compatible repository at another provider; nightly `rclone` copy of object storage; weekly VPS snapshots; quarterly restore drill |
+| Backups | pgBackRest (weekly full, daily diff, continuous WAL → PITR 14 days, retention 35 days) to an off-site S3-compatible repository at another provider; nightly `files.backup` copy of Cloudinary assets; weekly VPS snapshots; quarterly restore drill |

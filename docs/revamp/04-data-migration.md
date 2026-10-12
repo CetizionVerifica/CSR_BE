@@ -19,7 +19,7 @@
 5. `companies` → companies; licences → entitlements (M02).
 6. `employees`, `stakeholders` → people (M07).
 7. `projects` → projects + workstreams + transitions (M03).
-8. `gapfiles` + legacy evidence objects → files, versions, links (M14) — an `rclone copy` job first pulls the objects out of the **legacy AWS bucket** (read-only credentials, the only AWS interaction, and only during migration) into the new S3-compatible object storage of the VPS setup, keyed by `legacy_id`.
+8. `gapfiles` + legacy evidence objects → files, versions, links (M14) — an `rclone copy` job first pulls the objects out of the **legacy AWS bucket** (read-only credentials, the only AWS interaction, and only during migration) into the new file storage (Cloudinary through `StorageAdapter`, owner decision 2026-10-07), keyed by `legacy_id`.
 9. `gapanalyses` → gap_assessments + gap_answers (+ answer files) (M04); `gapfile.criteria` → doc assessment rounds (M05).
 10. `projectsurveys`, `new_surveys` → survey campaigns, recipients, responses, answers (M08).
 11. `materialities` → materiality results/scores, stakeholder classes (M06).

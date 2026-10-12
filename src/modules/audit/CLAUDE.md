@@ -23,6 +23,11 @@ Append-only record of data changes and security events, used for the activity fe
 
 Kernel only (`config`, `infra/prisma`, `common/http/request-meta`). Must never import another module: everyone depends on audit.
 
+## Events
+
+- Emits: none. Audit is the sink: other modules pass their own `<entity>.<verb>` action names to `AuditService.record`.
+- Consumes: none directly. Shared supplier data views are recorded by the module that serves them (`supplier-portal`, `screening`) with `supplier_data.viewed` (SD13, planned).
+
 ## Components & behaviour
 
 - `audit.service.ts` — turns one or many entries (actor, action name from the caller's `events.ts`, target, details without secrets) plus request meta into rows, in the caller's transaction when one is given.

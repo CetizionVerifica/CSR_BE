@@ -41,6 +41,14 @@ This folder is the **single source of truth** for rebuilding ResiliSense from sc
 | [M16](modules/M16-frameworks-disclosures.md) | Frameworks & disclosures (ESRS, GRI, ISSB, BRSR, SDG, UNGC) | 2 | **new** |
 | [M17](modules/M17-ai-assistant.md) | AI assistant (Claude) | 3 | **new** |
 | [M18](modules/M18-carbon-ghg.md) | Carbon & GHG accounting | 3 | **new** |
+| [M19](modules/M19-supplier-register.md) | Supplier register (SD02, split from M10) | DD wave 2 | rebuild + new |
+| [M20](modules/M20-supplier-portal.md) | Supplier onboarding & portal (SD03, split from M10) | DD wave 3 | rebuild + new |
+| [M21](modules/M21-questionnaires.md) | Supplier questionnaires (SD04, builds on M08) | DD wave 2 | **new** |
+| [M22](modules/M22-risk.md) | Supplier risk engine (SD06) | DD wave 2–3 | **new** |
+| [M23](modules/M23-dd-audits.md) | Due diligence audits & findings (SD08) | DD wave 4 | **new** |
+| [M24](modules/M24-monitoring.md) | Monitoring & alerts (SD10) | DD wave 4 | **new** |
+| [M25](modules/M25-grievances.md) | Grievance channel (SD11) | DD wave 2 | **new** |
+| [M26](modules/M26-esg-data.md) | External ESG ratings, optional (SD16) | DD wave 4 | **new** |
 
 New specs start from [`modules/_TEMPLATE.md`](modules/_TEMPLATE.md).
 
@@ -56,7 +64,7 @@ New specs start from [`modules/_TEMPLATE.md`](modules/_TEMPLATE.md).
 
 | # | Decision | Recommendation | Where |
 |---|---|---|---|
-| 0 | Hosting — **decided: self-managed VPS, no AWS** | Pick the VPS provider per region (EU + India), S3-compatible object storage and off-site backup provider; deploy with Kamal 2, provision with Ansible, Cloudflare in front | ADR-011 |
+| 0 | Hosting — **decided: self-managed VPS, no AWS** | Pick the VPS provider per region (EU + India), file storage (decided: Cloudinary, 2026-10-07) and off-site backup provider; deploy with Kamal 2, provision with Ansible, Cloudflare in front | ADR-011 |
 | 1 | Database | PostgreSQL 16 + Prisma (alternative: stay on MongoDB) | ADR-003 |
 | 2 | API style | REST + OpenAPI (legacy was GraphQL) | ADR-004 |
 | 3 | Repos | Keep 2 repos; legacy on `legacy` branch; `main` reset for new code after deploys re-pointed | ADR-001, ADR-009 |

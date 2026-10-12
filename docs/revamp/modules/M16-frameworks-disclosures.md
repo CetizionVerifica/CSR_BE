@@ -16,6 +16,7 @@ Supported frameworks (initial):
 | **UN SDGs** (17 goals / 169 targets) | Impact storytelling |
 | **ISO 26000** | Existing backbone, kept as the default question taxonomy |
 | **UN Global Compact** | Legacy "annual review" checklist becomes a real framework (10 principles, CoP-style export) |
+| **LkSG** (German Supply Chain Act) · **CSDDD** (EU) | Supplier due diligence statements (M11 §4.5, `dd-reporting`): the statement templates `lksg@1` and `csddd@1` use these frameworks' node codes as section keys, so coverage can be shown here later |
 
 ## 2. Users & permissions
 
@@ -39,7 +40,7 @@ Supported frameworks (initial):
 
 ## 4. Domain model
 ```ts
-frameworks          { id, code: 'ESRS'|'GRI'|'ISSB'|'BRSR'|'SDG'|'UNGC'|'ISO26000', version, effective_from date, status: 'draft'|'published'|'retired' }
+frameworks          { id, code: 'ESRS'|'GRI'|'ISSB'|'BRSR'|'SDG'|'UNGC'|'ISO26000'|'LKSG'|'CSDDD', version, effective_from date, status: 'draft'|'published'|'retired' }
 framework_nodes     { id, framework_id, parent_id?, type: 'standard'|'topic'|'disclosure'|'datapoint'|'principle'|'goal'|'target',
                       code /* 'E1-6', 'GRI 305-1', 'S1-1_01' */, title_key, description_key?,
                       data_type?: 'narrative'|'quantitative'|'semi_narrative'|'boolean'|'date', unit_code?,

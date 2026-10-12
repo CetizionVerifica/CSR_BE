@@ -23,7 +23,7 @@ The plan is split into loosely coupled modules that are built independently (`do
 
 ## Target stack (see `docs/revamp/01-target-architecture.md`)
 
-Node 24 LTS (≥ 22.12 works) · NestJS 12 (ESM-only; our code is CommonJS and loads it via `require(esm)`) · TypeScript 6 strict (TS 7 once typescript-eslint/@nestjs/swagger support it) · PostgreSQL 16+ with RLS · Prisma 7.10 (client generated to `src/generated/prisma`, gitignored) · Zod 4 with our helpers in `src/common/validation/zod.ts` (`nestjs-zod` doesn't support Nest 12) · REST + OpenAPI · BullMQ + Redis-compatible Valkey · S3-API-compatible object storage via `StorageAdapter` (presigned PUT, ClamAV scan) · `EmailAdapter` (Postmark/SMTP/log) · pino · **Vitest** + supertest (Jest can't load ESM Nest on Node 22) · Docker images deployed with **Kamal 2** to self-managed **VPS** servers (Ansible in `infra/ansible/`); Cloudflare in front.
+Node 24 LTS (≥ 22.12 works) · NestJS 12 (ESM-only; our code is CommonJS and loads it via `require(esm)`) · TypeScript 6 strict (TS 7 once typescript-eslint/@nestjs/swagger support it) · PostgreSQL 16+ with RLS · Prisma 7.10 (client generated to `src/generated/prisma`, gitignored) · Zod 4 with our helpers in `src/common/validation/zod.ts` (`nestjs-zod` doesn't support Nest 12) · REST + OpenAPI · BullMQ + Redis-compatible Valkey · file storage on Cloudinary via `StorageAdapter` (owner decision 2026-10-07: signed direct upload, private signed downloads, ClamAV scan; `local` driver in dev/tests) · `EmailAdapter` (Postmark/SMTP/log) · pino · **Vitest** + supertest (Jest can't load ESM Nest on Node 22) · Docker images deployed with **Kamal 2** to self-managed **VPS** servers (Ansible in `infra/ansible/`); Cloudflare in front.
 
 **No AWS — self-managed VPS.** The owner has ruled out AWS and chose VPS hosting (ADR-011): do not add AWS services, AWS-specific SDK features, IAM/CloudFormation/CDK/Terraform-for-AWS, Bedrock, SES, S3-hosted assets or GitHub Actions that deploy to AWS. Keep integrations behind adapters (`StorageAdapter`, `EmailAdapter`) so the provider stays swappable. The only AWS interaction allowed is the one-off, read-only copy of legacy evidence files during migration (`docs/revamp/04-data-migration.md`).
 
@@ -65,7 +65,7 @@ Run lint, typecheck and the relevant tests before every commit. Never use `npm i
 
 ## Security checklist (every PR)
 
-Auth/permission decorator present (`@Can`/`@Authenticated`/`@Public`) · tenant scoping tested (another workspace gets 404) · input validated with Zod · no raw user input in regexes or dynamic field names · no secrets/PII in logs · file uploads via presigned PUT with signed type/size, post-upload size + magic-byte check and ClamAV scan · rate limits on public endpoints.
+Auth/permission decorator present (`@Can`/`@Authenticated`/`@Public`) · tenant scoping tested (another workspace gets 404) · input validated with Zod · no raw user input in regexes or dynamic field names · no secrets/PII in logs · file uploads via signed direct upload with signed type/size, post-upload size + magic-byte check and ClamAV scan · rate limits on public endpoints.
 
 ## Testing expectations
 
