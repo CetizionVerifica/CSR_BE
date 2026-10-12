@@ -30,11 +30,11 @@ Global lists and indices that every due diligence module looks up, and the globa
 
 ## Depends on
 
-`audit` (`AuditService.record`, in the write transaction). Identity only through the global guard and the permission matrix. No other module, so no fakes are needed.
+`audit` (`AuditService.record`, in the write transaction). `localisation` (M15 §14): `TranslationsService.upsertSource` when a label or template text is written, `TranslationsService.resolve` + `resolveLocale` on reads, so lists and templates come back in the caller's locale with fallback; fake `__tests__/fakes/translations.fake.ts` (planned) returns the English source until `localisation` lands. Identity only through the global guard and the permission matrix.
 
 ## Events
 
-Emits `reference.updated` → `{ kind: 'country' | 'sector' | 'category' | 'risk_index' | 'questionnaire_template', code, version?, year?, importId? }` on every upsert, retire and publish. Until the M12 event bus exists it is recorded as the audit action only; consumers read on demand. Consumes nothing.
+Emits `reference.updated` → `{ kind: 'country' | 'sector' | 'category' | 'risk_index' | 'questionnaire_template', code, version?, year?, importId? }` on every upsert, retire and publish. Until the M12 event bus exists it is recorded as the audit action only; consumers read on demand. Consumes `translation.updated` (no reaction needed while reads resolve on demand).
 
 ## Components & behaviour
 
@@ -59,4 +59,4 @@ Planned: `import-validation.spec.ts` + `import-validation.property.spec.ts`, `dt
 
 ## Not here
 
-ISO 26000 taxonomy and KCs (M04, already seeded in `prisma/seed/taxonomy.ts`), workspace questionnaire templates, campaigns and answer scores (`questionnaires`), risk scores and their normalisation (`risk`), translations workflow (M15), help centre, legal, feature flags and platform operations (rest of M13), file uploads (`files`).
+ISO 26000 taxonomy and KCs (M04, already seeded in `prisma/seed/taxonomy.ts`), workspace questionnaire templates, campaigns and answer scores (`questionnaires`), risk scores and their normalisation (`risk`), the `translations` table and translation workflow (`localisation`, M15), help centre, legal, feature flags and platform operations (rest of M13), file uploads (`files`).
